@@ -1,437 +1,497 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manga Crest - منصة المانهوا</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
-                    colors: {
-                        darkBg: '#0f0a1a',
-                        darkCard: '#1a1025',
-                        purplePrimary: '#8b5cf6',
-                        purpleHover: '#7c3aed',
-                        purpleLight: '#c4b5fd',
-                        accent: '#f59e0b'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #0f0a1a; color: #e5e7eb; }
-        .hidden-view { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
-        .active-view { display: block; animation: fadeIn 0.4s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #1a1025; }
-        ::-webkit-scrollbar-thumb { background: #8b5cf6; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #7c3aed; }
-        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مانجا كريست | Manga Crest</title>
+  
+  <style>
+    :root {
+      --bg-main: #0a0414;
+      --bg-card: #150826;
+      --bg-card-hover: #220d3d;
+      --border-color: rgba(147, 51, 234, 0.3);
+      --accent-purple: #9333ea;
+      --accent-fuchsia: #c026d3;
+      --text-main: #f3e8ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; border: none; font-family: inherit; }
+
+    /* شريط التليجرام */
+    .top-banner { background: linear-gradient(90deg, #2e0854, #1a0533); border-bottom: 1px solid rgba(147, 51, 234, 0.4); padding: 8px 16px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .btn-tg { background: #0284c7; color: #fff; padding: 4px 14px; border-radius: 20px; font-weight: 700; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; }
+
+    /* الهيدر */
+    header { position: sticky; top: 0; z-index: 40; background: rgba(18, 7, 33, 0.95); border-bottom: 1px solid var(--border-color); backdrop-filter: blur(8px); }
+    .header-container { max-width: 1200px; margin: 0 auto; padding: 0 16px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .brand-logo { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #9333ea, #c026d3); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .brand-text h1 { font-size: 18px; font-weight: 900; background: linear-gradient(90deg, #d8b4fe, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .brand-text span { font-size: 9px; color: #a855f7; font-weight: 700; display: block; letter-spacing: 1px; }
+
+    .search-input { width: 100%; max-width: 320px; background: #190a2e; border: 1px solid var(--border-color); border-radius: 12px; padding: 8px 14px; color: #fff; font-size: 12px; outline: none; }
+    .btn-login { background: linear-gradient(90deg, #7e22ce, #c026d3); color: #fff; padding: 7px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; }
+    .btn-admin { background: #4c1d95; color: #fde047; border: 1px solid #a855f7; padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+
+    /* المحتوى */
+    main { max-width: 1200px; width: 100%; margin: 0 auto; padding: 20px 16px; flex: 1; }
+    .hero-box { background: linear-gradient(135deg, #1d0738, #2a0c4f); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 20px; padding: 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .hero-info h2 { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
+    .hero-info p { font-size: 12px; color: #d8b4fe; max-width: 500px; }
+    .tag-pill { display: inline-block; background: rgba(147, 51, 234, 0.3); border: 1px solid #9333ea; color: #e9d5ff; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
+    .realm-card { background: #140624; border: 1px solid #7e22ce; border-radius: 14px; padding: 14px; min-width: 250px; }
+    .progress-bar-bg { background: #2a0c4f; height: 8px; border-radius: 4px; overflow: hidden; margin: 8px 0; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #9333ea, #f59e0b); }
+
+    /* شبكة المانهوا */
+    .section-title { font-size: 18px; font-weight: 900; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .manga-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+    @media (min-width: 640px) { .manga-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; } }
+    .manga-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; }
+    .manga-card:hover { transform: translateY(-3px); border-color: var(--accent-purple); background: var(--bg-card-hover); }
+    .manga-cover { width: 100%; aspect-ratio: 3/4; object-fit: cover; background: #1f0a38; }
+    .manga-details { padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .manga-title { font-size: 13px; font-weight: 700; color: #fff; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+    .manga-meta { display: flex; justify-content: space-between; font-size: 11px; color: #c084fc; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(147, 51, 234, 0.2); }
+
+    /* قارئ الويبتون */
+    .reader-toolbar { position: sticky; top: 60px; z-index: 30; background: rgba(18, 7, 33, 0.95); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .reader-images { max-width: 760px; margin: 0 auto; background: #000; border-radius: 12px; overflow: hidden; }
+    .reader-img { width: 100%; display: block; }
+
+    /* النوافذ المنبثقة */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 99; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .modal-overlay.hidden { display: none; }
+    .modal-content { background: #18092c; border: 1px solid #9333ea; border-radius: 20px; padding: 24px; max-width: 440px; width: 100%; position: relative; }
+    .close-btn { position: absolute; top: 14px; left: 14px; background: none; color: #c084fc; font-size: 18px; font-weight: bold; }
+    .input-field { width: 100%; background: #0e041c; border: 1px solid #6b21a8; border-radius: 10px; padding: 10px 14px; color: #fff; margin-bottom: 12px; font-size: 13px; outline: none; }
+    .btn-submit { width: 100%; background: linear-gradient(90deg, #9333ea, #db2777); color: #fff; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 14px; }
+    footer { background: #06020c; border-top: 1px solid rgba(147, 51, 234, 0.2); padding: 20px 16px; text-align: center; font-size: 12px; color: #8b5cf6; margin-top: auto; }
+  </style>
 </head>
-<body class="bg-darkBg text-gray-200">
+<body>
 
-    <!-- شريط التنقل العُلوي -->
-    <nav class="bg-darkCard/90 backdrop-blur-md border-b border-purplePrimary/30 shadow-[0_4px_15px_rgba(139,92,246,0.15)] p-4 sticky top-0 z-50">
-        <div class="container mx-auto flex flex-wrap justify-between items-center gap-4">
-            
-            <!-- الشعار -->
-            <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purplePrimary to-purpleLight cursor-pointer flex items-center gap-2" onclick="showView('home-view')">
-                <i class="fa-solid fa-dragon text-purplePrimary"></i>
-                Manga Crest
-            </h1>
-            
-            <!-- مربع البحث -->
-            <div class="flex-grow max-w-md hidden md:block relative">
-                <input type="text" id="search-input" onkeyup="filterManga()" placeholder="ابحث عن مانهوا..." class="w-full bg-darkBg border border-gray-700 rounded-full py-2 px-4 pr-10 text-sm focus:outline-none focus:border-purplePrimary transition-colors text-white">
-                <i class="fa-solid fa-search absolute right-4 top-3 text-gray-400"></i>
-            </div>
+  <div class="top-banner">
+    <div>📢 تابع أحدث فصول المانهوا ومواعيد النشر الحصرية!</div>
+    <a href="https://t.me/+VYgX581p6N5kN2E8" target="_blank" class="btn-tg">✈️ قناة التليجرام الرسمية</a>
+  </div>
 
-            <!-- الأزرار -->
-            <div class="flex gap-3 sm:gap-4 items-center">
-                <a href="https://t.me/+VYgX581p6N5kN2E8" target="_blank" class="flex items-center gap-2 text-[#2AABEE] hover:text-white transition-colors bg-[#2AABEE]/10 hover:bg-[#2AABEE]/20 px-3 py-2 rounded-lg border border-[#2AABEE]/30">
-                    <i class="fa-brands fa-telegram text-lg"></i>
-                    <span class="text-sm font-bold hidden sm:block">قناتنا</span>
-                </a>
-
-                <div id="nav-actions" class="flex gap-2 items-center">
-                    <button onclick="showView('login-view')" class="bg-purplePrimary hover:bg-purpleHover px-5 py-2 rounded-lg transition-colors font-bold text-sm shadow-[0_0_10px_rgba(139,92,246,0.4)]">
-                        دخول
-                    </button>
-                </div>
-            </div>
+  <header>
+    <div class="header-container">
+      <div class="brand" onclick="showView('home')">
+        <div class="brand-logo">📖</div>
+        <div class="brand-text">
+          <h1>مانجا كريست</h1>
+          <span>MANGA CREST</span>
         </div>
-    </nav>
+      </div>
 
-    <!-- المحتوى الرئيسي -->
-    <main class="container mx-auto p-4 mt-6 min-h-[80vh]">
+      <input type="text" class="search-input" oninput="filterManga(this.value)" placeholder="ابحث عن مانهوا...">
 
-        <!-- 1. الصفحة الرئيسية -->
-        <div id="home-view" class="view-section active-view">
-            <!-- قسم الإعلانات / أبرز الأعمال -->
-            <div class="bg-gradient-to-l from-darkCard to-purplePrimary/20 rounded-2xl p-6 mb-8 flex flex-col md:flex-row items-center gap-6 border border-purplePrimary/30">
-                <div class="flex-1">
-                    <span class="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold mb-2 inline-block">الأكثر شعبية</span>
-                    <h2 class="text-3xl font-black mb-3">Solo Leveling - ارتقاء المنفرد</h2>
-                    <p class="text-gray-400 text-sm mb-4 line-clamp-2">في عالم ظهرت فيه بوابات وحوش عشوائية، سونغ جين وو هو أضعف صياد في العالم. لكن بعد حادث مميت، يستيقظ ومعه نظام يجعله يرتقي بمفرده.</p>
-                    <button class="bg-purplePrimary hover:bg-purpleHover px-6 py-2 rounded-full font-bold transition-all"><i class="fa-solid fa-book-open ml-2"></i>اقرأ الآن</button>
-                </div>
-                <img src="https://via.placeholder.com/400x200/2d1b4e/a78bfa?text=Solo+Leveling" class="rounded-xl shadow-lg w-full md:w-1/3 object-cover h-40">
-            </div>
+      <div id="navRight"></div>
+    </div>
+  </header>
 
-            <div class="flex justify-between items-end mb-6 border-b border-gray-800 pb-2">
-                <h2 class="text-xl font-bold border-r-4 border-purplePrimary pr-2">آخر التحديثات</h2>
-                <div class="text-sm text-gray-400 flex gap-4 cursor-pointer">
-                    <span class="hover:text-purplePrimary text-purplePrimary font-bold">الكل</span>
-                    <span class="hover:text-purplePrimary">مانهوا</span>
-                    <span class="hover:text-purplePrimary">مانها</span>
-                </div>
-            </div>
+  <main id="appRoot"></main>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6" id="manga-grid">
-                <!-- سيتم توليد المانهوا هنا بواسطة JavaScript -->
-            </div>
+  <footer>
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <span>مانجا كريست © 2026 - جميع الحقوق محفوظة</span>
+      <div>
+        <a href="https://t.me/+VYgX581p6N5kN2E8" target="_blank" style="color: #38bdf8; margin-left: 12px;">قناة التليجرام</a>
+        <button onclick="toggleModal('dbModal')" style="background:none; color:#c084fc;">إدارة قاعدة البيانات (5TB)</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- نافذة الدخول -->
+  <div id="loginModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="close-btn" onclick="toggleModal('loginModal')">✕</button>
+      <h3 style="text-align: center; font-size: 18px; font-weight: 900; margin-bottom: 16px;">تسجيل الدخول</h3>
+
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+        <button onclick="quickLogin('قارئ Google', 'Google Gmail')" style="background: #200d3d; border: 1px solid #7e22ce; color: #fff; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px;">🔴 الدخول بواسطة Google / Gmail</button>
+        <button onclick="quickLogin('بطل الألعاب', 'Google Play Games')" style="background: #200d3d; border: 1px solid #7e22ce; color: #fff; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px;">🟢 الدخول بواسطة Google Play</button>
+      </div>
+
+      <div style="text-align: center; font-size: 11px; color: #a855f7; margin-bottom: 12px;">أو بحساب المدير</div>
+
+      <form onsubmit="handleEmailLogin(event)">
+        <input type="email" id="emailInput" class="input-field" placeholder="البريد الإلكتروني" required>
+        <input type="password" id="passInput" class="input-field" placeholder="كلمة المرور" required>
+        <button type="submit" class="btn-submit">دخول</button>
+      </form>
+
+      <div style="margin-top: 14px; background: #260c47; border: 1px solid #7e22ce; padding: 10px; border-radius: 10px; font-size: 11px;">
+        <div style="color: #fde047; font-weight: bold; margin-bottom: 4px;">👑 حساب الأدمن الافتراضي:</div>
+        <div>zechal510010@Crest.com</div>
+        <div>01228124879A#</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة الـ 5TB -->
+  <div id="dbModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="close-btn" onclick="toggleModal('dbModal')">✕</button>
+      <h3 style="font-size: 16px; font-weight: 900; margin-bottom: 8px;">إدارة قاعدة البيانات (5TB)</h3>
+      <p style="font-size: 12px; color: #d8b4fe; margin-bottom: 16px;">استخدم روابط صور الفصول من مساحة الدرايف 5TB، وصدّر أو استورد قاعدة البيانات:</p>
+      <button onclick="exportDB()" class="btn-submit" style="margin-bottom: 8px;">💾 تصدير قاعدة البيانات (JSON)</button>
+      <label class="btn-submit" style="display: block; text-align: center; background: #3b0764; cursor: pointer;">
+        📥 استيراد قاعدة بيانات
+        <input type="file" accept=".json" onchange="importDB(event)" style="display: none;">
+      </label>
+    </div>
+  </div>
+
+  <script>
+    const REALMS = [
+      { name: "صقل الطاقة الحيوية", min: 0 },
+      { name: "تأسيس الأساس", min: 25 },
+      { name: "النواة الذهبية", min: 50 },
+      { name: "الروح الوليدة", min: 100 },
+      { name: "التحول الروحي", min: 250 },
+      { name: "عودة الفراغ", min: 500 },
+      { name: "اندماج الجسد", min: 1000 },
+      { name: "محنة البرق العظمى", min: 2000 },
+      { name: "الخالد الحقيقي", min: 3500 },
+      { name: "الإمبراطور الخالد", min: 5000 }
+    ];
+
+    function getRealm(count) {
+      count = Number(count) || 0;
+      for (let i = REALMS.length - 1; i >= 0; i--) {
+        if (count >= REALMS[i].min) {
+          const next = REALMS[i + 1];
+          const progress = next ? Math.min(100, Math.round(((count - REALMS[i].min) / (next.min - REALMS[i].min)) * 100)) : 100;
+          return { ...REALMS[i], progress, nextMin: next ? next.min : null };
+        }
+      }
+      return { ...REALMS[0], progress: 0, nextMin: 25 };
+    }
+
+    const SEED_MANGA = [
+      {
+        id: "m1",
+        title: "العناية الإلهية الفائقة: صقل سري لألف عام",
+        cover: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600",
+        genres: "زراعة, نظام, أكشن",
+        desc: "هان جوي يحصل على نظام صقل فريد يكافئه عند البقاء في الكهف وصقل طاقته في الخفاء لألف عام!",
+        chapters: [
+          { id: "c2", num: 2, title: "اختراق عالم تأسيس الأساس", pages: ["https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000", "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=1000"] },
+          { id: "c1", num: 1, title: "البداية: الصقل الهادئ", pages: ["https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=1000", "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000"] }
+        ]
+      },
+      {
+        id: "m2",
+        title: "أنا الشرير المقدر",
+        cover: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600",
+        genres: "شرير, زراعة, دهاء",
+        desc: "غو تشانغي يستيقظ كشرير مقدر في عالم علوي ليسحق أبناء الحظ ويستولي على هالاتهم وفرصهم!",
+        chapters: [
+          { id: "c1", num: 1, title: "صحوة الشرير وقمع ابن الحظ", pages: ["https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1000", "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000"] }
+        ]
+      }
+    ];
+
+    const SEED_STAFF = [
+      { id: "s1", name: "أحمد (Zechal)", email: "zechal510010@Crest.com", role: "المدير العام / مؤسس" },
+      { id: "s2", name: "المبيض المحترف", email: "cleaner@crest.com", role: "مبيض (Redrawer)" },
+      { id: "s3", name: "المحرر الذهبي", email: "editor@crest.com", role: "محرر (Typesetter)" }
+    ];
+
+    let currentUser = JSON.parse(localStorage.getItem("manga_user")) || null;
+    let allManga = JSON.parse(localStorage.getItem("manga_db")) || SEED_MANGA;
+    let allStaff = JSON.parse(localStorage.getItem("manga_staff")) || SEED_STAFF;
+
+    function saveAll() {
+      localStorage.setItem("manga_user", JSON.stringify(currentUser));
+      localStorage.setItem("manga_db", JSON.stringify(allManga));
+      localStorage.setItem("manga_staff", JSON.stringify(allStaff));
+      updateNav();
+    }
+
+    function toggleModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('hidden');
+    }
+
+    function quickLogin(name, provider) {
+      currentUser = { name, email: "user@crest.com", role: "قارئ", readCount: 15, history: [] };
+      saveAll();
+      toggleModal('loginModal');
+      showView('home');
+    }
+
+    function handleEmailLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('emailInput').value.trim();
+      const pass = document.getElementById('passInput').value.trim();
+
+      if (email.toLowerCase() === "zechal510010@crest.com" && pass === "01228124879A#") {
+        currentUser = { name: "أحمد (Zechal)", email, role: "المدير العام / مؤسس", readCount: 5500, isAdmin: true, history: [] };
+      } else {
+        const staff = allStaff.find(s => s.email.toLowerCase() === email.toLowerCase());
+        currentUser = staff 
+          ? { ...staff, readCount: 200, isAdmin: true, history: [] } 
+          : { name: email.split('@')[0], email, role: "قارئ", readCount: 0, history: [] };
+      }
+      saveAll();
+      toggleModal('loginModal');
+      showView(currentUser.isAdmin ? 'admin' : 'home');
+    }
+
+    function logout() {
+      currentUser = null;
+      saveAll();
+      showView('home');
+    }
+
+    function updateNav() {
+      const nav = document.getElementById('navRight');
+      if (!currentUser) {
+        nav.innerHTML = `<button onclick="toggleModal('loginModal')" class="btn-login">دخول / تسجيل</button>`;
+        return;
+      }
+      const r = getRealm(currentUser.readCount);
+      nav.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          ${currentUser.isAdmin ? `<button onclick="showView('admin')" class="btn-admin">الإدارة</button>` : ''}
+          <div style="background: #1c0b33; padding: 4px 10px; border-radius: 8px; border: 1px solid #7e22ce; font-size: 11px;">
+            <div style="font-weight: bold; color: #fff;">${currentUser.name}</div>
+            <div style="color: #fde047; font-size: 10px;">${r.name} (${currentUser.readCount} فصل)</div>
+          </div>
+          <button onclick="logout()" style="color: #f87171; background: none; font-size: 12px;">خروج</button>
         </div>
+      `;
+    }
 
-        <!-- 2. صفحة تفاصيل المانهوا -->
-        <div id="details-view" class="view-section hidden-view">
-            <div id="manga-details-container">
-                <!-- محتوى التفاصيل سيتم حقنه هنا -->
+    function showView(view, param = null) {
+      const app = document.getElementById('appRoot');
+      window.scrollTo(0, 0);
+
+      if (view === 'home') {
+        const r = currentUser ? getRealm(currentUser.readCount) : null;
+        app.innerHTML = `
+          <div class="hero-box">
+            <div class="hero-info">
+              <span class="tag-pill">🔥 نظام عوالم وصقل الطاقة للقراء</span>
+              <h2>اقرأ الفصول وارتقِ نحو <span style="color: #f59e0b;">الإمبراطور الخالد</span>!</h2>
+              <p>كل فصل تقرؤه يسجل تلقائياً في رصيد زراعتك لترقية رتبتك في الموقع.</p>
             </div>
+            ${currentUser ? `
+              <div class="realm-card">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold;">
+                  <span>عالمك:</span><span style="color: #fde047;">${r.name}</span>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${r.progress}%;"></div></div>
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: #c084fc;">
+                  <span>الفصول: ${currentUser.readCount}</span><span>${r.nextMin ? 'التالي: ' + r.nextMin : 'قمة الخلود'}</span>
+                </div>
+              </div>
+            ` : `
+              <button onclick="toggleModal('loginModal')" class="btn-login" style="padding: 10px 20px;">ابدأ الصقل الآن</button>
+            `}
+          </div>
+
+          <div class="section-title">
+            <span>📚 أحدث المانهوا المضافة</span>
+            <span style="font-size: 12px; color: #c084fc;">${allManga.length} أعمال</span>
+          </div>
+          <div class="manga-grid" id="mangaContainer">
+            ${renderMangaCards(allManga)}
+          </div>
+        `;
+      } else if (view === 'detail') {
+        const manga = allManga.find(m => m.id === param);
+        if (!manga) return showView('home');
+        app.innerHTML = `
+          <button onclick="showView('home')" style="color: #c084fc; background: none; font-size: 12px; margin-bottom: 12px; font-weight: bold;">➔ الرئيسية</button>
+          <div style="background: #17082b; border: 1px solid #7e22ce; border-radius: 16px; padding: 20px; display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
+            <img src="${manga.cover}" style="width: 160px; aspect-ratio: 3/4; object-fit: cover; border-radius: 12px;">
+            <div style="flex: 1; min-width: 240px;">
+              <h2 style="font-size: 20px; font-weight: 900; margin-bottom: 8px;">${manga.title}</h2>
+              <div style="font-size: 12px; color: #e9d5ff; background: #260c47; display: inline-block; padding: 3px 10px; border-radius: 6px; margin-bottom: 12px;">${manga.genres}</div>
+              <p style="font-size: 13px; color: #d8b4fe; line-height: 1.6; margin-bottom: 16px;">${manga.desc}</p>
+              ${manga.chapters.length ? `<button onclick="showView('reader', '${manga.id}:${manga.chapters[manga.chapters.length - 1].id}')" class="btn-login">ابدأ القراءة</button>` : ''}
+            </div>
+          </div>
+          <div style="background: #17082b; border: 1px solid #7e22ce; border-radius: 16px; padding: 16px;">
+            <h3 style="font-size: 16px; font-weight: 900; margin-bottom: 12px;">قائمة الفصول (${manga.chapters.length})</h3>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              ${manga.chapters.map(c => `
+                <div onclick="showView('reader', '${manga.id}:${c.id}')" style="background: #200d3d; padding: 12px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; font-size: 13px;">
+                  <span>الفصل ${c.num}: ${c.title}</span><span style="color: #c084fc;">اقرأ ➔</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else if (view === 'reader') {
+        const [mId, cId] = param.split(':');
+        const manga = allManga.find(m => m.id === mId);
+        const chapter = manga?.chapters.find(c => c.id === cId);
+        if (!manga || !chapter) return showView('home');
+
+        if (currentUser) {
+          currentUser.history = currentUser.history || [];
+          if (!currentUser.history.includes(`${mId}:${cId}`)) {
+            currentUser.history.push(`${mId}:${cId}`);
+            currentUser.readCount = (currentUser.readCount || 0) + 1;
+            saveAll();
+          }
+        }
+
+        const idx = manga.chapters.findIndex(c => c.id === chapter.id);
+        const next = idx > 0 ? manga.chapters[idx - 1] : null;
+        const prev = idx < manga.chapters.length - 1 ? manga.chapters[idx + 1] : null;
+
+        app.innerHTML = `
+          <div class="reader-toolbar">
+            <button onclick="showView('detail', '${manga.id}')" class="btn-admin">☰ الفصول</button>
+            <span style="font-weight: bold; font-size: 13px;">${manga.title} - فصل ${chapter.num}</span>
+            <div style="display: flex; gap: 6px;">
+              ${prev ? `<button onclick="showView('reader', '${manga.id}:${prev.id}')" class="btn-admin">السابق</button>` : ''}
+              ${next ? `<button onclick="showView('reader', '${manga.id}:${next.id}')" class="btn-login">التالي</button>` : ''}
+            </div>
+          </div>
+          <div class="reader-images">
+            ${chapter.pages.map((p, i) => `<img src="${p}" loading="lazy" class="reader-img" alt="صفحة ${i + 1}">`).join('')}
+          </div>
+        `;
+      } else if (view === 'admin') {
+        if (!currentUser || !currentUser.isAdmin) return showView('home');
+        app.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #7e22ce; padding-bottom: 12px; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+            <h2 style="font-size: 18px; font-weight: 900;">🛡️ لوحة الإدارة (${currentUser.role})</h2>
+            <div style="display: flex; gap: 8px;">
+              <button onclick="addMangaPrompt()" class="btn-login">+ مانهوا</button>
+              <button onclick="addChapterPrompt()" class="btn-admin" style="background:#0284c7; color:#fff;">+ فصل</button>
+              <button onclick="addStaffPrompt()" class="btn-admin">+ رتبة</button>
+            </div>
+          </div>
+
+          <div style="background: #17082b; border: 1px solid #7e22ce; border-radius: 14px; padding: 16px; margin-bottom: 16px;">
+            <h3 style="font-size: 14px; font-weight: bold; margin-bottom: 10px;">👥 أعضاء الفريق</h3>
+            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
+              ${allStaff.map(s => `
+                <div style="background: #200d3d; padding: 8px 12px; border-radius: 8px; display: flex; justify-content: space-between;">
+                  <span><strong>${s.name}</strong> (${s.role})</span><span style="color: #c084fc;">${s.email}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div style="background: #17082b; border: 1px solid #7e22ce; border-radius: 14px; padding: 16px;">
+            <h3 style="font-size: 14px; font-weight: bold; margin-bottom: 10px;">📚 المانهوا المنشورة</h3>
+            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
+              ${allManga.map(m => `
+                <div style="background: #200d3d; padding: 8px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                  <span><strong>${m.title}</strong> (${m.chapters.length} فصول)</span>
+                  <button onclick="deleteManga('${m.id}')" style="background: #991b1b; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 10px;">حذف</button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function renderMangaCards(list) {
+      return list.map(m => `
+        <div class="manga-card" onclick="showView('detail', '${m.id}')">
+          <img src="${m.cover}" class="manga-cover" alt="${m.title}">
+          <div class="manga-details">
+            <div class="manga-title">${m.title}</div>
+            <div class="manga-meta"><span>${m.chapters.length} فصول</span><span style="color: #f472b6;">اقرأ ➔</span></div>
+          </div>
         </div>
+      `).join('');
+    }
 
-        <!-- 3. صفحة تسجيل الدخول -->
-        <div id="login-view" class="view-section hidden-view max-w-md mx-auto bg-darkCard p-8 rounded-2xl border border-purplePrimary/20 shadow-2xl mt-10">
-            <div class="text-center mb-6">
-                <i class="fa-solid fa-user-shield text-4xl text-purpleLight mb-2"></i>
-                <h2 class="text-2xl font-bold text-white">تسجيل الدخول</h2>
-                <p class="text-sm text-gray-400 mt-1">مرحباً بعودتك إلى منصة المانهوا الأولى</p>
-            </div>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm mb-1 text-gray-400">البريد الإلكتروني</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-envelope absolute right-3 top-3.5 text-gray-500"></i>
-                        <input type="email" id="login-email" class="w-full bg-darkBg border border-gray-700 rounded-lg py-3 px-10 text-white focus:outline-none focus:border-purplePrimary transition-colors" placeholder="zechal510010@gmail.com" value="zechal510010@gmail.com">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm mb-1 text-gray-400">كلمة المرور</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-lock absolute right-3 top-3.5 text-gray-500"></i>
-                        <input type="password" id="login-pass" class="w-full bg-darkBg border border-gray-700 rounded-lg py-3 px-10 text-white focus:outline-none focus:border-purplePrimary transition-colors" value="01228124879A#">
-                    </div>
-                </div>
-                <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-purplePrimary to-purpleHover py-3 rounded-lg font-bold transition-all mt-4 shadow-lg hover:shadow-purplePrimary/50">
-                    دخول
-                </button>
-                
-                <div class="relative flex py-4 items-center">
-                    <div class="flex-grow border-t border-gray-800"></div>
-                    <span class="flex-shrink-0 mx-4 text-gray-500 text-sm">أو</span>
-                    <div class="flex-grow border-t border-gray-800"></div>
-                </div>
+    function filterManga(val) {
+      val = val.trim();
+      const filtered = allManga.filter(m => m.title.includes(val) || m.genres.includes(val));
+      const box = document.getElementById('mangaContainer');
+      if (box) box.innerHTML = renderMangaCards(filtered);
+    }
 
-                <button class="w-full bg-white text-gray-900 hover:bg-gray-200 py-3 rounded-lg font-bold transition-all flex justify-center items-center gap-3">
-                    <i class="fa-brands fa-google text-red-500"></i>
-                    تسجيل باستخدام جوجل
-                </button>
-            </div>
-        </div>
+    function addMangaPrompt() {
+      const title = prompt("عنوان المانهوا بالعربية:");
+      if (!title) return;
+      const cover = prompt("رابط صورة الغلاف (Cover URL):", "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600");
+      const genres = prompt("التصنيفات:", "زراعة, أكشن");
+      const desc = prompt("القصة:", "قصة مانهوا شيقة.");
+      allManga.unshift({ id: "m" + Date.now(), title, cover, genres, desc, chapters: [] });
+      saveAll();
+      showView('admin');
+    }
 
-        <!-- 4. لوحة تحكم الإدارة -->
-        <div id="admin-view" class="view-section hidden-view">
-            <div class="flex justify-between items-center mb-6 bg-darkCard p-4 rounded-xl border border-gray-800">
-                <h2 class="text-2xl font-bold text-purpleLight"><i class="fa-solid fa-gauge mr-2"></i> غرفة الإدارة</h2>
-                <span id="admin-role-badge" class="bg-red-500/20 text-red-400 px-4 py-1.5 rounded-full text-sm font-bold border border-red-500/50"></span>
-            </div>
+    function addChapterPrompt() {
+      if (!allManga.length) return alert("أضف مانهوا أولاً!");
+      const list = allManga.map((m, i) => `${i + 1}. ${m.title}`).join("\n");
+      const choice = parseInt(prompt("اختر رقم المانهوا:\n" + list)) - 1;
+      const target = allManga[choice];
+      if (!target) return;
+      const num = parseFloat(prompt("رقم الفصل:", "1"));
+      const title = prompt("عنوان الفصل:", "الفصل " + num);
+      const raw = prompt("ضع روابط صور الفصل مفصولة بفاصلة أو أسطر (من مساحة الـ 5TB):");
+      if (!raw) return;
+      const pages = raw.split(/[\n,]+/).map(p => p.trim()).filter(p => p.length > 5);
+      target.chapters.unshift({ id: "c" + Date.now(), num, title, pages });
+      saveAll();
+      showView('admin');
+    }
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- إضافة مانهوا / فصول -->
-                <div class="bg-darkCard p-6 rounded-xl border border-gray-800 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-1 h-full bg-green-500"></div>
-                    <h3 class="font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-cloud-arrow-up text-green-500"></i> رفع فصل جديد</h3>
-                    <input type="text" placeholder="اسم المانهوا" class="w-full bg-darkBg border border-gray-700 rounded-lg p-3 mb-3 text-white focus:border-green-500 outline-none transition-colors">
-                    <input type="number" placeholder="رقم الفصل" class="w-full bg-darkBg border border-gray-700 rounded-lg p-3 mb-3 text-white focus:border-green-500 outline-none transition-colors">
-                    <label class="block text-sm text-gray-400 mb-2">صور الفصل (رفع متعدد)</label>
-                    <input type="file" multiple class="w-full bg-darkBg border border-gray-700 rounded-lg p-2 mb-4 text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-500/20 file:text-green-400 hover:file:bg-green-500/30">
-                    <button class="w-full bg-green-600 hover:bg-green-500 py-3 rounded-lg font-bold transition-colors">نشر الفصل <i class="fa-solid fa-check ml-1"></i></button>
-                </div>
+    function addStaffPrompt() {
+      const name = prompt("اسم العضو:");
+      const email = prompt("البريد الإلكتروني:");
+      const role = prompt("الرتبة (مدير / مبيض / محرر / مترجم):", "مبيض (Redrawer)");
+      if (!name || !email) return;
+      allStaff.push({ id: "s" + Date.now(), name, email, role });
+      saveAll();
+      showView('admin');
+    }
 
-                <!-- إدارة الصلاحيات -->
-                <div class="bg-darkCard p-6 rounded-xl border border-gray-800 relative overflow-hidden" id="role-management">
-                    <div class="absolute top-0 right-0 w-1 h-full bg-purplePrimary"></div>
-                    <h3 class="font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-users-gear text-purplePrimary"></i> إدارة الطاقم</h3>
-                    <input type="email" placeholder="بريد العضو" class="w-full bg-darkBg border border-gray-700 rounded-lg p-3 mb-3 text-white focus:border-purplePrimary outline-none transition-colors">
-                    <select class="w-full bg-darkBg border border-gray-700 rounded-lg p-3 mb-4 text-white outline-none focus:border-purplePrimary transition-colors">
-                        <option value="admin">أدمن (مدير)</option>
-                        <option value="editor">محرر</option>
-                        <option value="cleaner">مبيض</option>
-                        <option value="reader">إزالة الصلاحيات (قارئ)</option>
-                    </select>
-                    <button class="w-full bg-purplePrimary hover:bg-purpleHover py-3 rounded-lg font-bold transition-colors">تحديث الرتبة <i class="fa-solid fa-pen ml-1"></i></button>
-                </div>
-            </div>
-        </div>
+    function deleteManga(id) {
+      if (confirm("حذف هذه المانهوا؟")) {
+        allManga = allManga.filter(m => m.id !== id);
+        saveAll();
+        showView('admin');
+      }
+    }
 
-        <!-- 5. ملف القارئ (رتب الزراعة) -->
-        <div id="profile-view" class="view-section hidden-view">
-            <div class="bg-darkCard p-8 rounded-2xl border border-purplePrimary/30 text-center max-w-2xl mx-auto relative overflow-hidden mt-6">
-                <!-- خلفية ديكورية -->
-                <div class="absolute top-[-50px] left-[-50px] w-32 h-32 bg-purplePrimary/20 rounded-full blur-3xl"></div>
-                <div class="absolute bottom-[-50px] right-[-50px] w-32 h-32 bg-accent/20 rounded-full blur-3xl"></div>
+    function exportDB() {
+      const blob = new Blob([JSON.stringify({ manga: allManga, staff: allStaff }, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "manga_crest_database.json";
+      a.click();
+    }
 
-                <div class="w-28 h-28 bg-gradient-to-tr from-purplePrimary to-purpleLight rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-black shadow-[0_0_30px_rgba(139,92,246,0.5)] border-4 border-darkBg relative z-10">
-                    <span id="profile-avatar-letter">ز</span>
-                </div>
-                <h2 id="profile-email" class="text-2xl font-bold text-white mb-1 relative z-10">user@example.com</h2>
-                <span class="text-gray-400 text-sm mb-6 block">عضو مسجل</span>
-                
-                <div class="bg-darkBg/80 backdrop-blur border border-gray-700 p-6 rounded-xl relative z-10">
-                    <p class="text-gray-400 text-sm mb-2"><i class="fa-solid fa-yin-yang text-accent mr-1"></i> عالم الزراعة الحالي</p>
-                    <p id="cultivation-rank" class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 mb-2">مبتدئ</p>
-                    
-                    <!-- شريط التقدم الوهمي -->
-                    <div class="w-full bg-gray-800 rounded-full h-2.5 mb-1 mt-4">
-                        <div class="bg-gradient-to-r from-purplePrimary to-accent h-2.5 rounded-full" style="width: 75%"></div>
-                    </div>
-                    <p class="text-xs text-gray-500 text-left">للصعود للرتبة القادمة: اقرأ المزيد من الفصول</p>
-                </div>
-                
-                <div class="mt-6 flex justify-center gap-10 text-center relative z-10">
-                    <div class="bg-darkBg py-3 px-6 rounded-lg border border-gray-800">
-                        <i class="fa-solid fa-book-open text-purpleLight mb-1 text-xl"></i>
-                        <p class="text-gray-500 text-sm">الفصول المقروءة</p>
-                        <p id="read-chapters" class="text-2xl font-bold">0</p>
-                    </div>
-                    <div class="bg-darkBg py-3 px-6 rounded-lg border border-gray-800">
-                        <i class="fa-solid fa-bookmark text-accent mb-1 text-xl"></i>
-                        <p class="text-gray-500 text-sm">المفضلة</p>
-                        <p class="text-2xl font-bold">12</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    function importDB(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const d = JSON.parse(evt.target.result);
+          if (d.manga) allManga = d.manga;
+          if (d.staff) allStaff = d.staff;
+          saveAll();
+          alert("تم استيراد قاعدة البيانات بنجاح!");
+          showView('home');
+        } catch(err) { alert("خطأ في الملف!"); }
+      };
+      reader.readAsText(file);
+    }
 
-    </main>
-
-    <!-- الفوتر -->
-    <footer class="bg-darkCard border-t border-gray-800 mt-12 py-8 text-center text-gray-500 text-sm">
-        <p>جميع الحقوق محفوظة &copy; 2024 Manga Crest</p>
-        <p class="mt-2">تم التطوير لتوفير أفضل تجربة قراءة</p>
-    </footer>
-
-    <!-- سكربت المنطق (Logic) -->
-    <script>
-        // --- قاعدة بيانات وهمية للمانهوا ---
-        const mangaData = [
-            { id: 1, title: "بداية بعد النهاية", chapter: 175, type: "مانهوا", rating: 9.8, status: "مستمر", desc: "الملك جراي يمتلك قوة لا تضاهى، لكنه يتجسد في عالم جديد مليء بالسحر والوحوش.", img: "TBATE" },
-            { id: 2, title: "عودة الساحر العظيم", chapter: 142, type: "مانهوا", rating: 9.5, status: "مستمر", desc: "بعد 4000 عام، يعود الساحر العظيم لوكاس لينتقم ممن دمروه.", img: "Mage" },
-            { id: 3, title: "أكاديمية السيف", chapter: 89, type: "مانها", rating: 8.7, status: "مستمر", desc: "شاب ضعيف يدخل أكاديمية السيف ليكتشف موهبته الخفية.", img: "Sword" },
-            { id: 4, title: "زراعة خالدة", chapter: 305, type: "مانها", rating: 9.1, status: "مستمر", desc: "رحلة متدرب بشري للوصول إلى الخلود وعبور السماوات.", img: "Cultivation" },
-            { id: 5, title: "اللاعب الذي لا يموت", chapter: 55, type: "مانهوا", rating: 9.0, status: "جديد", desc: "لاعب يكتشف ثغرة تمنعه من الموت في لعبة الواقع الافتراضي المميتة.", img: "Player" },
-            { id: 6, title: "سيد الظلال", chapter: 210, type: "مانهوا", rating: 9.6, status: "مستمر", desc: "بطل يستخدم قوى الظلام لحماية العالم.", img: "Shadow" },
-            { id: 7, title: "طبيب الأعشاب السماوي", chapter: 120, type: "مانها", rating: 8.5, status: "مستمر", desc: "طبيب عادي يجد كتاباً سماوياً يغير حياته.", img: "Doctor" },
-            { id: 8, title: "انتقام المحارب", chapter: 45, type: "مانهوا", rating: 8.9, status: "جديد", desc: "محارب تعرض للخيانة يعود بالزمن لينتقم.", img: "Revenge" }
-        ];
-
-        let currentUser = null;
-
-        // --- تهيئة الصفحة (Render) ---
-        window.onload = () => {
-            renderMangaGrid(mangaData);
-        };
-
-        // عرض شبكة المانهوا
-        function renderMangaGrid(data) {
-            const grid = document.getElementById('manga-grid');
-            grid.innerHTML = data.map(manga => `
-                <div onclick="openMangaDetails(${manga.id})" class="bg-darkCard rounded-xl overflow-hidden border border-gray-800 hover:border-purplePrimary hover:shadow-[0_0_15px_rgba(139,92,246,0.2)] transition-all cursor-pointer group flex flex-col h-full">
-                    <div class="h-56 relative overflow-hidden">
-                        ${manga.status === 'جديد' ? `<span class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded z-20">جديد</span>` : ''}
-                        <div class="absolute inset-0 bg-gradient-to-t from-darkCard via-transparent to-transparent z-10"></div>
-                        <img src="https://via.placeholder.com/250x350/1a1025/a78bfa?text=${manga.img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <div class="absolute bottom-2 right-2 z-20 flex gap-2">
-                            <span class="bg-black/60 backdrop-blur px-2 py-1 rounded text-xs text-accent font-bold"><i class="fa-solid fa-star text-[10px]"></i> ${manga.rating}</span>
-                        </div>
-                    </div>
-                    <div class="p-3 flex-grow flex flex-col justify-between">
-                        <h3 class="font-bold text-sm mb-2 line-clamp-2 text-white group-hover:text-purpleLight transition-colors">${manga.title}</h3>
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="text-purpleLight font-bold">الفصل ${manga.chapter}</span>
-                            <span class="text-gray-500">${manga.type}</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // فلترة البحث
-        function filterManga() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            const filtered = mangaData.filter(m => m.title.toLowerCase().includes(query));
-            renderMangaGrid(filtered);
-        }
-
-        // --- التنقل بين الصفحات ---
-        function showView(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => {
-                el.classList.remove('active-view');
-                el.classList.add('hidden-view');
-            });
-            const targetView = document.getElementById(viewId);
-            targetView.classList.remove('hidden-view');
-            // تأخير بسيط لتشغيل الأنيميشن
-            setTimeout(() => targetView.classList.add('active-view'), 50);
-            window.scrollTo(0, 0);
-        }
-
-        // --- فتح تفاصيل المانهوا ---
-        function openMangaDetails(id) {
-            const manga = mangaData.find(m => m.id === id);
-            if(!manga) return;
-
-            const container = document.getElementById('manga-details-container');
-            
-            // توليد قائمة فصول وهمية
-            let chaptersHTML = '';
-            for(let i=manga.chapter; i>manga.chapter-10 && i>0; i--) {
-                chaptersHTML += `
-                    <a href="#" class="flex justify-between items-center bg-darkBg hover:bg-purplePrimary/10 border border-gray-800 hover:border-purplePrimary/50 p-4 rounded-lg transition-colors group">
-                        <span class="font-bold group-hover:text-purpleLight">الفصل ${i}</span>
-                        <span class="text-xs text-gray-500"><i class="fa-regular fa-clock"></i> منذ يومين</span>
-                    </a>
-                `;
-            }
-
-            container.innerHTML = `
-                <div class="flex flex-col md:flex-row gap-8 bg-darkCard p-6 rounded-2xl border border-gray-800 mb-8">
-                    <div class="w-full md:w-1/4 flex-shrink-0">
-                        <img src="https://via.placeholder.com/300x450/1a1025/a78bfa?text=${manga.img}" class="w-full rounded-xl shadow-lg border border-gray-700">
-                    </div>
-                    <div class="flex-grow flex flex-col">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h1 class="text-3xl font-black text-white mb-2">${manga.title}</h1>
-                                <div class="flex gap-3 text-sm">
-                                    <span class="bg-purplePrimary/20 text-purpleLight px-2 py-1 rounded">${manga.type}</span>
-                                    <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded">${manga.status}</span>
-                                </div>
-                            </div>
-                            <div class="text-center bg-darkBg p-2 rounded-lg border border-gray-800">
-                                <i class="fa-solid fa-star text-accent text-xl"></i>
-                                <div class="font-bold text-lg mt-1">${manga.rating}</div>
-                            </div>
-                        </div>
-                        <p class="text-gray-400 leading-relaxed mb-6 bg-darkBg p-4 rounded-xl border border-gray-800 flex-grow">
-                            ${manga.desc}
-                        </p>
-                        <div class="flex gap-4">
-                            <button class="bg-purplePrimary hover:bg-purpleHover text-white px-8 py-3 rounded-xl font-bold flex-1 transition-colors"><i class="fa-solid fa-book-open mr-2"></i> قراءة الفصل الأول</button>
-                            <button class="bg-darkBg hover:bg-gray-800 border border-gray-700 text-white px-6 py-3 rounded-xl font-bold transition-colors"><i class="fa-regular fa-bookmark"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-darkCard p-6 rounded-2xl border border-gray-800">
-                    <h3 class="text-xl font-bold mb-4 border-r-4 border-purplePrimary pr-2"><i class="fa-solid fa-list-ul mr-1"></i> قائمة الفصول</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        ${chaptersHTML}
-                    </div>
-                    <button class="w-full mt-4 py-3 bg-darkBg hover:bg-gray-800 border border-gray-700 rounded-lg text-gray-400 font-bold transition-colors">عرض المزيد من الفصول...</button>
-                </div>
-            `;
-            showView('details-view');
-        }
-
-        // --- نظام رتب الزراعة ---
-        function getCultivationRank(chapters) {
-            if (chapters >= 5000) return { name: "الإمبراطور الخالد", color: "from-red-500 to-yellow-500" };
-            if (chapters >= 1000) return { name: "ملك خالد", color: "from-yellow-400 to-yellow-200" };
-            if (chapters >= 500) return { name: "تكوين الروح", color: "from-purple-400 to-pink-500" };
-            if (chapters >= 250) return { name: "النواة الذهبية", color: "from-yellow-500 to-orange-500" };
-            if (chapters >= 100) return { name: "تأسيس الأساس", color: "from-green-400 to-emerald-600" };
-            if (chapters >= 50) return { name: "صقل الطاقة الحيوية", color: "from-blue-400 to-cyan-500" };
-            return { name: "بشري (مبتدئ)", color: "from-gray-400 to-gray-200" };
-        }
-
-        // --- تسجيل الدخول والإدارة ---
-        function handleLogin() {
-            const email = document.getElementById('login-email').value.trim();
-            const pass = document.getElementById('login-pass').value;
-
-            if ((email === 'zechal510010@Crest.com' || email === 'zechal510010@gmail.com') && pass === '01228124879A#') {
-                currentUser = { email: email, role: 'supreme_admin', readChapters: 5500 };
-            } else {
-                currentUser = { email: email || 'reader@test.com', role: 'reader', readChapters: Math.floor(Math.random() * 600) };
-            }
-            updateNavbar();
-            showView('home-view');
-        }
-
-        function updateNavbar() {
-            const navActions = document.getElementById('nav-actions');
-            if (currentUser) {
-                let adminBtn = '';
-                if (['supreme_admin', 'admin', 'editor', 'cleaner'].includes(currentUser.role)) {
-                    adminBtn = `<button onclick="setupAdminView(); showView('admin-view')" class="bg-gray-800 hover:bg-gray-700 text-purpleLight px-3 py-2 rounded-lg text-sm border border-gray-700 mr-2 flex items-center gap-1"><i class="fa-solid fa-gauge"></i> <span class="hidden sm:inline">الإدارة</span></button>`;
-                }
-
-                navActions.innerHTML = `
-                    ${adminBtn}
-                    <button onclick="setupProfile(); showView('profile-view')" class="flex items-center gap-2 bg-darkBg border border-gray-700 px-2 py-1 rounded-full hover:border-purplePrimary transition-colors">
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-purplePrimary to-purpleLight flex items-center justify-center text-sm font-bold text-white shadow-inner">${currentUser.email.charAt(0).toUpperCase()}</div>
-                    </button>
-                    <button onclick="logout()" class="text-red-400 hover:text-red-300 text-xl ml-2"><i class="fa-solid fa-right-from-bracket"></i></button>
-                `;
-            } else {
-                navActions.innerHTML = `<button onclick="showView('login-view')" class="bg-purplePrimary hover:bg-purpleHover px-5 py-2 rounded-lg transition-colors font-bold text-sm shadow-[0_0_10px_rgba(139,92,246,0.4)]">دخول</button>`;
-            }
-        }
-
-        function logout() {
-            currentUser = null;
-            updateNavbar();
-            showView('home-view');
-        }
-
-        function setupProfile() {
-            document.getElementById('profile-email').textContent = currentUser.email;
-            document.getElementById('profile-avatar-letter').textContent = currentUser.email.charAt(0).toUpperCase();
-            document.getElementById('read-chapters').textContent = currentUser.readChapters;
-            
-            const rank = getCultivationRank(currentUser.readChapters);
-            const rankEl = document.getElementById('cultivation-rank');
-            rankEl.textContent = rank.name;
-            rankEl.className = `text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r ${rank.color} mb-2`;
-        }
-
-        function setupAdminView() {
-            const roleBadge = document.getElementById('admin-role-badge');
-            const roleMgmt = document.getElementById('role-management');
-            
-            if(currentUser.role === 'supreme_admin') {
-                roleBadge.innerHTML = '<i class="fa-solid fa-crown mr-1"></i> المدير الأعلى';
-                roleBadge.className = "bg-red-500/20 text-red-400 px-4 py-1.5 rounded-full text-sm font-bold border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.3)]";
-                roleMgmt.style.display = "block"; 
-            } else if (currentUser.role === 'editor') {
-                roleBadge.innerHTML = '<i class="fa-solid fa-pen-nib mr-1"></i> محرر';
-                roleBadge.className = "bg-blue-500/20 text-blue-400 px-4 py-1.5 rounded-full text-sm font-bold border border-blue-500/50";
-                roleMgmt.style.display = "none";
-            }
-        }
-    </script>
+    updateNav();
+    showView('home');
+  </script>
 </body>
 </html>
