@@ -36,13 +36,49 @@
     .btn-login { background: linear-gradient(90deg, #7e22ce, #c026d3); color: #fff; padding: 7px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; }
     .btn-admin { background: #4c1d95; color: #fde047; border: 1px solid #a855f7; padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 700; }
 
+    /* إطارات المستويات المتميزة (Cultivation Avatar Frames) */
+    .avatar-frame {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #190a2e;
+    }
+
+    /* أنماط الإطارات حسب رتبة الصقل */
+    .frame-0 { background: #4b5563; border: 1px solid #9ca3af; box-shadow: 0 0 6px #6b7280; }
+    .frame-1 { background: linear-gradient(135deg, #0284c7, #38bdf8); box-shadow: 0 0 10px #0284c7; }
+    .frame-2 { background: linear-gradient(135deg, #d97706, #fbbf24); box-shadow: 0 0 12px #f59e0b; }
+    .frame-3 { background: linear-gradient(135deg, #059669, #34d399); box-shadow: 0 0 14px #10b981; }
+    .frame-4 { background: linear-gradient(135deg, #7c3aed, #a78bfa); box-shadow: 0 0 16px #8b5cf6; }
+    .frame-5 { background: linear-gradient(135deg, #c026d3, #f472b6); box-shadow: 0 0 18px #d946ef; }
+    .frame-6 { background: linear-gradient(135deg, #e11d48, #fb7185); box-shadow: 0 0 20px #f43f5e; }
+    .frame-7 { background: linear-gradient(135deg, #6366f1, #eab308); box-shadow: 0 0 22px #eab308; animation: pulse 2s infinite; }
+    .frame-8 { background: linear-gradient(135deg, #06b6d4, #a855f7, #f43f5e); box-shadow: 0 0 26px #06b6d4; animation: pulse 1.5s infinite; }
+    .frame-9 { background: linear-gradient(135deg, #f59e0b, #ef4444, #9333ea, #3b82f6); box-shadow: 0 0 32px #ef4444; border: 2px solid #fef08a; animation: pulse 1s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); filter: brightness(1); }
+      50% { transform: scale(1.05); filter: brightness(1.3); }
+    }
+
     /* المحتوى */
     main { max-width: 1200px; width: 100%; margin: 0 auto; padding: 20px 16px; flex: 1; }
     .hero-box { background: linear-gradient(135deg, #1d0738, #2a0c4f); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 20px; padding: 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
     .hero-info h2 { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
     .hero-info p { font-size: 12px; color: #d8b4fe; max-width: 500px; }
     .tag-pill { display: inline-block; background: rgba(147, 51, 234, 0.3); border: 1px solid #9333ea; color: #e9d5ff; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
-    .realm-card { background: #140624; border: 1px solid #7e22ce; border-radius: 14px; padding: 14px; min-width: 250px; }
+    .realm-card { background: #140624; border: 1px solid #7e22ce; border-radius: 14px; padding: 14px; min-width: 260px; }
     .progress-bar-bg { background: #2a0c4f; height: 8px; border-radius: 4px; overflow: hidden; margin: 8px 0; }
     .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #9333ea, #f59e0b); }
 
@@ -65,7 +101,7 @@
     /* النوافذ المنبثقة */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 99; display: flex; align-items: center; justify-content: center; padding: 16px; }
     .modal-overlay.hidden { display: none; }
-    .modal-content { background: #18092c; border: 1px solid #9333ea; border-radius: 20px; padding: 24px; max-width: 440px; width: 100%; position: relative; }
+    .modal-content { background: #18092c; border: 1px solid #9333ea; border-radius: 20px; padding: 24px; max-width: 460px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
     .close-btn { position: absolute; top: 14px; left: 14px; background: none; color: #c084fc; font-size: 18px; font-weight: bold; }
     .input-field { width: 100%; background: #0e041c; border: 1px solid #6b21a8; border-radius: 10px; padding: 10px 14px; color: #fff; margin-bottom: 12px; font-size: 13px; outline: none; }
     .btn-submit { width: 100%; background: linear-gradient(90deg, #9333ea, #db2777); color: #fff; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 14px; }
@@ -74,11 +110,13 @@
 </head>
 <body>
 
+  <!-- شريط التليجرام -->
   <div class="top-banner">
     <div>📢 تابع أحدث فصول المانهوا ومواعيد النشر الحصرية!</div>
     <a href="https://t.me/+VYgX581p6N5kN2E8" target="_blank" class="btn-tg">✈️ قناة التليجرام الرسمية</a>
   </div>
 
+  <!-- الهيدر -->
   <header>
     <div class="header-container">
       <div class="brand" onclick="showView('home')">
@@ -107,59 +145,60 @@
     </div>
   </footer>
 
-  <!-- نافذة الدخول -->
+  <!-- نافذة تسجيل الدخول / حساب جديد بيوزر فريد -->
   <div id="loginModal" class="modal-overlay hidden">
     <div class="modal-content">
       <button class="close-btn" onclick="toggleModal('loginModal')">✕</button>
-      <h3 style="text-align: center; font-size: 18px; font-weight: 900; margin-bottom: 16px;">تسجيل الدخول</h3>
+      <h3 style="text-align: center; font-size: 18px; font-weight: 900; margin-bottom: 16px;">تسجيل الدخول / حساب جديد</h3>
 
-      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-        <button onclick="quickLogin('قارئ Google', 'Google Gmail')" style="background: #200d3d; border: 1px solid #7e22ce; color: #fff; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px;">🔴 الدخول بواسطة Google / Gmail</button>
-        <button onclick="quickLogin('بطل الألعاب', 'Google Play Games')" style="background: #200d3d; border: 1px solid #7e22ce; color: #fff; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px;">🟢 الدخول بواسطة Google Play</button>
-      </div>
+      <form onsubmit="handleUserAuth(event)">
+        <label style="font-size: 12px; font-weight: bold; color: #d8b4fe; display: block; margin-bottom: 4px;">اسم المستخدم الفريد (Username) *</label>
+        <div style="position: relative; margin-bottom: 12px;">
+          <input type="text" id="usernameInput" class="input-field" style="margin-bottom: 0;" placeholder="مثال: zechal أو shadow_reader" required>
+        </div>
+        <div style="font-size: 10px; color: #a855f7; margin-bottom: 12px;">ملاحظة: لا يمكن لأي مستخدم آخر اختيار نفس اسم المستخدم الخاص بك.</div>
 
-      <div style="text-align: center; font-size: 11px; color: #a855f7; margin-bottom: 12px;">أو بحساب المدير</div>
+        <label style="font-size: 12px; font-weight: bold; color: #d8b4fe; display: block; margin-bottom: 4px;">البريد الإلكتروني (Gmail) *</label>
+        <input type="email" id="emailInput" class="input-field" placeholder="name@gmail.com" required>
 
-      <form onsubmit="handleEmailLogin(event)">
-        <input type="email" id="emailInput" class="input-field" placeholder="البريد الإلكتروني" required>
-        <input type="password" id="passInput" class="input-field" placeholder="كلمة المرور" required>
-        <button type="submit" class="btn-submit">دخول</button>
+        <button type="submit" class="btn-submit">دخول / إنشاء حساب</button>
       </form>
-
-      <div style="margin-top: 14px; background: #260c47; border: 1px solid #7e22ce; padding: 10px; border-radius: 10px; font-size: 11px;">
-        <div style="color: #fde047; font-weight: bold; margin-bottom: 4px;">👑 حساب الأدمن الافتراضي:</div>
-        <div>zechal510010@Crest.com</div>
-        <div>01228124879A#</div>
-      </div>
     </div>
   </div>
 
-  <!-- نافذة الـ 5TB -->
+  <!-- نافذة الـ 5TB وقاعدة البيانات -->
   <div id="dbModal" class="modal-overlay hidden">
     <div class="modal-content">
       <button class="close-btn" onclick="toggleModal('dbModal')">✕</button>
-      <h3 style="font-size: 16px; font-weight: 900; margin-bottom: 8px;">إدارة قاعدة البيانات (5TB)</h3>
-      <p style="font-size: 12px; color: #d8b4fe; margin-bottom: 16px;">استخدم روابط صور الفصول من مساحة الدرايف 5TB، وصدّر أو استورد قاعدة البيانات:</p>
-      <button onclick="exportDB()" class="btn-submit" style="margin-bottom: 8px;">💾 تصدير قاعدة البيانات (JSON)</button>
+      <h3 style="font-size: 16px; font-weight: 900; margin-bottom: 8px;">إدارة وتخزين الفصول (5TB)</h3>
+      <p style="font-size: 12px; color: #d8b4fe; margin-bottom: 16px;">
+        يمكنك رفع صور الفصول مباشرة من هاتفك، أو وضع روابطها من مساحة الدرايف، وتصدير نسخة احتياطية:
+      </p>
+      <button onclick="exportDB()" class="btn-submit" style="margin-bottom: 8px;">💾 تصدير قاعدة البيانات كاملة (JSON)</button>
       <label class="btn-submit" style="display: block; text-align: center; background: #3b0764; cursor: pointer;">
-        📥 استيراد قاعدة بيانات
+        📥 استيراد واستعادة قاعدة بيانات
         <input type="file" accept=".json" onchange="importDB(event)" style="display: none;">
       </label>
     </div>
   </div>
 
   <script>
+    const SUPER_ADMIN_EMAILS = [
+      "zechal510010@gmail.com",
+      "zechal510010@crest.com"
+    ];
+
     const REALMS = [
-      { name: "صقل الطاقة الحيوية", min: 0 },
-      { name: "تأسيس الأساس", min: 25 },
-      { name: "النواة الذهبية", min: 50 },
-      { name: "الروح الوليدة", min: 100 },
-      { name: "التحول الروحي", min: 250 },
-      { name: "عودة الفراغ", min: 500 },
-      { name: "اندماج الجسد", min: 1000 },
-      { name: "محنة البرق العظمى", min: 2000 },
-      { name: "الخالد الحقيقي", min: 3500 },
-      { name: "الإمبراطور الخالد", min: 5000 }
+      { name: "صقل الطاقة الحيوية", min: 0, frameClass: "frame-0", title: "متدرب ناشئ" },
+      { name: "تأسيس الأساس", min: 25, frameClass: "frame-1", title: "مستكشف الطاو" },
+      { name: "النواة الذهبية", min: 50, frameClass: "frame-2", title: "محارب النواة" },
+      { name: "الروح الوليدة", min: 100, frameClass: "frame-3", title: "كبير العشيرة" },
+      { name: "التحول الروحي", min: 250, frameClass: "frame-4", title: "سيد الروح" },
+      { name: "عودة الفراغ", min: 500, frameClass: "frame-5", title: "خبير الفراغ" },
+      { name: "اندماج الجسد", min: 1000, frameClass: "frame-6", title: "الجسد المقدس" },
+      { name: "محنة البرق العظمى", min: 2000, frameClass: "frame-7", title: "شبه الخالد" },
+      { name: "الخالد الحقيقي", min: 3500, frameClass: "frame-8", title: "خالد سماوي" },
+      { name: "الإمبراطور الخالد", min: 5000, frameClass: "frame-9", title: "سيد الأكوان الخالد" }
     ];
 
     function getRealm(count) {
@@ -168,10 +207,10 @@
         if (count >= REALMS[i].min) {
           const next = REALMS[i + 1];
           const progress = next ? Math.min(100, Math.round(((count - REALMS[i].min) / (next.min - REALMS[i].min)) * 100)) : 100;
-          return { ...REALMS[i], progress, nextMin: next ? next.min : null };
+          return { ...REALMS[i], level: i, progress, nextMin: next ? next.min : null };
         }
       }
-      return { ...REALMS[0], progress: 0, nextMin: 25 };
+      return { ...REALMS[0], level: 0, progress: 0, nextMin: 25 };
     }
 
     const SEED_MANGA = [
@@ -199,10 +238,14 @@
     ];
 
     const SEED_STAFF = [
-      { id: "s1", name: "أحمد (Zechal)", email: "zechal510010@Crest.com", role: "المدير العام / مؤسس" },
-      { id: "s2", name: "المبيض المحترف", email: "cleaner@crest.com", role: "مبيض (Redrawer)" },
-      { id: "s3", name: "المحرر الذهبي", email: "editor@crest.com", role: "محرر (Typesetter)" }
+      { id: "s1", username: "zechal", name: "أحمد (Zechal)", email: "zechal510010@gmail.com", role: "المدير العام / مؤسس" },
+      { id: "s2", username: "cleaner_pro", name: "المبيض المحترف", email: "cleaner@crest.com", role: "مبيض (Redrawer)" },
+      { id: "s3", username: "editor_gold", name: "المحرر الذهبي", email: "editor@crest.com", role: "محرر (Typesetter)" }
     ];
+
+    let registeredUsers = JSON.parse(localStorage.getItem("manga_users_registry")) || {
+      "zechal": { email: "zechal510010@gmail.com", name: "أحمد (Zechal)" }
+    };
 
     let currentUser = JSON.parse(localStorage.getItem("manga_user")) || null;
     let allManga = JSON.parse(localStorage.getItem("manga_db")) || SEED_MANGA;
@@ -212,6 +255,7 @@
       localStorage.setItem("manga_user", JSON.stringify(currentUser));
       localStorage.setItem("manga_db", JSON.stringify(allManga));
       localStorage.setItem("manga_staff", JSON.stringify(allStaff));
+      localStorage.setItem("manga_users_registry", JSON.stringify(registeredUsers));
       updateNav();
     }
 
@@ -220,26 +264,61 @@
       if (el) el.classList.toggle('hidden');
     }
 
-    function quickLogin(name, provider) {
-      currentUser = { name, email: "user@crest.com", role: "قارئ", readCount: 15, history: [] };
-      saveAll();
-      toggleModal('loginModal');
-      showView('home');
-    }
-
-    function handleEmailLogin(e) {
+    function handleUserAuth(e) {
       e.preventDefault();
-      const email = document.getElementById('emailInput').value.trim();
-      const pass = document.getElementById('passInput').value.trim();
+      const rawUser = document.getElementById('usernameInput').value.trim().toLowerCase().replace('@', '');
+      const rawEmail = document.getElementById('emailInput').value.trim().toLowerCase();
 
-      if (email.toLowerCase() === "zechal510010@crest.com" && pass === "01228124879A#") {
-        currentUser = { name: "أحمد (Zechal)", email, role: "المدير العام / مؤسس", readCount: 5500, isAdmin: true, history: [] };
-      } else {
-        const staff = allStaff.find(s => s.email.toLowerCase() === email.toLowerCase());
-        currentUser = staff 
-          ? { ...staff, readCount: 200, isAdmin: true, history: [] } 
-          : { name: email.split('@')[0], email, role: "قارئ", readCount: 0, history: [] };
+      if (!rawUser || !rawEmail) {
+        alert("يرجى إدخال اسم المستخدم والبريد الإلكتروني!");
+        return;
       }
+
+      if (registeredUsers[rawUser] && registeredUsers[rawUser].email !== rawEmail) {
+        alert(`عذراً! اسم المستخدم @${rawUser} محجوز بالفعل لمستخدم آخر. يرجى اختيار اسم مستخدم مختلف.`);
+        return;
+      }
+
+      registeredUsers[rawUser] = { email: rawEmail, name: rawUser };
+
+      const isSuper = SUPER_ADMIN_EMAILS.some(e => e.toLowerCase() === rawEmail) || rawUser === "zechal";
+      const staffMember = allStaff.find(s => s.email.toLowerCase() === rawEmail || s.username === rawUser);
+
+      if (isSuper) {
+        currentUser = {
+          username: rawUser,
+          name: "أحمد (Zechal)",
+          email: rawEmail,
+          avatar: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100",
+          role: "المدير العام / مؤسس",
+          readCount: 5500,
+          isAdmin: true,
+          history: []
+        };
+      } else if (staffMember) {
+        currentUser = {
+          username: rawUser,
+          name: staffMember.name,
+          email: rawEmail,
+          avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100",
+          role: staffMember.role,
+          readCount: 200,
+          isAdmin: true,
+          history: []
+        };
+      } else {
+        currentUser = {
+          username: rawUser,
+          name: rawUser,
+          email: rawEmail,
+          avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100",
+          role: "قارئ",
+          readCount: 0,
+          isAdmin: false,
+          history: []
+        };
+      }
+
       saveAll();
       toggleModal('loginModal');
       showView(currentUser.isAdmin ? 'admin' : 'home');
@@ -259,10 +338,15 @@
       }
       const r = getRealm(currentUser.readCount);
       nav.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 8px;">
-          ${currentUser.isAdmin ? `<button onclick="showView('admin')" class="btn-admin">الإدارة</button>` : ''}
+        <div style="display: flex; align-items: center; gap: 10px;">
+          ${currentUser.isAdmin ? `<button onclick="showView('admin')" class="btn-admin">لوحة الإدارة</button>` : ''}
+          
+          <div class="avatar-frame ${r.frameClass}" title="عالم ${r.name}">
+            <img src="${currentUser.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}" class="avatar-img" alt="avatar">
+          </div>
+
           <div style="background: #1c0b33; padding: 4px 10px; border-radius: 8px; border: 1px solid #7e22ce; font-size: 11px;">
-            <div style="font-weight: bold; color: #fff;">${currentUser.name}</div>
+            <div style="font-weight: bold; color: #fff;">@${currentUser.username || currentUser.name}</div>
             <div style="color: #fde047; font-size: 10px;">${r.name} (${currentUser.readCount} فصل)</div>
           </div>
           <button onclick="logout()" style="color: #f87171; background: none; font-size: 12px;">خروج</button>
@@ -279,23 +363,44 @@
         app.innerHTML = `
           <div class="hero-box">
             <div class="hero-info">
-              <span class="tag-pill">🔥 نظام عوالم وصقل الطاقة للقراء</span>
+              <span class="tag-pill">🔥 نظام صقل الطاقة وإطارات المستويات</span>
               <h2>اقرأ الفصول وارتقِ نحو <span style="color: #f59e0b;">الإمبراطور الخالد</span>!</h2>
-              <p>كل فصل تقرؤه يسجل تلقائياً في رصيد زراعتك لترقية رتبتك في الموقع.</p>
+              <p>كل مستوى صقل تفتحه يمنحك إطاراً متوهجاً خاصاً يظهر حول صورتك واسم المستخدم الفريد الخاص بك.</p>
             </div>
             ${currentUser ? `
               <div class="realm-card">
-                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold;">
-                  <span>عالمك:</span><span style="color: #fde047;">${r.name}</span>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                  <div class="avatar-frame ${r.frameClass}">
+                    <img src="${currentUser.avatar}" class="avatar-img">
+                  </div>
+                  <div>
+                    <div style="font-size: 12px; font-weight: bold; color: #fff;">@${currentUser.username}</div>
+                    <div style="color: #fde047; font-size: 11px; font-weight: bold;">${r.name} - ${r.title}</div>
+                  </div>
                 </div>
                 <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${r.progress}%;"></div></div>
                 <div style="display: flex; justify-content: space-between; font-size: 10px; color: #c084fc;">
-                  <span>الفصول: ${currentUser.readCount}</span><span>${r.nextMin ? 'التالي: ' + r.nextMin : 'قمة الخلود'}</span>
+                  <span>الفصول: ${currentUser.readCount}</span><span>${r.nextMin ? 'التالي: ' + r.nextMin : 'قمة الخلود!'}</span>
                 </div>
               </div>
             ` : `
-              <button onclick="toggleModal('loginModal')" class="btn-login" style="padding: 10px 20px;">ابدأ الصقل الآن</button>
+              <button onclick="toggleModal('loginModal')" class="btn-login" style="padding: 10px 20px;">سجّل يوزرك وابدأ الصقل</button>
             `}
+          </div>
+
+          <div style="margin-bottom: 24px;">
+            <div style="font-size: 14px; font-weight: bold; color: #d8b4fe; margin-bottom: 10px;">✨ إطارات رتب الصقل المتاحة في الموقع:</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; text-align: center; font-size: 10px;">
+              ${REALMS.map((realm, idx) => `
+                <div style="background: #150826; border: 1px solid #7e22ce; border-radius: 12px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 6px;">
+                  <div class="avatar-frame ${realm.frameClass}" style="width: 36px; height: 36px;">
+                    <div style="width: 100%; height: 100%; border-radius: 50%; background: #260c47; display: flex; align-items: center; justify-content: center; font-size: 12px;">★</div>
+                  </div>
+                  <span style="color: #f3e8ff; font-weight: bold;">${realm.name}</span>
+                  <span style="color: #fde047;">${realm.min}+ فصل</span>
+                </div>
+              `).join('')}
+            </div>
           </div>
 
           <div class="section-title">
@@ -367,27 +472,28 @@
         if (!currentUser || !currentUser.isAdmin) return showView('home');
         app.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #7e22ce; padding-bottom: 12px; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
-            <h2 style="font-size: 18px; font-weight: 900;">🛡️ لوحة الإدارة (${currentUser.role})</h2>
+            <h2 style="font-size: 18px; font-weight: 900;">🛡️ لوحة الإدارة (@${currentUser.username})</h2>
             <div style="display: flex; gap: 8px;">
-              <button onclick="addMangaPrompt()" class="btn-login">+ مانهوا</button>
-              <button onclick="addChapterPrompt()" class="btn-admin" style="background:#0284c7; color:#fff;">+ فصل</button>
-              <button onclick="addStaffPrompt()" class="btn-admin">+ رتبة</button>
+              <button onclick="openAddMangaModal()" class="btn-login">+ إضافة مانهوا</button>
+              <button onclick="openAddChapterModal()" class="btn-admin" style="background:#0284c7; color:#fff;">+ رفع فصل بصور</button>
+              <button onclick="addStaffPrompt()" class="btn-admin">+ تعيين رتبة</button>
             </div>
           </div>
 
           <div style="background: #17082b; border: 1px solid #7e22ce; border-radius: 14px; padding: 16px; margin-bottom: 16px;">
-            <h3 style="font-size: 14px; font-weight: bold; margin-bottom: 10px;">👥 أعضاء الفريق</h3>
+            <h3 style="font-size: 14px; font-weight: bold; margin-bottom: 10px;">👥 أعضاء الفريق ورتبهم</h3>
             <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
               ${allStaff.map(s => `
                 <div style="background: #200d3d; padding: 8px 12px; border-radius: 8px; display: flex; justify-content: space-between;">
-                  <span><strong>${s.name}</strong> (${s.role})</span><span style="color: #c084fc;">${s.email}</span>
+                  <span><strong>${s.name}</strong> (@${s.username || 'user'})</span>
+                  <span style="color: #fde047;">${s.role}</span>
                 </div>
               `).join('')}
             </div>
           </div>
 
           <div style="background: #17082b; border: 1px solid #7e22ce; border-radius: 14px; padding: 16px;">
-            <h3 style="font-size: 14px; font-weight: bold; margin-bottom: 10px;">📚 المانهوا المنشورة</h3>
+            <h3 style="font-size: 14px; font-weight: bold; margin-bottom: 10px;">📚 المانهوا والفصول المنشورة</h3>
             <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
               ${allManga.map(m => `
                 <div style="background: #200d3d; padding: 8px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
@@ -420,45 +526,143 @@
       if (box) box.innerHTML = renderMangaCards(filtered);
     }
 
-    function addMangaPrompt() {
-      const title = prompt("عنوان المانهوا بالعربية:");
-      if (!title) return;
-      const cover = prompt("رابط صورة الغلاف (Cover URL):", "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600");
-      const genres = prompt("التصنيفات:", "زراعة, أكشن");
-      const desc = prompt("القصة:", "قصة مانهوا شيقة.");
-      allManga.unshift({ id: "m" + Date.now(), title, cover, genres, desc, chapters: [] });
-      saveAll();
-      showView('admin');
+    function openAddChapterModal() {
+      if (!allManga.length) return alert("يرجى إضافة مانهوا أولاً!");
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay";
+      modal.innerHTML = `
+        <div class="modal-content">
+          <button class="close-btn" onclick="this.closest('.modal-overlay').remove()">✕</button>
+          <h3 style="font-size: 16px; font-weight: 900; margin-bottom: 12px;">نشر فصل جديد (بروابط أو تحميل صور)</h3>
+          
+          <label style="font-size: 12px; font-weight: bold; color: #d8b4fe;">اختر المانهوا *</label>
+          <select id="mangaSelect" class="input-field">
+            ${allManga.map(m => `<option value="${m.id}">${m.title}</option>`).join('')}
+          </select>
+
+          <label style="font-size: 12px; font-weight: bold; color: #d8b4fe;">رقم الفصل *</label>
+          <input type="number" step="0.5" id="chNumInput" class="input-field" placeholder="مثال: 3" required>
+
+          <label style="font-size: 12px; font-weight: bold; color: #d8b4fe;">عنوان الفصل</label>
+          <input type="text" id="chTitleInput" class="input-field" placeholder="مثال: البداية وصقل الجسد">
+
+          <label style="font-size: 12px; font-weight: bold; color: #fde047;">📸 تحميل صور الفصل من جهازك (اختياري):</label>
+          <input type="file" id="chFilesInput" multiple accept="image/*" class="input-field" style="padding: 6px; font-size: 11px;">
+
+          <label style="font-size: 12px; font-weight: bold; color: #d8b4fe;">أو روابط صور الفصل (رابط في كل سطر من الـ 5TB):</label>
+          <textarea id="chLinksInput" rows="4" class="input-field" style="resize: vertical; font-family: monospace; font-size: 11px;" placeholder="https://example.com/page1.jpg&#10;https://example.com/page2.jpg"></textarea>
+
+          <button onclick="saveNewChapter(this)" class="btn-submit">نشر الفصل فوراً</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
     }
 
-    function addChapterPrompt() {
-      if (!allManga.length) return alert("أضف مانهوا أولاً!");
-      const list = allManga.map((m, i) => `${i + 1}. ${m.title}`).join("\n");
-      const choice = parseInt(prompt("اختر رقم المانهوا:\n" + list)) - 1;
-      const target = allManga[choice];
-      if (!target) return;
-      const num = parseFloat(prompt("رقم الفصل:", "1"));
-      const title = prompt("عنوان الفصل:", "الفصل " + num);
-      const raw = prompt("ضع روابط صور الفصل مفصولة بفاصلة أو أسطر (من مساحة الـ 5TB):");
-      if (!raw) return;
-      const pages = raw.split(/[\n,]+/).map(p => p.trim()).filter(p => p.length > 5);
-      target.chapters.unshift({ id: "c" + Date.now(), num, title, pages });
+    async function saveNewChapter(btn) {
+      const mangaId = document.getElementById('mangaSelect').value;
+      const num = parseFloat(document.getElementById('chNumInput').value);
+      const title = document.getElementById('chTitleInput').value.trim() || `الفصل ${num}`;
+      const rawLinks = document.getElementById('chLinksInput').value.trim();
+      const filesInput = document.getElementById('chFilesInput');
+
+      if (isNaN(num)) return alert("يرجى إدخال رقم الفصل!");
+
+      btn.disabled = true;
+      btn.innerText = "جاري معالجة ونشر الصور...";
+
+      let pages = [];
+
+      if (rawLinks) {
+        pages = rawLinks.split(/[\n,]+/).map(p => p.trim()).filter(p => p.length > 5);
+      }
+
+      if (filesInput.files && filesInput.files.length > 0) {
+        for (let i = 0; i < filesInput.files.length; i++) {
+          const base64 = await readFileAsBase64(filesInput.files[i]);
+          pages.push(base64);
+        }
+      }
+
+      if (pages.length === 0) {
+        btn.disabled = false;
+        btn.innerText = "نشر الفصل فوراً";
+        return alert("يرجى اختيار صور من الجهاز أو وضع روابط صور!");
+      }
+
+      const targetManga = allManga.find(m => m.id === mangaId);
+      if (targetManga) {
+        targetManga.chapters.unshift({ id: "c" + Date.now(), num, title, pages });
+        saveAll();
+        alert(`تم نشر الفصل ${num} بنجاح!`);
+        btn.closest('.modal-overlay').remove();
+        showView('admin');
+      }
+    }
+
+    function readFileAsBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function openAddMangaModal() {
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay";
+      modal.innerHTML = `
+        <div class="modal-content">
+          <button class="close-btn" onclick="this.closest('.modal-overlay').remove()">✕</button>
+          <h3 style="font-size: 16px; font-weight: 900; margin-bottom: 12px;">إضافة مانهوا جديدة</h3>
+          <input type="text" id="newMTitle" class="input-field" placeholder="عنوان المانهوا بالعربية *" required>
+          <input type="text" id="newMCover" class="input-field" placeholder="رابط صورة الغلاف *" value="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600" required>
+          
+          <label style="font-size: 11px; color: #fde047;">أو اختر صورة غلاف من جهازك:</label>
+          <input type="file" id="coverFileInput" accept="image/*" class="input-field" style="padding: 6px; font-size: 11px;">
+
+          <input type="text" id="newMGenres" class="input-field" placeholder="التصنيفات: زراعة, أكشن, نظام">
+          <textarea id="newMDesc" rows="3" class="input-field" placeholder="نبذة عن قصة المانهوا"></textarea>
+          <button onclick="saveNewManga(this)" class="btn-submit">حفظ وإضافة المانهوا</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    async function saveNewManga(btn) {
+      const title = document.getElementById('newMTitle').value.trim();
+      let cover = document.getElementById('newMCover').value.trim();
+      const fileInput = document.getElementById('coverFileInput');
+      const genres = document.getElementById('newMGenres').value.trim() || "مانهوا, زراعة";
+      const desc = document.getElementById('newMDesc').value.trim() || "قصة مانهوا مثيرة.";
+
+      if (!title) return alert("يرجى كتابة عنوان المانهوا!");
+
+      if (fileInput.files && fileInput.files[0]) {
+        btn.disabled = true;
+        btn.innerText = "جاري تحميل الغلاف...";
+        cover = await readFileAsBase64(fileInput.files[0]);
+      }
+
+      allManga.unshift({ id: "m" + Date.now(), title, cover, genres, desc, chapters: [] });
       saveAll();
+      btn.closest('.modal-overlay').remove();
       showView('admin');
     }
 
     function addStaffPrompt() {
-      const name = prompt("اسم العضو:");
+      const username = prompt("اسم المستخدم (اليوزر) للعضو:");
+      const name = prompt("الاسم الظاهر:");
       const email = prompt("البريد الإلكتروني:");
       const role = prompt("الرتبة (مدير / مبيض / محرر / مترجم):", "مبيض (Redrawer)");
-      if (!name || !email) return;
-      allStaff.push({ id: "s" + Date.now(), name, email, role });
+      if (!username || !email) return;
+      allStaff.push({ id: "s" + Date.now(), username, name: name || username, email, role });
       saveAll();
       showView('admin');
     }
 
     function deleteManga(id) {
-      if (confirm("حذف هذه المانهوا؟")) {
+      if (confirm("هل أنت متأكد من حذف هذه المانهوا؟")) {
         allManga = allManga.filter(m => m.id !== id);
         saveAll();
         showView('admin');
@@ -466,7 +670,7 @@
     }
 
     function exportDB() {
-      const blob = new Blob([JSON.stringify({ manga: allManga, staff: allStaff }, null, 2)], { type: "application/json" });
+      const blob = new Blob([JSON.stringify({ manga: allManga, staff: allStaff, users: registeredUsers }, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = "manga_crest_database.json";
@@ -482,10 +686,11 @@
           const d = JSON.parse(evt.target.result);
           if (d.manga) allManga = d.manga;
           if (d.staff) allStaff = d.staff;
+          if (d.users) registeredUsers = d.users;
           saveAll();
-          alert("تم استيراد قاعدة البيانات بنجاح!");
+          alert("تم استيراد قاعدة البيانات بالكامل!");
           showView('home');
-        } catch(err) { alert("خطأ في الملف!"); }
+        } catch(err) { alert("خطأ في قراءة ملف قاعدة البيانات!"); }
       };
       reader.readAsText(file);
     }
