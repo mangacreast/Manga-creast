@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manga Crest - منصة المانهوا</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    colors: {
+                        darkBg: '#0f0a1a',
+                        darkCard: '#1a1025',
+                        purplePrimary: '#8b5cf6',
+                        purpleHover: '#7c3aed',
+                        purpleLight: '#c4b5fd',
+                        accent: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #0f0a1a; color: #e5e7eb; }
+        .hidden-view { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
+        .active-view { display: block; animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1025; }
+        ::-webkit-scrollbar-thumb { background: #8b5cf6; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #7c3aed; }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-200">
+
+    <!-- شريط التنقل العُلوي -->
+    <nav class="bg-darkCard/90 backdrop-blur-md border-b border-purplePrimary/30 shadow-[0_4px_15px_rgba(139,92,246,0.15)] p-4 sticky top-0 z-50">
+        <div class="container mx-auto flex flex-wrap justify-between items-center gap-4">
+            
+            <!-- الشعار -->
+            <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purplePrimary to-purpleLight cursor-pointer flex items-center gap-2" onclick="showView('home-view')">
+                <i class="fa-solid fa-dragon text-purplePrimary"></i>
+                Manga Crest
+            </h1>
+            
+            <!-- مربع البحث -->
+            <div class="flex-grow max-w-md hidden md:block relative">
+                <input type="text" id="search-input" onkeyup="filterManga()" placeholder="ابحث عن مانهوا..." class="w-full bg-darkBg border border-gray-700 rounded-full py-2 px-4 pr-10 text-sm focus:outline-none focus:border-purplePrimary transition-colors text-white">
+                <i class="fa-solid fa-search absolute right-4 top-3 text-gray-400"></i>
+            </div>
+
+            <!-- الأزرار -->
+            <div class="flex gap-3 sm:gap-4 items-center">
+                <a href="https://t.me/+VYgX581p6N5kN2E8" target="_blank" class="flex items-center gap-2 text-[#2AABEE] hover:text-white transition-colors bg-[#2AABEE]/10 hover:bg-[#2AABEE]/20 px-3 py-2 rounded-lg border border-[#2AABEE]/30">
+                    <i class="fa-brands fa-telegram text-lg"></i>
+                    <span class="text-sm font-bold hidden sm:block">قناتنا</span>
+                </a>
+
+                <div id="nav-actions" class="flex gap-2 items-center">
+                    <button onclick="showView('login-view')" class="bg-purplePrimary hover:bg-purpleHover px-5 py-2 rounded-lg transition-colors font-bold text-sm shadow-[0_0_10px_rgba(139,92,246,0.4)]">
+                        دخول
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="container mx-auto p-4 mt-6 min-h-[80vh]">
+
+        <!-- 1. الصفحة الرئيسية -->
+        <div id="home-view" class="view-section active-view">
+            <!-- قسم الإعلانات / أبرز الأعمال -->
+            <div class="bg-gradient-to-l from-darkCard to-purplePrimary/20 rounded-2xl p-6 mb-8 flex flex-col md:flex-row items-center gap-6 border border-purplePrimary/30">
+                <div class="flex-1">
+                    <span class="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold mb-2 inline-block">الأكثر شعبية</span>
+                    <h2 class="text-3xl font-black mb-3">Solo Leveling - ارتقاء المنفرد</h2>
+                    <p class="text-gray-400 text-sm mb-4 line-clamp-2">في عالم ظهرت فيه بوابات وحوش عشوائية، سونغ جين وو هو أضعف صياد في العالم. لكن بعد حادث مميت، يستيقظ ومعه نظام يجعله يرتقي بمفرده.</p>
+                    <button class="bg-purplePrimary hover:bg-purpleHover px-6 py-2 rounded-full font-bold transition-all"><i class="fa-solid fa-book-open ml-2"></i>اقرأ الآن</button>
+                </div>
+                <img src="https://via.placeholder.com/400x200/2d1b4e/a78bfa?text=Solo+Leveling" class="rounded-xl shadow-lg w-full md:w-1/3 object-cover h-40">
+            </div>
+
+            <div class="flex justify-between items-end mb-6 border-b border-gray-800 pb-2">
+                <h2 class="text-xl font-bold border-r-4 border-purplePrimary pr-2">آخر التحديثات</h2>
+                <div class="text-sm text-gray-400 flex gap-4 cursor-pointer">
+                    <span class="hover:text-purplePrimary text-purplePrimary font-bold">الكل</span>
+                    <span class="hover:text-purplePrimary">مانهوا</span>
+                    <span class="hover:text-purplePrimary">مانها</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6" id="manga-grid">
+                <!-- سيتم توليد المانهوا هنا بواسطة JavaScript -->
+            </div>
+        </div>
+
+        <!-- 2. صفحة تفاصيل المانهوا -->
+        <div id="details-view" class="view-section hidden-view">
+            <div id="manga-details-container">
+                <!-- محتوى التفاصيل سيتم حقنه هنا -->
+            </div>
+        </div>
+
+        <!-- 3. صفحة تسجيل الدخول -->
+        <div id="login-view" class="view-section hidden-view max-w-md mx-auto bg-darkCard p-8 rounded-2xl border border-purplePrimary/20 shadow-2xl mt-10">
+            <div class="text-center mb-6">
+                <i class="fa-solid fa-user-shield text-4xl text-purpleLight mb-2"></i>
+                <h2 class="text-2xl font-bold text-white">تسجيل الدخول</h2>
+                <p class="text-sm text-gray-400 mt-1">مرحباً بعودتك إلى منصة المانهوا الأولى</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm mb-1 text-gray-400">البريد الإلكتروني</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-envelope absolute right-3 top-3.5 text-gray-500"></i>
+                        <input type="email" id="login-email" class="w-full bg-darkBg border border-gray-700 rounded-lg py-3 px-10 text-white focus:outline-none focus:border-purplePrimary transition-colors" placeholder="zechal510010@gmail.com" value="zechal510010@gmail.com">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm mb-1 text-gray-400">كلمة المرور</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute right-3 top-3.5 text-gray-500"></i>
+                        <input type="password" id="login-pass" class="w-full bg-darkBg border border-gray-700 rounded-lg py-3 px-10 text-white focus:outline-none focus:border-purplePrimary transition-colors" value="01228124879A#">
+                    </div>
+                </div>
+                <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-purplePrimary to-purpleHover py-3 rounded-lg font-bold transition-all mt-4 shadow-lg hover:shadow-purplePrimary/50">
+                    دخول
+                </button>
+                
+                <div class="relative flex py-4 items-center">
+                    <div class="flex-grow border-t border-gray-800"></div>
+                    <span class="flex-shrink-0 mx-4 text-gray-500 text-sm">أو</span>
+                    <div class="flex-grow border-t border-gray-800"></div>
+                </div>
+
+                <button class="w-full bg-white text-gray-900 hover:bg-gray-200 py-3 rounded-lg font-bold transition-all flex justify-center items-center gap-3">
+                    <i class="fa-brands fa-google text-red-500"></i>
+                    تسجيل باستخدام جوجل
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. لوحة تحكم الإدارة -->
+        <div id="admin-view" class="view-section hidden-view">
+            <div class="flex justify-between items-center mb-6 bg-darkCard p-4 rounded-xl border border-gray-800">
+                <h2 class="text-2xl font-bold text-purpleLight"><i class="fa-solid fa-gauge mr-2"></i> غرفة الإدارة</h2>
+                <span id="admin-role-badge" class="bg-red-500/20 text-red-400 px-4 py-1.5 rounded-full text-sm font-bold border border-red-500/50"></span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- إضافة مانهوا / فصول -->
+                <div class="bg-darkCard p-6 rounded-xl border border-gray-800 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-green-500"></div>
+                    <h3 class="font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-cloud-arrow-up text-green-500"></i> رفع فصل جديد</h3>
+                    <input type="text" placeholder="اسم المانهوا" class="w-full bg-darkBg border border-gray-700 rounded-lg p-3 mb-3 text-white focus:border-green-500 outline-none transition-colors">
+                    <input type="number" placeholder="رقم الفصل" class="w-full bg-darkBg border border-gray-700 rounded-lg p-3 mb-3 text-white focus:border-green-500 outline-none transition-colors">
+                    <label class="block text-sm text-gray-400 mb-2">صور الفصل (رفع متعدد)</label>
+                    <input type="file" multiple class="w-full bg-darkBg border border-gray-700 rounded-lg p-2 mb-4 text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-500/20 file:text-green-400 hover:file:bg-green-500/30">
+                    <button class="w-full bg-green-600 hover:bg-green-500 py-3 rounded-lg font-bold transition-colors">نشر الفصل <i class="fa-solid fa-check ml-1"></i></button>
+                </div>
+
+                <!-- إدارة الصلاحيات -->
+                <div class="bg-darkCard p-6 rounded-xl border border-gray-800 relative overflow-hidden" id="role-management">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-purplePrimary"></div>
+                    <h3 class="font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-users-gear text-purplePrimary"></i> إدارة الطاقم</h3>
+                    <input type="email" placeholder="بريد العضو" class="w-full bg-darkBg border border-gray-700 rounded-lg p-3 mb-3 text-white focus:border-purplePrimary outline-none transition-colors">
+                    <select class="w-full bg-darkBg border border-gray-700 rounded-lg p-3 mb-4 text-white outline-none focus:border-purplePrimary transition-colors">
+                        <option value="admin">أدمن (مدير)</option>
+                        <option value="editor">محرر</option>
+                        <option value="cleaner">مبيض</option>
+                        <option value="reader">إزالة الصلاحيات (قارئ)</option>
+                    </select>
+                    <button class="w-full bg-purplePrimary hover:bg-purpleHover py-3 rounded-lg font-bold transition-colors">تحديث الرتبة <i class="fa-solid fa-pen ml-1"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. ملف القارئ (رتب الزراعة) -->
+        <div id="profile-view" class="view-section hidden-view">
+            <div class="bg-darkCard p-8 rounded-2xl border border-purplePrimary/30 text-center max-w-2xl mx-auto relative overflow-hidden mt-6">
+                <!-- خلفية ديكورية -->
+                <div class="absolute top-[-50px] left-[-50px] w-32 h-32 bg-purplePrimary/20 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-[-50px] right-[-50px] w-32 h-32 bg-accent/20 rounded-full blur-3xl"></div>
+
+                <div class="w-28 h-28 bg-gradient-to-tr from-purplePrimary to-purpleLight rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-black shadow-[0_0_30px_rgba(139,92,246,0.5)] border-4 border-darkBg relative z-10">
+                    <span id="profile-avatar-letter">ز</span>
+                </div>
+                <h2 id="profile-email" class="text-2xl font-bold text-white mb-1 relative z-10">user@example.com</h2>
+                <span class="text-gray-400 text-sm mb-6 block">عضو مسجل</span>
+                
+                <div class="bg-darkBg/80 backdrop-blur border border-gray-700 p-6 rounded-xl relative z-10">
+                    <p class="text-gray-400 text-sm mb-2"><i class="fa-solid fa-yin-yang text-accent mr-1"></i> عالم الزراعة الحالي</p>
+                    <p id="cultivation-rank" class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 mb-2">مبتدئ</p>
+                    
+                    <!-- شريط التقدم الوهمي -->
+                    <div class="w-full bg-gray-800 rounded-full h-2.5 mb-1 mt-4">
+                        <div class="bg-gradient-to-r from-purplePrimary to-accent h-2.5 rounded-full" style="width: 75%"></div>
+                    </div>
+                    <p class="text-xs text-gray-500 text-left">للصعود للرتبة القادمة: اقرأ المزيد من الفصول</p>
+                </div>
+                
+                <div class="mt-6 flex justify-center gap-10 text-center relative z-10">
+                    <div class="bg-darkBg py-3 px-6 rounded-lg border border-gray-800">
+                        <i class="fa-solid fa-book-open text-purpleLight mb-1 text-xl"></i>
+                        <p class="text-gray-500 text-sm">الفصول المقروءة</p>
+                        <p id="read-chapters" class="text-2xl font-bold">0</p>
+                    </div>
+                    <div class="bg-darkBg py-3 px-6 rounded-lg border border-gray-800">
+                        <i class="fa-solid fa-bookmark text-accent mb-1 text-xl"></i>
+                        <p class="text-gray-500 text-sm">المفضلة</p>
+                        <p class="text-2xl font-bold">12</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- الفوتر -->
+    <footer class="bg-darkCard border-t border-gray-800 mt-12 py-8 text-center text-gray-500 text-sm">
+        <p>جميع الحقوق محفوظة &copy; 2024 Manga Crest</p>
+        <p class="mt-2">تم التطوير لتوفير أفضل تجربة قراءة</p>
+    </footer>
+
+    <!-- سكربت المنطق (Logic) -->
+    <script>
+        // --- قاعدة بيانات وهمية للمانهوا ---
+        const mangaData = [
+            { id: 1, title: "بداية بعد النهاية", chapter: 175, type: "مانهوا", rating: 9.8, status: "مستمر", desc: "الملك جراي يمتلك قوة لا تضاهى، لكنه يتجسد في عالم جديد مليء بالسحر والوحوش.", img: "TBATE" },
+            { id: 2, title: "عودة الساحر العظيم", chapter: 142, type: "مانهوا", rating: 9.5, status: "مستمر", desc: "بعد 4000 عام، يعود الساحر العظيم لوكاس لينتقم ممن دمروه.", img: "Mage" },
+            { id: 3, title: "أكاديمية السيف", chapter: 89, type: "مانها", rating: 8.7, status: "مستمر", desc: "شاب ضعيف يدخل أكاديمية السيف ليكتشف موهبته الخفية.", img: "Sword" },
+            { id: 4, title: "زراعة خالدة", chapter: 305, type: "مانها", rating: 9.1, status: "مستمر", desc: "رحلة متدرب بشري للوصول إلى الخلود وعبور السماوات.", img: "Cultivation" },
+            { id: 5, title: "اللاعب الذي لا يموت", chapter: 55, type: "مانهوا", rating: 9.0, status: "جديد", desc: "لاعب يكتشف ثغرة تمنعه من الموت في لعبة الواقع الافتراضي المميتة.", img: "Player" },
+            { id: 6, title: "سيد الظلال", chapter: 210, type: "مانهوا", rating: 9.6, status: "مستمر", desc: "بطل يستخدم قوى الظلام لحماية العالم.", img: "Shadow" },
+            { id: 7, title: "طبيب الأعشاب السماوي", chapter: 120, type: "مانها", rating: 8.5, status: "مستمر", desc: "طبيب عادي يجد كتاباً سماوياً يغير حياته.", img: "Doctor" },
+            { id: 8, title: "انتقام المحارب", chapter: 45, type: "مانهوا", rating: 8.9, status: "جديد", desc: "محارب تعرض للخيانة يعود بالزمن لينتقم.", img: "Revenge" }
+        ];
+
+        let currentUser = null;
+
+        // --- تهيئة الصفحة (Render) ---
+        window.onload = () => {
+            renderMangaGrid(mangaData);
+        };
+
+        // عرض شبكة المانهوا
+        function renderMangaGrid(data) {
+            const grid = document.getElementById('manga-grid');
+            grid.innerHTML = data.map(manga => `
+                <div onclick="openMangaDetails(${manga.id})" class="bg-darkCard rounded-xl overflow-hidden border border-gray-800 hover:border-purplePrimary hover:shadow-[0_0_15px_rgba(139,92,246,0.2)] transition-all cursor-pointer group flex flex-col h-full">
+                    <div class="h-56 relative overflow-hidden">
+                        ${manga.status === 'جديد' ? `<span class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded z-20">جديد</span>` : ''}
+                        <div class="absolute inset-0 bg-gradient-to-t from-darkCard via-transparent to-transparent z-10"></div>
+                        <img src="https://via.placeholder.com/250x350/1a1025/a78bfa?text=${manga.img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute bottom-2 right-2 z-20 flex gap-2">
+                            <span class="bg-black/60 backdrop-blur px-2 py-1 rounded text-xs text-accent font-bold"><i class="fa-solid fa-star text-[10px]"></i> ${manga.rating}</span>
+                        </div>
+                    </div>
+                    <div class="p-3 flex-grow flex flex-col justify-between">
+                        <h3 class="font-bold text-sm mb-2 line-clamp-2 text-white group-hover:text-purpleLight transition-colors">${manga.title}</h3>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-purpleLight font-bold">الفصل ${manga.chapter}</span>
+                            <span class="text-gray-500">${manga.type}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // فلترة البحث
+        function filterManga() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filtered = mangaData.filter(m => m.title.toLowerCase().includes(query));
+            renderMangaGrid(filtered);
+        }
+
+        // --- التنقل بين الصفحات ---
+        function showView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.remove('active-view');
+                el.classList.add('hidden-view');
+            });
+            const targetView = document.getElementById(viewId);
+            targetView.classList.remove('hidden-view');
+            // تأخير بسيط لتشغيل الأنيميشن
+            setTimeout(() => targetView.classList.add('active-view'), 50);
+            window.scrollTo(0, 0);
+        }
+
+        // --- فتح تفاصيل المانهوا ---
+        function openMangaDetails(id) {
+            const manga = mangaData.find(m => m.id === id);
+            if(!manga) return;
+
+            const container = document.getElementById('manga-details-container');
+            
+            // توليد قائمة فصول وهمية
+            let chaptersHTML = '';
+            for(let i=manga.chapter; i>manga.chapter-10 && i>0; i--) {
+                chaptersHTML += `
+                    <a href="#" class="flex justify-between items-center bg-darkBg hover:bg-purplePrimary/10 border border-gray-800 hover:border-purplePrimary/50 p-4 rounded-lg transition-colors group">
+                        <span class="font-bold group-hover:text-purpleLight">الفصل ${i}</span>
+                        <span class="text-xs text-gray-500"><i class="fa-regular fa-clock"></i> منذ يومين</span>
+                    </a>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="flex flex-col md:flex-row gap-8 bg-darkCard p-6 rounded-2xl border border-gray-800 mb-8">
+                    <div class="w-full md:w-1/4 flex-shrink-0">
+                        <img src="https://via.placeholder.com/300x450/1a1025/a78bfa?text=${manga.img}" class="w-full rounded-xl shadow-lg border border-gray-700">
+                    </div>
+                    <div class="flex-grow flex flex-col">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h1 class="text-3xl font-black text-white mb-2">${manga.title}</h1>
+                                <div class="flex gap-3 text-sm">
+                                    <span class="bg-purplePrimary/20 text-purpleLight px-2 py-1 rounded">${manga.type}</span>
+                                    <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded">${manga.status}</span>
+                                </div>
+                            </div>
+                            <div class="text-center bg-darkBg p-2 rounded-lg border border-gray-800">
+                                <i class="fa-solid fa-star text-accent text-xl"></i>
+                                <div class="font-bold text-lg mt-1">${manga.rating}</div>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 leading-relaxed mb-6 bg-darkBg p-4 rounded-xl border border-gray-800 flex-grow">
+                            ${manga.desc}
+                        </p>
+                        <div class="flex gap-4">
+                            <button class="bg-purplePrimary hover:bg-purpleHover text-white px-8 py-3 rounded-xl font-bold flex-1 transition-colors"><i class="fa-solid fa-book-open mr-2"></i> قراءة الفصل الأول</button>
+                            <button class="bg-darkBg hover:bg-gray-800 border border-gray-700 text-white px-6 py-3 rounded-xl font-bold transition-colors"><i class="fa-regular fa-bookmark"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-darkCard p-6 rounded-2xl border border-gray-800">
+                    <h3 class="text-xl font-bold mb-4 border-r-4 border-purplePrimary pr-2"><i class="fa-solid fa-list-ul mr-1"></i> قائمة الفصول</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${chaptersHTML}
+                    </div>
+                    <button class="w-full mt-4 py-3 bg-darkBg hover:bg-gray-800 border border-gray-700 rounded-lg text-gray-400 font-bold transition-colors">عرض المزيد من الفصول...</button>
+                </div>
+            `;
+            showView('details-view');
+        }
+
+        // --- نظام رتب الزراعة ---
+        function getCultivationRank(chapters) {
+            if (chapters >= 5000) return { name: "الإمبراطور الخالد", color: "from-red-500 to-yellow-500" };
+            if (chapters >= 1000) return { name: "ملك خالد", color: "from-yellow-400 to-yellow-200" };
+            if (chapters >= 500) return { name: "تكوين الروح", color: "from-purple-400 to-pink-500" };
+            if (chapters >= 250) return { name: "النواة الذهبية", color: "from-yellow-500 to-orange-500" };
+            if (chapters >= 100) return { name: "تأسيس الأساس", color: "from-green-400 to-emerald-600" };
+            if (chapters >= 50) return { name: "صقل الطاقة الحيوية", color: "from-blue-400 to-cyan-500" };
+            return { name: "بشري (مبتدئ)", color: "from-gray-400 to-gray-200" };
+        }
+
+        // --- تسجيل الدخول والإدارة ---
+        function handleLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-pass').value;
+
+            if ((email === 'zechal510010@Crest.com' || email === 'zechal510010@gmail.com') && pass === '01228124879A#') {
+                currentUser = { email: email, role: 'supreme_admin', readChapters: 5500 };
+            } else {
+                currentUser = { email: email || 'reader@test.com', role: 'reader', readChapters: Math.floor(Math.random() * 600) };
+            }
+            updateNavbar();
+            showView('home-view');
+        }
+
+        function updateNavbar() {
+            const navActions = document.getElementById('nav-actions');
+            if (currentUser) {
+                let adminBtn = '';
+                if (['supreme_admin', 'admin', 'editor', 'cleaner'].includes(currentUser.role)) {
+                    adminBtn = `<button onclick="setupAdminView(); showView('admin-view')" class="bg-gray-800 hover:bg-gray-700 text-purpleLight px-3 py-2 rounded-lg text-sm border border-gray-700 mr-2 flex items-center gap-1"><i class="fa-solid fa-gauge"></i> <span class="hidden sm:inline">الإدارة</span></button>`;
+                }
+
+                navActions.innerHTML = `
+                    ${adminBtn}
+                    <button onclick="setupProfile(); showView('profile-view')" class="flex items-center gap-2 bg-darkBg border border-gray-700 px-2 py-1 rounded-full hover:border-purplePrimary transition-colors">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-purplePrimary to-purpleLight flex items-center justify-center text-sm font-bold text-white shadow-inner">${currentUser.email.charAt(0).toUpperCase()}</div>
+                    </button>
+                    <button onclick="logout()" class="text-red-400 hover:text-red-300 text-xl ml-2"><i class="fa-solid fa-right-from-bracket"></i></button>
+                `;
+            } else {
+                navActions.innerHTML = `<button onclick="showView('login-view')" class="bg-purplePrimary hover:bg-purpleHover px-5 py-2 rounded-lg transition-colors font-bold text-sm shadow-[0_0_10px_rgba(139,92,246,0.4)]">دخول</button>`;
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            updateNavbar();
+            showView('home-view');
+        }
+
+        function setupProfile() {
+            document.getElementById('profile-email').textContent = currentUser.email;
+            document.getElementById('profile-avatar-letter').textContent = currentUser.email.charAt(0).toUpperCase();
+            document.getElementById('read-chapters').textContent = currentUser.readChapters;
+            
+            const rank = getCultivationRank(currentUser.readChapters);
+            const rankEl = document.getElementById('cultivation-rank');
+            rankEl.textContent = rank.name;
+            rankEl.className = `text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r ${rank.color} mb-2`;
+        }
+
+        function setupAdminView() {
+            const roleBadge = document.getElementById('admin-role-badge');
+            const roleMgmt = document.getElementById('role-management');
+            
+            if(currentUser.role === 'supreme_admin') {
+                roleBadge.innerHTML = '<i class="fa-solid fa-crown mr-1"></i> المدير الأعلى';
+                roleBadge.className = "bg-red-500/20 text-red-400 px-4 py-1.5 rounded-full text-sm font-bold border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.3)]";
+                roleMgmt.style.display = "block"; 
+            } else if (currentUser.role === 'editor') {
+                roleBadge.innerHTML = '<i class="fa-solid fa-pen-nib mr-1"></i> محرر';
+                roleBadge.className = "bg-blue-500/20 text-blue-400 px-4 py-1.5 rounded-full text-sm font-bold border border-blue-500/50";
+                roleMgmt.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
