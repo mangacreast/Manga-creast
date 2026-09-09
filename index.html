@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مانجا كريست | Manga Crest</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Google Fonts: Tajawal -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body { font-family: 'Tajawal', sans-serif; background-color: #0b0b0e; color: #f3f4f6; margin: 0; overflow-x: hidden; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .view-section { transition: opacity 0.2s ease-in-out; }
+
+    .cultivation-frame { display: inline-flex; align-items: center; justify-content: center; border-radius: 9999px; padding: 3px; position: relative; flex-shrink: 0; }
+    .cultivation-frame img { width: 100%; height: 100%; border-radius: 9999px; object-fit: cover; display: block; }
+    
+    .frame-0 { background: #4b5563; box-shadow: 0 0 6px #6b7280; }
+    .frame-1 { background: linear-gradient(135deg, #0284c7, #38bdf8); box-shadow: 0 0 10px #0284c7; }
+    .frame-2 { background: linear-gradient(135deg, #d97706, #fbbf24); box-shadow: 0 0 12px #f59e0b; }
+    .frame-3 { background: linear-gradient(135deg, #059669, #34d399); box-shadow: 0 0 14px #10b981; }
+    .frame-4 { background: linear-gradient(135deg, #7c3aed, #c084fc); box-shadow: 0 0 16px #9333ea; }
+    .frame-5 { background: linear-gradient(135deg, #c026d3, #f472b6); box-shadow: 0 0 18px #d946ef; }
+    .frame-6 { background: linear-gradient(135deg, #e11d48, #fb7185); box-shadow: 0 0 20px #f43f5e; }
+    .frame-7 { background: linear-gradient(135deg, #6366f1, #eab308); box-shadow: 0 0 22px #eab308; animation: auraPulse 2s infinite; }
+    .frame-8 { background: linear-gradient(135deg, #06b6d4, #a855f7, #f43f5e); box-shadow: 0 0 26px #06b6d4; animation: auraPulse 1.5s infinite; }
+    .frame-9 { background: linear-gradient(135deg, #f59e0b, #ef4444, #9333ea); box-shadow: 0 0 32px #ef4444; border: 2px solid #fef08a; animation: auraPulse 1s infinite; }
+
+    @keyframes auraPulse {
+      0%, 100% { transform: scale(1); filter: brightness(1); }
+      50% { transform: scale(1.05); filter: brightness(1.3); }
+    }
+
+    .novel-theme-dark { background-color: #0b0b0e; color: #e5e7eb; }
+    .novel-theme-sepia { background-color: #26211a; color: #f3eedd; }
+    .novel-theme-night { background-color: #000000; color: #9ca3af; }
+  </style>
+</head>
+<body class="bg-[#0b0b0e] text-gray-100 selection:bg-purple-600 selection:text-white pb-20">
+
+  <!-- شاشة التحميل -->
+  <div id="loading-overlay" class="fixed inset-0 bg-[#0b0b0e]/95 backdrop-blur-sm z-[100] flex flex-col justify-center items-center transition-opacity duration-200">
+    <div class="flex gap-2">
+       <div class="w-3.5 h-3.5 bg-purple-600 rounded-full animate-bounce" style="animation-delay: 0ms;"></div>
+       <div class="w-3.5 h-3.5 bg-purple-600 rounded-full animate-bounce" style="animation-delay: 150ms;"></div>
+       <div class="w-3.5 h-3.5 bg-purple-600 rounded-full animate-bounce" style="animation-delay: 300ms;"></div>
+    </div>
+    <span class="text-purple-400 text-xs font-bold mt-4 tracking-widest">جاري الاتصال بالطائفة...</span>
+  </div>
+
+  <div id="topTelegramBanner" class="bg-gradient-to-r from-purple-950 via-indigo-950 to-purple-900 border-b border-purple-900/60 px-4 py-2 text-xs">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-purple-200 font-bold hidden sm:inline">تابع أحدث فصول المانهوا ومواعيد النشر أولاً بأول!</span>
+        <span class="text-purple-200 font-bold sm:hidden">أحدث الفصول والمواعيد!</span>
+      </div>
+      <a href="https://t.me/+VYgX581p6N5kN2E8" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-full font-bold flex items-center gap-1.5 transition">
+        <i data-lucide="send" class="w-3.5 h-3.5"></i> <span>قناة التليجرام</span>
+      </a>
+    </div>
+  </div>
+
+  <header id="mainAppHeader" class="flex justify-between items-center px-4 py-3 border-b border-gray-800 sticky top-0 bg-[#0b0b0e]/95 backdrop-blur z-40">
+    <div class="flex items-center gap-2.5 cursor-pointer" onclick="navigateTo('home-view')">
+      <div class="w-9 h-9 bg-purple-600 rounded-xl flex items-center justify-center font-black text-white italic tracking-tighter shadow-lg shadow-purple-900/50">MC</div>
+      <div>
+        <span class="font-black text-lg tracking-wider text-white">MANGA CREST</span>
+        <span class="block text-[9px] text-purple-400 font-bold -mt-1">مانجا كريست</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="toggleSearchBar()" class="text-gray-400 hover:text-purple-400 p-1"><i data-lucide="search" class="w-5 h-5"></i></button>
+      <div id="header-user-badge"></div>
+    </div>
+  </header>
+
+  <div id="search-bar-panel" class="hidden bg-[#15151a] border-b border-gray-800 p-3 max-w-7xl mx-auto">
+    <div class="relative">
+      <input type="text" id="globalSearchInput" oninput="handleGlobalSearch(this.value)" placeholder="ابحث عن مانهوا، رواية، كاتب، تصنيف..." class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl py-2 pr-10 pl-4 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-purple-500">
+      <i data-lucide="search" class="w-4 h-4 absolute right-3.5 top-2.5 text-gray-500"></i>
+    </div>
+  </div>
+
+  <!-- 1. الرئيسية (HOME VIEW) -->
+  <div id="home-view" class="view-section">
+    <section id="heroSection" class="relative w-full h-[380px] sm:h-[430px] bg-gray-900 overflow-hidden hidden">
+       <img id="heroCoverImg" src="" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1200';" class="absolute inset-0 w-full h-full object-cover opacity-45" alt="Hero">
+       <div class="absolute inset-0 bg-gradient-to-t from-[#0b0b0e] via-[#0b0b0e]/70 to-transparent"></div>
+       <div class="absolute bottom-0 left-0 p-4 sm:p-6 w-full max-w-4xl">
+          <span id="heroBadgeText" class="text-[11px] font-black bg-purple-600/20 text-purple-400 border border-purple-500/30 px-2.5 py-1 rounded-md mb-2 inline-block">عمل مميز</span>
+          <h1 id="heroTitle" class="text-2xl sm:text-4xl font-black mb-2 text-white"></h1>
+          <p id="heroDesc" class="text-xs sm:text-sm text-gray-300 mb-4 line-clamp-2 leading-relaxed"></p>
+          <div class="flex gap-3">
+             <button id="heroReadBtn" onclick="readHeroFirstChapter()" class="flex-1 sm:flex-none sm:px-8 bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition">
+               <i data-lucide="play" class="w-4 h-4"></i> اقرأ الآن
+             </button>
+             <button id="heroDetailsBtn" onclick="openHeroDetails()" class="flex-1 sm:flex-none sm:px-6 bg-[#1a1a20] hover:bg-gray-800 border border-gray-700 text-white py-2.5 rounded-xl font-bold text-xs sm:text-sm transition">
+               التفاصيل
+             </button>
+          </div>
+       </div>
+    </section>
+
+    <section class="p-4 max-w-7xl mx-auto">
+      <div id="user-cultivation-widget" class="bg-[#15151a] border border-gray-800 rounded-2xl p-4 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4"></div>
+    </section>
+
+    <section class="p-4 max-w-7xl mx-auto">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+          <i data-lucide="sparkles" class="w-5 h-5 text-purple-400"></i><span>أحدث المانهوا المترجمة</span>
+        </h2>
+        <button onclick="navigateTo('manhwa-list-view')" class="text-xs text-purple-400 hover:text-purple-300 font-bold">عرض الكل</button>
+      </div>
+      <div id="homeManhwaGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
+    </section>
+
+    <section class="p-4 max-w-7xl mx-auto mt-2">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+          <i data-lucide="book-open-check" class="w-5 h-5 text-amber-400"></i><span>قسم الروايات المترجمة</span>
+        </h2>
+        <button onclick="navigateTo('novels-list-view')" class="text-xs text-amber-400 hover:text-amber-300 font-bold">عرض كل الروايات</button>
+      </div>
+      <div id="homeNovelsGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
+    </section>
+  </div>
+
+  <!-- باقي القوائم -->
+  <div id="manhwa-list-view" class="view-section hidden p-4 max-w-7xl mx-auto">
+    <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-3">
+      <h1 class="text-lg font-black text-white flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-purple-400"></i><span>دليل المانهوا</span></h1>
+      <span id="manhwaTotalCount" class="text-xs text-gray-400">0 عمل</span>
+    </div>
+    <div id="fullManhwaGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
+  </div>
+
+  <div id="novels-list-view" class="view-section hidden p-4 max-w-7xl mx-auto">
+    <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-3">
+      <h1 class="text-lg font-black text-white flex items-center gap-2"><i data-lucide="book-marked" class="w-5 h-5 text-amber-400"></i><span>مكتبة الروايات</span></h1>
+      <span id="novelsTotalCount" class="text-xs text-gray-400">0 رواية</span>
+    </div>
+    <div id="fullNovelsGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
+  </div>
+
+  <!-- 4. تفاصيل العمل -->
+  <div id="details-view" class="view-section hidden p-4 max-w-4xl mx-auto">
+    <button onclick="navigateBack()" class="inline-flex items-center gap-1.5 text-xs text-purple-400 hover:text-white font-bold mb-4">
+      <i data-lucide="arrow-right" class="w-4 h-4"></i> عودة
+    </button>
+    <div id="detailsContent"></div>
+  </div>
+
+  <!-- 5. قارئ المانهوا -->
+  <div id="manhwa-reader-view" class="view-section hidden">
+    <div class="sticky top-0 z-50 bg-[#0b0b0e]/95 backdrop-blur border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+      <button onclick="openCurrentItemDetails()" class="text-xs bg-[#15151a] hover:bg-gray-800 border border-gray-700 text-purple-300 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1">
+        <i data-lucide="list" class="w-3.5 h-3.5"></i> الفصول
+      </button>
+      <div class="text-center px-2">
+        <h2 id="readerManhwaTitle" class="text-xs sm:text-sm font-bold text-white line-clamp-1"></h2>
+        <span id="readerChapterNum" class="text-[10px] text-purple-400 font-bold"></span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <button onclick="goToPrevChapter()" class="text-xs bg-[#15151a] hover:bg-gray-800 text-gray-200 px-2.5 py-1.5 rounded-lg border border-gray-700">السابق</button>
+        <button onclick="goToNextChapter()" class="text-xs bg-purple-600 hover:bg-purple-700 text-white font-bold px-2.5 py-1.5 rounded-lg">التالي</button>
+      </div>
+    </div>
+
+    <div id="webtoonPagesContainer" class="max-w-2xl mx-auto bg-black min-h-screen py-2 space-y-0"></div>
+
+    <div class="max-w-2xl mx-auto p-4">
+      <div class="bg-[#15151a] border border-gray-800 rounded-2xl p-4 text-center mb-6">
+        <p class="text-sm font-bold text-gray-200 mb-3">وصلت لنهاية الفصل!</p>
+        <div class="flex justify-center gap-3">
+          <button onclick="goToPrevChapter()" class="bg-gray-800 text-xs px-4 py-2 rounded-xl">السابق</button>
+          <button onclick="openCurrentItemDetails()" class="bg-purple-900/60 border border-purple-700 text-xs px-4 py-2 rounded-xl text-purple-200">الفصول</button>
+          <button onclick="goToNextChapter()" class="bg-purple-600 text-xs font-bold px-5 py-2 rounded-xl">التالي</button>
+        </div>
+      </div>
+      <div class="bg-[#15151a] border border-gray-800 rounded-2xl p-4 shadow-xl">
+        <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2 border-b border-gray-800 pb-2">
+          <i data-lucide="message-square" class="w-4 h-4 text-purple-400"></i><span>آراء ومناقشات</span>
+        </h3>
+        <div id="commentBoxArea" class="mb-4"></div>
+        <div id="chapterCommentsList" class="space-y-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. قارئ الروايات -->
+  <div id="novel-reader-view" class="view-section hidden">
+    <div class="sticky top-0 z-50 bg-[#0b0b0e]/95 backdrop-blur border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+      <button onclick="openCurrentItemDetails()" class="text-xs bg-[#15151a] border border-gray-700 text-amber-300 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1">
+        <i data-lucide="list" class="w-3.5 h-3.5"></i> الفصول
+      </button>
+      <div class="text-center px-2">
+        <h2 id="readerNovelTitle" class="text-xs font-bold text-white line-clamp-1"></h2>
+        <span id="readerNovelChapterNum" class="text-[10px] text-amber-400 font-bold"></span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <button onclick="changeFontSize(-1)" class="w-7 h-7 bg-[#15151a] rounded-lg border border-gray-700 text-xs font-bold">A-</button>
+        <button onclick="changeFontSize(1)" class="w-7 h-7 bg-[#15151a] rounded-lg border border-gray-700 text-xs font-bold">A+</button>
+        <button onclick="toggleNovelTheme()" class="w-7 h-7 bg-[#15151a] rounded-lg border border-gray-700 text-amber-400 flex justify-center items-center"><i data-lucide="palette" class="w-3.5 h-3.5"></i></button>
+      </div>
+    </div>
+
+    <div id="novelReaderContainer" class="novel-theme-dark max-w-3xl mx-auto p-5 sm:p-8 min-h-screen transition-colors duration-300">
+      <h1 id="novelChapterHeading" class="text-xl sm:text-2xl font-black mb-6 text-center border-b border-gray-800 pb-4"></h1>
+      <div id="novelChapterBody" class="text-sm sm:text-base leading-loose whitespace-pre-line text-justify select-text"></div>
+    </div>
+
+    <div class="max-w-3xl mx-auto p-4">
+      <div class="bg-[#15151a] border border-gray-800 rounded-2xl p-4 text-center mb-6">
+        <div class="flex justify-center gap-3">
+          <button onclick="goToPrevChapter()" class="bg-gray-800 text-xs px-4 py-2 rounded-xl">السابق</button>
+          <button onclick="openCurrentItemDetails()" class="bg-[#241738] border border-purple-800 text-xs px-4 py-2 rounded-xl text-purple-200">الفصول</button>
+          <button onclick="goToNextChapter()" class="bg-amber-600 text-black font-bold text-xs px-5 py-2 rounded-xl">التالي</button>
+        </div>
+      </div>
+      <div class="bg-[#15151a] border border-gray-800 rounded-2xl p-4 shadow-xl">
+        <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2 border-b border-gray-800 pb-2">
+          <i data-lucide="message-circle" class="w-4 h-4 text-amber-400"></i><span>نقاشات وتحليلات</span>
+        </h3>
+        <div id="novelCommentBoxArea" class="mb-4"></div>
+        <div id="novelCommentsList" class="space-y-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. صفحة تسجيل الدخول -->
+  <div id="login-view" class="view-section hidden min-h-screen px-5 py-10 relative overflow-hidden flex flex-col justify-center">
+    <div class="absolute z-10 w-full max-w-md mx-auto">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-purple-600 rounded-2xl mx-auto flex items-center justify-center font-black italic text-3xl mb-3 cursor-pointer" onclick="navigateTo('home-view')">M</div>
+        <h1 class="font-bold text-2xl tracking-wider text-gray-100">MANGA CREST</h1>
+      </div>
+      <div class="bg-[#111116] border border-gray-800/80 rounded-3xl p-6 shadow-2xl">
+        <div id="authAlertBox" class="hidden p-3 rounded-xl text-xs font-bold mb-4"></div>
+        <form onsubmit="handleFormLogin(event)" class="flex flex-col gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-400 mb-2 pr-1">البريد الإلكتروني</label>
+            <input type="email" id="loginEmail" placeholder="your@gmail.com" required class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-purple-500" dir="ltr">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-400 mb-2 pr-1">كلمة المرور</label>
+            <input type="password" id="loginPass" placeholder="••••••••" required class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-purple-500" dir="ltr">
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2 mt-2">
+            <button type="submit" onclick="authSubmitAction='login'" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 rounded-xl text-sm transition-colors">تسجيل الدخول</button>
+            <button type="submit" onclick="authSubmitAction='register'" class="bg-[#1a1a24] hover:bg-[#232330] border border-purple-800/60 text-purple-300 font-bold py-3.5 px-4 rounded-xl text-xs transition">حساب جديد</button>
+          </div>
+        </form>
+        <p class="text-center text-xs font-medium mt-6"><button type="button" onclick="navigateTo('home-view')" class="text-purple-400 hover:underline">العودة للرئيسية</button></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. البروفايل -->
+  <div id="profile-view" class="view-section hidden p-4 max-w-xl mx-auto">
+    <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-6 shadow-2xl">
+      <div class="text-center mb-6">
+        <div class="relative inline-block mb-3">
+          <div id="profileAvatarFrame" class="cultivation-frame frame-0 cursor-pointer" onclick="uploadCustomAvatar()" style="width: 88px; height: 88px;">
+            <img id="profileAvatarImg" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar">
+          </div>
+        </div>
+        <h2 id="profileUsername" class="text-lg font-black text-white">@username</h2>
+        <span id="profileEmail" class="text-xs text-gray-400 font-mono">email@gmail.com</span>
+        <div id="profileRealmBadge" class="mt-2 inline-block text-xs font-bold px-3 py-0.5 rounded-full bg-purple-950 border border-purple-800 text-amber-300">صقل الطاقة</div>
+      </div>
+      <div class="grid grid-cols-2 gap-3 mb-6 text-center text-xs">
+        <div class="bg-[#0b0b0e] p-3 rounded-xl border border-gray-800"><span class="text-gray-400 block mb-1">الفصول المقروءة</span><span id="profileReadCount" class="text-base font-black text-purple-400">0</span></div>
+        <div class="bg-[#0b0b0e] p-3 rounded-xl border border-gray-800"><span class="text-gray-400 block mb-1">الرتبة في الطائفة</span><span id="profileRole" class="text-base font-black text-emerald-400">قارئ</span></div>
+      </div>
+      <div class="border-t border-gray-800 pt-4 mb-6">
+        <button onclick="uploadCustomAvatar()" class="w-full bg-[#1c1c24] border border-gray-700 text-gray-200 font-bold py-3 rounded-xl text-xs flex justify-center gap-2 mb-2"><i data-lucide="upload" class="w-4 h-4 text-purple-400"></i><span>تغيير الصورة الشخصية (رابط مباشر)</span></button>
+        <button onclick="navigateTo('admin-view')" id="profileAdminBtn" class="hidden w-full bg-purple-900 text-purple-200 font-bold py-3 rounded-xl text-xs flex justify-center gap-2 mb-2"><i data-lucide="shield" class="w-4 h-4 text-amber-400"></i> لوحة الإدارة</button>
+        <button onclick="handleLogout()" class="w-full bg-red-950/60 border border-red-800 text-red-300 font-bold py-3 rounded-xl text-xs flex justify-center gap-2"><i data-lucide="log-out" class="w-4 h-4"></i> تسجيل الخروج</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. لوحة الإدارة -->
+  <div id="admin-view" class="view-section hidden p-4 max-w-4xl mx-auto">
+    <header class="flex justify-between items-center p-4 bg-[#15151a] border border-gray-800 rounded-2xl mb-6 shadow-xl">
+      <div class="flex items-center gap-3">
+        <div class="cultivation-frame frame-9" style="width: 44px; height: 44px;"><img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=100"></div>
+        <div><h1 class="text-sm font-bold text-white">لوحة الإدارة</h1><span class="text-[11px] text-amber-400 font-bold">المؤسس</span></div>
+      </div>
+      <button onclick="navigateTo('home-view')" class="text-xs bg-gray-800 text-gray-300 px-3 py-1.5 rounded-lg"><i data-lucide="home" class="w-3.5 h-3.5"></i> الرئيسية</button>
+    </header>
+
+    <div class="flex gap-2 border-b border-gray-800 pb-3 mb-6 overflow-x-auto text-xs">
+      <button onclick="switchAdminTab('manga-tab')" id="tabBtnManga" class="bg-purple-600 text-white font-bold px-4 py-2 rounded-xl">المانهوا</button>
+      <button onclick="switchAdminTab('novels-tab')" id="tabBtnNovels" class="bg-[#15151a] text-gray-300 font-bold px-4 py-2 rounded-xl">الروايات</button>
+    </div>
+
+    <div id="adminMangaTab" class="space-y-6">
+      <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 shadow-lg">
+        <h2 class="text-sm font-bold mb-4 border-r-4 border-purple-600 pr-2">نشر فصل مانهوا</h2>
+        <form onsubmit="handleAdminUploadMangaChapter(event)" class="flex flex-col gap-3 text-xs">
+          <select id="admChMangaSelect" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200"></select>
+          <input type="number" step="0.5" id="admChNum" placeholder="رقم الفصل" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200" required>
+          <input type="text" id="admChTitle" placeholder="عنوان الفصل (اختياري)" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
+          <textarea id="admChUrls" rows="3" placeholder="روابط الصور (كل رابط في سطر)" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200" required></textarea>
+          <button type="submit" class="w-full bg-purple-600 text-white font-bold py-3 rounded-xl transition">نشر</button>
+        </form>
+      </div>
+      <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 shadow-lg">
+        <h2 class="text-sm font-bold mb-4 border-r-4 border-purple-600 pr-2">إضافة مانهوا جديدة</h2>
+        <form onsubmit="handleAdminCreateManga(event)" class="flex flex-col gap-3 text-xs">
+          <input type="text" id="admMangaTitle" placeholder="اسم المانهوا *" required class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
+          <input type="text" id="admMangaCover" placeholder="رابط صورة الغلاف" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
+          <input type="text" id="admMangaGenres" placeholder="التصنيفات: زراعة, أكشن" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
+          <textarea id="admMangaDesc" rows="3" placeholder="القصة" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200"></textarea>
+          <button type="submit" class="w-full bg-purple-600 text-white font-bold py-3 rounded-xl transition">إضافة المانهوا</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="adminNovelsTab" class="hidden space-y-6">
+      <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 shadow-lg">
+        <h2 class="text-sm font-bold mb-4 border-r-4 border-amber-500 pr-2">نشر فصل رواية</h2>
+        <form onsubmit="handleAdminUploadNovelChapter(event)" class="flex flex-col gap-3 text-xs">
+          <select id="admNovelSelect" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200"></select>
+          <input type="number" step="1" id="admNovelChNum" placeholder="رقم الفصل" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200" required>
+          <input type="text" id="admNovelChTitle" placeholder="عنوان الفصل" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200" required>
+          <textarea id="admNovelChContent" rows="5" placeholder="نص الفصل..." class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200" required></textarea>
+          <button type="submit" class="w-full bg-amber-600 text-black font-bold py-3 rounded-xl transition">نشر الفصل</button>
+        </form>
+      </div>
+      <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 shadow-lg">
+        <h2 class="text-sm font-bold mb-4 border-r-4 border-amber-500 pr-2">إضافة رواية جديدة</h2>
+        <form onsubmit="handleAdminCreateNovel(event)" class="flex flex-col gap-3 text-xs">
+          <input type="text" id="admNewNovelTitle" placeholder="اسم الرواية *" required class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
+          <input type="text" id="admNewNovelCover" placeholder="رابط صورة الغلاف" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
+          <input type="text" id="admNewNovelGenres" placeholder="التصنيفات" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
+          <textarea id="admNewNovelDesc" rows="3" placeholder="القصة" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200"></textarea>
+          <button type="submit" class="w-full bg-amber-600 text-black font-bold py-3 rounded-xl transition">إضافة الرواية</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. شريط التنقل السفلي -->
+  <nav id="bottomAppNav" class="fixed bottom-0 left-0 right-0 z-50 bg-[#0b0b0e]/95 backdrop-blur border-t border-gray-800 px-2 py-1.5 flex justify-around items-center">
+    <button onclick="navigateTo('home-view')" class="flex flex-col items-center py-1 px-3 text-purple-400">
+      <i data-lucide="home" class="w-5 h-5 mb-0.5"></i><span class="text-[10px] font-bold">الرئيسية</span>
+    </button>
+    <button onclick="navigateTo('manhwa-list-view')" class="flex flex-col items-center py-1 px-3 text-gray-400 hover:text-purple-400">
+      <i data-lucide="layers" class="w-5 h-5 mb-0.5"></i><span class="text-[10px] font-bold">المانهوا</span>
+    </button>
+    <button onclick="navigateTo('novels-list-view')" class="flex flex-col items-center py-1 px-3 text-gray-400 hover:text-purple-400">
+      <i data-lucide="book-open" class="w-5 h-5 mb-0.5"></i><span class="text-[10px] font-bold">الروايات</span>
+    </button>
+    <button onclick="handleNavUserClick()" class="flex flex-col items-center py-1 px-3 text-gray-400 hover:text-purple-400">
+      <i data-lucide="user" class="w-5 h-5 mb-0.5"></i><span class="text-[10px] font-bold">حسابي</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================================= -->
+  <!-- JavaScript (Supabase Real Database Integration) -->
+  <!-- ========================================================================= -->
+  <script>
+    // ⚠️ ضع الرابط والمفتاح الخاص بك هنا ⚠️
+    const supabaseUrl = 'https://tumtlkfcwetvhoemknre.supabase.co/rest/v1/'; 
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1bXRsa2Zjd2V0dmhvZW1rbnJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyMzIzMzYsImV4cCI6MjEwMTgwODMzNn0.HtFnKH__LvJdFTwmeecgq_jYIqQY6PXFvWM6eNtt5RQ';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    const SUPER_ADMIN_EMAIL = "zechal510010@gmail.com";
+    
+    let manhwaList = [];
+    let novelsList = [];
+    let currentUser = null;
+    let currentItem = null;
+    let currentItemType = 'manhwa';
+    let currentChapter = null;
+    let previousViewId = 'home-view';
+    let novelFontSize = 16;
+    let authSubmitAction = 'login';
+    let novelThemeIndex = 0;
+    const novelThemes = ['novel-theme-dark', 'novel-theme-sepia', 'novel-theme-night'];
+
+    const REALMS = [
+      { name: "صقل الطاقة الحيوية", min: 0, frame: "frame-0", title: "متدرب ناشئ" },
+      { name: "تأسيس الأساس", min: 25, frame: "frame-1", title: "مستكشف الطاو" },
+      { name: "النواة الذهبية", min: 50, frame: "frame-2", title: "محارب النواة" },
+      { name: "الروح الوليدة", min: 100, frame: "frame-3", title: "كبير العشيرة" },
+      { name: "التحول الروحي", min: 250, frame: "frame-4", title: "سيد الروح" },
+      { name: "عودة الفراغ", min: 500, frame: "frame-5", title: "خبير الفراغ" },
+      { name: "اندماج الجسد", min: 1000, frame: "frame-6", title: "الجسد المقدس" },
+      { name: "محنة البرق العظمى", min: 2000, frame: "frame-7", title: "شبه الخالد" },
+      { name: "الخالد الحقيقي", min: 3500, frame: "frame-8", title: "خالد سماوي" },
+      { name: "الإمبراطور الخالد", min: 5000, frame: "frame-9", title: "سيد الأكوان الخالد" }
+    ];
+
+    function getRealm(chapters) {
+      const c = Number(chapters) || 0;
+      for (let i = REALMS.length - 1; i >= 0; i--) {
+        if (c >= REALMS[i].min) {
+          const next = REALMS[i + 1];
+          const progress = next ? Math.min(100, Math.round(((c - REALMS[i].min) / (next.min - REALMS[i].min)) * 100)) : 100;
+          return { ...REALMS[i], progress, nextMin: next ? next.min : null };
+        }
+      }
+      return { ...REALMS[0], progress: 0, nextMin: 25 };
+    }
+
+    // جلب البيانات من الجداول الحقيقية
+    async function loadDataFromSupabase() {
+      try {
+        const { data: mediaData } = await supabase.from('media').select('*').order('created_at', { ascending: false });
+        const { data: chaptersData } = await supabase.from('chapters').select('*').order('chapter_num', { ascending: true });
+
+        if (mediaData) {
+          manhwaList = mediaData.filter(m => m.type === 'manhwa').map(m => mapMediaData(m, chaptersData));
+          novelsList = mediaData.filter(m => m.type === 'novel').map(m => mapMediaData(m, chaptersData));
+        }
+
+        const localUser = localStorage.getItem("crest_user");
+        if (localUser) {
+           const parsedUser = JSON.parse(localUser);
+           const { data: userData } = await supabase.from('profiles').select('*').eq('email', parsedUser.email).single();
+           if(userData) currentUser = { ...userData, isAdmin: userData.email === SUPER_ADMIN_EMAIL };
+        }
+      } catch (err) {
+        console.error("Error loading data:", err);
+      }
+      
+      renderHome();
+      populateAdminSelects();
+      if(window.lucide) lucide.createIcons();
+    }
+
+    function mapMediaData(dbItem, allChapters) {
+      const mediaChs = (allChapters || []).filter(c => c.media_id === dbItem.id);
+      return {
+        id: dbItem.id,
+        title: dbItem.title,
+        cover: dbItem.cover,
+        genres: dbItem.genres ? dbItem.genres.split(',') : [],
+        desc: dbItem.description,
+        chapters: mediaChs.map(c => ({
+          id: c.id,
+          num: c.chapter_num,
+          title: c.title,
+          content: c.content, // للنصوص
+          pages: c.content ? c.content.split(/[\n,]+/).map(u => u.trim()).filter(u => u.length > 5) : [] // للصور
+        }))
+      };
+    }
+
+    // Auth - تسجيل الدخول
+    async function handleFormLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('loginPass').value;
+      if (!email || !pass) return showAuthMessage("يرجى تعبئة الحقول!");
+
+      const { data: existingUser } = await supabase.from('profiles').select('*').eq('email', email).single();
+
+      if (authSubmitAction === 'register') {
+        if (existingUser) return showAuthMessage("هذا الحساب مسجل مسبقاً! قم بتسجيل الدخول.");
+        const username = email.split('@')[0].replace(/[^a-z0-9_]/g, '');
+        const { data, error } = await supabase.from('profiles').insert([{ 
+          email: email, 
+          username: username, 
+          password: pass, 
+          avatar: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=100", 
+          read_count: 0, 
+          role: "قارئ" 
+        }]).select().single();
+        
+        if (error) return showAuthMessage("حدث خطأ أثناء الإنشاء!");
+        finishLogin(data);
+      } else {
+        if (!existingUser) return showAuthMessage("الحساب غير موجود! اضغط حساب جديد.");
+        if (existingUser.password !== pass) return showAuthMessage("كلمة المرور غير صحيحة!");
+        finishLogin(existingUser);
+      }
+    }
+
+    function finishLogin(userData) {
+      currentUser = { ...userData, isAdmin: userData.email === SUPER_ADMIN_EMAIL };
+      localStorage.setItem("crest_user", JSON.stringify({ email: currentUser.email }));
+      showAuthMessage("تم الدخول بنجاح!", false);
+      setTimeout(() => {
+        renderHome();
+        renderProfileView();
+        navigateTo(currentUser.isAdmin ? 'admin-view' : 'home-view');
+      }, 800);
+    }
+
+    function showAuthMessage(msg, isError = true) {
+      const box = document.getElementById('authAlertBox');
+      box.classList.remove('hidden');
+      box.className = isError ? "p-3 rounded-xl text-xs font-bold mb-4 bg-red-950/80 text-red-300" : "p-3 rounded-xl text-xs font-bold mb-4 bg-emerald-950/80 text-emerald-300";
+      box.innerText = msg;
+    }
+
+    async function uploadCustomAvatar() {
+      const imageUrl = prompt("يرجى إدخال رابط مباشر للصورة (URL):");
+      if (imageUrl && currentUser) {
+        currentUser.avatar = imageUrl;
+        await supabase.from('profiles').update({ avatar: imageUrl }).eq('id', currentUser.id);
+        renderProfileView();
+        renderHeaderBadge();
+        alert("تم التحديث بنجاح!");
+      }
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      localStorage.removeItem("crest_user");
+      renderHome();
+      navigateTo('home-view');
+    }
+
+    function navigateTo(targetViewId) {
+      document.querySelectorAll('.view-section').forEach(view => { view.classList.add('hidden'); view.style.opacity = "0"; });
+      const targetView = document.getElementById(targetViewId);
+      if (targetView) {
+        targetView.classList.remove('hidden');
+        setTimeout(() => { targetView.style.opacity = "1"; }, 30);
+      }
+      const bottomNav = document.getElementById('bottomAppNav');
+      if (['manhwa-reader-view', 'novel-reader-view', 'login-view'].includes(targetViewId)) bottomNav.classList.add('hidden');
+      else bottomNav.classList.remove('hidden');
+      window.scrollTo(0, 0);
+      if(window.lucide) lucide.createIcons();
+    }
+    
+    function navigateBack() { navigateTo(previousViewId || 'home-view'); }
+    function toggleSearchBar() { document.getElementById('search-bar-panel').classList.toggle('hidden'); }
+    function handleNavUserClick() { if (!currentUser) navigateTo('login-view'); else { renderProfileView(); navigateTo('profile-view'); } }
+
+    function renderHeaderBadge() {
+      const badge = document.getElementById('header-user-badge');
+      if (!currentUser) return badge.innerHTML = `<button onclick="navigateTo('login-view')" class="bg-purple-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl">دخول</button>`;
+      const r = getRealm(currentUser.read_count);
+      badge.innerHTML = `
+        <div onclick="handleNavUserClick()" class="flex items-center gap-2 cursor-pointer bg-[#15151a] p-1 pl-2.5 rounded-full border border-gray-800">
+          <div class="cultivation-frame ${r.frame}" style="width:32px;height:32px;"><img src="${currentUser.avatar}"></div>
+          <span class="text-xs font-bold text-white">@${currentUser.username}</span>
+        </div>`;
+    }
+
+    function renderHome() {
+      renderHeaderBadge();
+      const widget = document.getElementById('user-cultivation-widget');
+      if (currentUser) {
+        const r = getRealm(currentUser.read_count);
+        widget.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="cultivation-frame ${r.frame}" style="width: 52px; height: 52px;"><img src="${currentUser.avatar}"></div>
+            <div>
+              <span class="font-black text-sm text-white">@${currentUser.username}</span>
+              <span class="text-[10px] bg-purple-950 text-amber-300 px-2 py-0.5 rounded-full font-bold mr-1">${r.name}</span>
+              <span class="text-xs text-gray-400 block mt-1">قرأت <strong>${currentUser.read_count}</strong> فصل</span>
+            </div>
+          </div>
+        `;
+      } else {
+        widget.innerHTML = `<button onclick="navigateTo('login-view')" class="bg-purple-600 text-white font-bold text-xs px-5 py-2.5 rounded-xl">سجّل دخولك الآن لبدء الزراعة</button>`;
+      }
+
+      document.getElementById('homeManhwaGrid').innerHTML = manhwaList.slice(0, 5).map(m => createMediaCard(m, 'manhwa')).join('');
+      document.getElementById('homeNovelsGrid').innerHTML = novelsList.slice(0, 5).map(n => createMediaCard(n, 'novel')).join('');
+      document.getElementById('fullManhwaGrid').innerHTML = manhwaList.map(m => createMediaCard(m, 'manhwa')).join('');
+      document.getElementById('manhwaTotalCount').innerText = `${manhwaList.length} عمل`;
+      document.getElementById('fullNovelsGrid').innerHTML = novelsList.map(n => createMediaCard(n, 'novel')).join('');
+      document.getElementById('novelsTotalCount').innerText = `${novelsList.length} رواية`;
+      
+      // الهيرو بانر يعرض أحدث مانهوا كعمل مميز افتراضياً
+      const heroItem = manhwaList[0];
+      const heroSection = document.getElementById('heroSection');
+      if(heroItem) {
+        heroSection.classList.remove('hidden');
+        document.getElementById('heroCoverImg').src = heroItem.cover;
+        document.getElementById('heroTitle').innerText = heroItem.title;
+        document.getElementById('heroDesc').innerText = heroItem.desc;
+        document.getElementById('heroDetailsBtn').onclick = () => openItemDetails(heroItem.id, 'manhwa');
+        document.getElementById('heroReadBtn').onclick = () => { currentItem = heroItem; currentItemType='manhwa'; if(heroItem.chapters.length) openChapter(heroItem.chapters[0].id); }
+      }
+      
+      if(window.lucide) lucide.createIcons();
+    }
+
+    function createMediaCard(item, type) {
+      const isNovel = type === 'novel';
+      const badgeColor = isNovel ? 'bg-amber-950/80 text-amber-300' : 'bg-purple-950/80 text-purple-300';
+      return `
+        <div onclick="openItemDetails('${item.id}', '${type}')" class="bg-[#15151a] border border-gray-800 rounded-2xl overflow-hidden cursor-pointer flex flex-col">
+          <div class="relative aspect-[3/4] bg-gray-900"><img src="${item.cover}" class="w-full h-full object-cover">
+            <div class="absolute top-2 right-2 flex flex-col items-end"><span class="text-[10px] font-bold px-2 py-0.5 rounded-lg ${badgeColor}">${isNovel?'رواية':'مانهوا'}</span></div>
+          </div>
+          <div class="p-3"><h3 class="font-bold text-xs sm:text-sm text-white line-clamp-1">${item.title}</h3>
+            <div class="text-[11px] text-gray-400 mt-2 font-bold">${item.chapters ? item.chapters.length : 0} فصل</div>
+          </div>
+        </div>`;
+    }
+
+    function openItemDetails(id, type) {
+      const activeView = document.querySelector('.view-section:not(.hidden)');
+      if (activeView && activeView.id !== 'details-view') previousViewId = activeView.id;
+      currentItemType = type;
+      currentItem = type === 'manhwa' ? manhwaList.find(m => m.id === id) : novelsList.find(n => n.id === id);
+      if (!currentItem) return;
+      
+      const isNovel = type === 'novel';
+      document.getElementById('detailsContent').innerHTML = `
+        <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 mb-6">
+          <div class="flex gap-5"><img src="${currentItem.cover}" class="w-32 sm:w-48 aspect-[3/4] object-cover rounded-2xl">
+            <div>
+              <h1 class="text-xl sm:text-2xl font-black text-white">${currentItem.title}</h1>
+              <div class="flex gap-1 mt-2">${(currentItem.genres||[]).map(g => `<span class="bg-[#0b0b0e] text-gray-300 text-[11px] px-2 py-0.5 rounded-lg">${g}</span>`).join('')}</div>
+              <p class="text-xs text-gray-300 mt-3">${currentItem.desc || ''}</p>
+              ${currentItem.chapters.length ? `<button onclick="openChapter('${currentItem.chapters[0].id}')" class="mt-4 bg-purple-600 text-white font-bold text-xs px-6 py-2 rounded-xl">ابدأ القراءة</button>` : ''}
+            </div>
+          </div>
+        </div>
+        <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5">
+          <h2 class="text-sm font-bold text-white mb-4">قائمة الفصول</h2>
+          <div class="space-y-2">
+            ${currentItem.chapters.map(ch => `
+              <div onclick="openChapter('${ch.id}')" class="flex justify-between items-center p-3 bg-[#0b0b0e] rounded-xl cursor-pointer border border-gray-800">
+                <div class="flex items-center gap-2"><span class="text-xs font-bold text-purple-300 bg-purple-950 p-1.5 rounded-lg">${ch.num}</span><span class="text-sm text-white">${ch.title}</span></div>
+              </div>`).join('')}
+          </div>
+        </div>
+      `;
+      navigateTo('details-view');
+    }
+
+    async function openChapter(chId) {
+      if (!currentItem) return;
+      currentChapter = currentItem.chapters.find(c => c.id === chId);
+      if (!currentChapter) return;
+
+      if (currentUser) {
+        currentUser.read_count += 1;
+        await supabase.from('profiles').update({ read_count: currentUser.read_count }).eq('id', currentUser.id);
+      }
+
+      if (currentItemType === 'manhwa') {
+        document.getElementById('readerManhwaTitle').innerText = currentItem.title;
+        document.getElementById('readerChapterNum').innerText = currentChapter.title;
+        document.getElementById('webtoonPagesContainer').innerHTML = currentChapter.pages.map(p => `<img src="${p}" class="w-full block">`).join('');
+        navigateTo('manhwa-reader-view');
+        loadComments('chapterCommentsList', 'commentBoxArea');
+      } else {
+        document.getElementById('readerNovelTitle').innerText = currentItem.title;
+        document.getElementById('readerNovelChapterNum').innerText = currentChapter.title;
+        document.getElementById('novelChapterHeading').innerText = currentChapter.title;
+        document.getElementById('novelChapterBody').innerText = currentChapter.content;
+        document.getElementById('novelChapterBody').style.fontSize = `${novelFontSize}px`;
+        navigateTo('novel-reader-view');
+        loadComments('novelCommentsList', 'novelCommentBoxArea');
+      }
+    }
+
+    async function loadComments(listId, boxId) {
+      const list = document.getElementById(listId);
+      const box = document.getElementById(boxId);
+      
+      if (currentUser) {
+        box.innerHTML = `
+          <div class="flex gap-2">
+            <textarea id="inputCommentText" rows="2" placeholder="رأيك في الفصل..." class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-2 text-xs text-white"></textarea>
+            <button onclick="submitComment('${listId}')" class="bg-purple-600 text-white font-bold text-xs px-3 rounded-xl">إرسال</button>
+          </div>`;
+      } else box.innerHTML = `<p class="text-xs text-gray-500 text-center">سجل دخولك لتتمكن من التعليق</p>`;
+
+      const { data: comments } = await supabase.from('comments').select('*').eq('chapter_id', currentChapter.id).order('created_at', { ascending: false });
+      
+      if(!comments || comments.length === 0) list.innerHTML = `<p class="text-xs text-gray-500 text-center">لا توجد تعليقات بعد.</p>`;
+      else {
+        list.innerHTML = comments.map(c => `
+          <div class="bg-[#0b0b0e] border border-gray-800 rounded-xl p-3 text-xs mb-2">
+            <div class="flex items-center gap-2 mb-1"><img src="${c.avatar}" class="w-6 h-6 rounded-full"><span class="font-bold text-white">@${c.username}</span></div>
+            <p class="text-gray-300 pr-8">${c.comment_text}</p>
+          </div>`).join('');
+      }
+    }
+
+    async function submitComment(listId) {
+      const input = document.getElementById('inputCommentText');
+      const text = input.value.trim();
+      if (!text || !currentUser) return;
+      await supabase.from('comments').insert([{ chapter_id: currentChapter.id, username: currentUser.username, avatar: currentUser.avatar, comment_text: text }]);
+      input.value = "";
+      loadComments(listId, listId === 'novelCommentsList' ? 'novelCommentBoxArea' : 'commentBoxArea');
+    }
+
+    // التنقل بين الفصول
+    function goToPrevChapter() {
+      const idx = currentItem.chapters.findIndex(c => c.id === currentChapter.id);
+      if (idx > 0) openChapter(currentItem.chapters[idx - 1].id); else alert("أنت في أول فصل!");
+    }
+    function goToNextChapter() {
+      const idx = currentItem.chapters.findIndex(c => c.id === currentChapter.id);
+      if (idx < currentItem.chapters.length - 1) openChapter(currentItem.chapters[idx + 1].id); else alert("لا توجد فصول تالية!");
+    }
+
+    // أدوات لوحة التحكم
+    async function handleAdminCreateManga(e) {
+      e.preventDefault();
+      const title = document.getElementById('admMangaTitle').value;
+      const cover = document.getElementById('admMangaCover').value || "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600";
+      const genres = document.getElementById('admMangaGenres').value;
+      const desc = document.getElementById('admMangaDesc').value;
+      await supabase.from('media').insert([{ type: 'manhwa', title, cover, genres, description: desc }]);
+      alert("تم الإضافة!"); document.getElementById('admMangaTitle').value=""; loadDataFromSupabase();
+    }
+    async function handleAdminUploadMangaChapter(e) {
+      e.preventDefault();
+      const mId = document.getElementById('admChMangaSelect').value;
+      const num = document.getElementById('admChNum').value;
+      const title = document.getElementById('admChTitle').value || `الفصل ${num}`;
+      const urls = document.getElementById('admChUrls').value;
+      await supabase.from('chapters').insert([{ media_id: mId, chapter_num: parseFloat(num), title, content: urls }]);
+      alert("تم نشر الفصل!"); document.getElementById('admChUrls').value=""; loadDataFromSupabase();
+    }
+    async function handleAdminCreateNovel(e) {
+      e.preventDefault();
+      const title = document.getElementById('admNewNovelTitle').value;
+      const cover = document.getElementById('admNewNovelCover').value || "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600";
+      const genres = document.getElementById('admNewNovelGenres').value;
+      const desc = document.getElementById('admNewNovelDesc').value;
+      await supabase.from('media').insert([{ type: 'novel', title, cover, genres, description: desc }]);
+      alert("تم الإضافة!"); document.getElementById('admNewNovelTitle').value=""; loadDataFromSupabase();
+    }
+    async function handleAdminUploadNovelChapter(e) {
+      e.preventDefault();
+      const mId = document.getElementById('admNovelSelect').value;
+      const num = document.getElementById('admNovelChNum').value;
+      const title = document.getElementById('admNovelChTitle').value;
+      const text = document.getElementById('admNovelChContent').value;
+      await supabase.from('chapters').insert([{ media_id: mId, chapter_num: parseFloat(num), title, content: text }]);
+      alert("تم نشر الفصل!"); document.getElementById('admNovelChContent').value=""; loadDataFromSupabase();
+    }
+
+    function switchAdminTab(t) {
+      document.getElementById('adminMangaTab').classList.add('hidden');
+      document.getElementById('adminNovelsTab').classList.add('hidden');
+      document.getElementById('tabBtnManga').className="bg-[#15151a] text-gray-300 font-bold px-4 py-2 rounded-xl";
+      document.getElementById('tabBtnNovels').className="bg-[#15151a] text-gray-300 font-bold px-4 py-2 rounded-xl";
+      
+      if(t === 'manga-tab') {
+        document.getElementById('adminMangaTab').classList.remove('hidden');
+        document.getElementById('tabBtnManga').className="bg-purple-600 text-white font-bold px-4 py-2 rounded-xl";
+      } else {
+        document.getElementById('adminNovelsTab').classList.remove('hidden');
+        document.getElementById('tabBtnNovels').className="bg-amber-600 text-black font-bold px-4 py-2 rounded-xl";
+      }
+    }
+
+    function populateAdminSelects() {
+      document.getElementById('admChMangaSelect').innerHTML = manhwaList.map(m => `<option value="${m.id}">${m.title}</option>`).join('');
+      document.getElementById('admNovelSelect').innerHTML = novelsList.map(n => `<option value="${n.id}">${n.title}</option>`).join('');
+    }
+
+    function renderProfileView() {
+      if(!currentUser) return;
+      document.getElementById('profileUsername').innerText = `@${currentUser.username}`;
+      document.getElementById('profileEmail').innerText = currentUser.email;
+      document.getElementById('profileReadCount').innerText = currentUser.read_count;
+      document.getElementById('profileRole').innerText = currentUser.role;
+      document.getElementById('profileAvatarImg').src = currentUser.avatar;
+      document.getElementById('profileAvatarFrame').className = `cultivation-frame ${getRealm(currentUser.read_count).frame}`;
+      document.getElementById('profileRealmBadge').innerText = getRealm(currentUser.read_count).name;
+      if(currentUser.isAdmin) document.getElementById('profileAdminBtn').classList.remove('hidden');
+    }
+
+    function handleGlobalSearch(q) {
+      q = q.trim().toLowerCase();
+      if (!q) { renderHome(); return; }
+      const fM = manhwaList.filter(m => m.title.toLowerCase().includes(q));
+      const fN = novelsList.filter(n => n.title.toLowerCase().includes(q));
+      document.getElementById('homeManhwaGrid').innerHTML = fM.map(m => createMediaCard(m, 'manhwa')).join('');
+      document.getElementById('homeNovelsGrid').innerHTML = fN.map(n => createMediaCard(n, 'novel')).join('');
+      document.getElementById('fullManhwaGrid').innerHTML = fM.map(m => createMediaCard(m, 'manhwa')).join('');
+      document.getElementById('fullNovelsGrid').innerHTML = fN.map(n => createMediaCard(n, 'novel')).join('');
+      if(window.lucide) lucide.createIcons();
+    }
+    
+    function changeFontSize(delta) { novelFontSize = Math.max(12, Math.min(28, novelFontSize + delta)); document.getElementById('novelChapterBody').style.fontSize = `${novelFontSize}px`; }
+    function toggleNovelTheme() { novelThemeIndex = (novelThemeIndex + 1) % novelThemes.length; document.getElementById('novelReaderContainer').className = `${novelThemes[novelThemeIndex]} max-w-3xl mx-auto p-5 sm:p-8 min-h-screen transition-colors duration-300`; }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      loadDataFromSupabase().then(() => {
+        document.getElementById('loading-overlay').classList.add('hidden');
+      });
+    });
+  </script>
+</body>
+</html>
