@@ -298,44 +298,80 @@
     </div>
   </div>
 
-  <!-- 7. صفحة تسجيل الدخول -->
+  <!-- 7. صفحة تسجيل الدخول وإنشاء الحساب مع التحقق من كلمة السر -->
   <div id="login-view" class="view-section hidden min-h-screen px-5 py-10 relative overflow-hidden flex flex-col justify-center">
     <div class="absolute top-[-10%] left-[-10%] w-64 h-64 bg-purple-600/20 rounded-full blur-[100px] pointer-events-none"></div>
     <div class="absolute bottom-[-10%] right-[-10%] w-64 h-64 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none"></div>
 
     <div class="relative z-10 w-full max-w-md mx-auto">
-      <div class="text-center mb-8">
+      <div class="text-center mb-6">
         <div class="w-16 h-16 bg-purple-600 rounded-2xl mx-auto flex items-center justify-center font-black italic tracking-tighter text-3xl mb-3 shadow-lg shadow-purple-900/50 cursor-pointer" onclick="navigateTo('home-view')">
           M
         </div>
         <h1 class="font-bold text-2xl tracking-wider text-gray-100">MANGA CREST</h1>
-        <p class="text-gray-400 text-sm mt-1">سجل دخولك لمتابعة وحفظ أعمالك المفضلة</p>
+        <p id="authSubtitle" class="text-gray-400 text-sm mt-1">سجل دخولك أو أنشئ حساباً جديداً بكلمة سر</p>
       </div>
 
       <div class="bg-[#111116] border border-gray-800/80 rounded-3xl p-6 md:p-8 shadow-2xl">
-        <form onsubmit="handleFormLogin(event)" class="flex flex-col gap-4">
+        
+        <!-- أزرار التبديل بين تسجيل الدخول وإنشاء حساب جديد -->
+        <div class="flex bg-[#15151a] p-1 rounded-2xl border border-gray-800 mb-6">
+          <button type="button" id="tabAuthLogin" onclick="switchAuthMode('login')" class="flex-1 py-2 text-xs font-bold rounded-xl transition bg-purple-600 text-white shadow">
+            تسجيل الدخول
+          </button>
+          <button type="button" id="tabAuthRegister" onclick="switchAuthMode('register')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-gray-400 hover:text-white">
+            إنشاء حساب جديد
+          </button>
+        </div>
+
+        <!-- صندوق رسائل التنبيه والخطأ الديناميكي -->
+        <div id="authAlertBox" class="hidden mb-4 p-3 rounded-xl text-xs font-bold flex items-center gap-2"></div>
+
+        <form onsubmit="handleAuthSubmit(event)" class="flex flex-col gap-4">
+          
+          <!-- حقل اسم المستخدم (يظهر فقط في إنشاء حساب) -->
+          <div id="regUsernameField" class="hidden">
+            <label class="block text-xs font-bold text-gray-400 mb-2 pr-1">اسم المستخدم (بالإنجليزي)</label>
+            <div class="relative">
+              <i data-lucide="user" class="absolute right-4 top-3.5 w-5 h-5 text-gray-500"></i>
+              <input type="text" id="regUsername" placeholder="your_username" class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 pr-12 pl-4 text-sm focus:outline-none focus:border-purple-500 transition-all text-left" dir="ltr">
+            </div>
+          </div>
+
+          <!-- البريد الإلكتروني -->
           <div>
             <label class="block text-xs font-bold text-gray-400 mb-2 pr-1">البريد الإلكتروني</label>
             <div class="relative">
               <i data-lucide="mail" class="absolute right-4 top-3.5 w-5 h-5 text-gray-500"></i>
-              <input type="email" id="loginEmail" placeholder="your gmail @gmail.com" required class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 pr-12 pl-4 text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-left" dir="ltr">
+              <input type="email" id="authEmail" placeholder="name@gmail.com" required class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 pr-12 pl-4 text-sm focus:outline-none focus:border-purple-500 transition-all text-left" dir="ltr">
             </div>
           </div>
 
+          <!-- كلمة المرور -->
           <div>
             <label class="block text-xs font-bold text-gray-400 mb-2 pr-1">كلمة المرور</label>
             <div class="relative">
               <i data-lucide="lock" class="absolute right-4 top-3.5 w-5 h-5 text-gray-500"></i>
-              <input type="password" id="loginPass" placeholder="••••••••" required class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 pr-12 pl-4 text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-left" dir="ltr">
+              <input type="password" id="authPass" placeholder="••••••••" required class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 pr-12 pl-4 text-sm focus:outline-none focus:border-purple-500 transition-all text-left" dir="ltr">
             </div>
           </div>
 
-          <div class="flex justify-end">
-            <a href="javascript:void(0)" onclick="alert('أدخل بريدك وسيتم استعادة حسابك تلقائياً!')" class="text-xs text-purple-400 font-medium hover:text-purple-300 transition-colors">نسيت كلمة المرور؟</a>
+          <!-- تأكيد كلمة المرور (يظهر فقط في إنشاء حساب) -->
+          <div id="regPassConfirmField" class="hidden">
+            <label class="block text-xs font-bold text-gray-400 mb-2 pr-1">تأكيد كلمة المرور</label>
+            <div class="relative">
+              <i data-lucide="check-check" class="absolute right-4 top-3.5 w-5 h-5 text-gray-500"></i>
+              <input type="password" id="regPassConfirm" placeholder="••••••••" class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 pr-12 pl-4 text-sm focus:outline-none focus:border-purple-500 transition-all text-left" dir="ltr">
+            </div>
           </div>
 
-          <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 rounded-xl text-sm transition-colors mt-2 shadow-lg shadow-purple-900/30 flex justify-center items-center gap-2">
-            تسجيل الدخول <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          <div id="forgotPassContainer" class="flex justify-end">
+            <a href="javascript:void(0)" onclick="handleForgotPassword()" class="text-xs text-purple-400 font-medium hover:text-purple-300 transition-colors">نسيت كلمة المرور؟</a>
+          </div>
+
+          <button type="submit" id="authSubmitBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 rounded-xl text-sm transition-colors mt-2 shadow-lg shadow-purple-900/30 flex justify-center items-center gap-2">
+            <span>تسجيل الدخول</span>
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
           </button>
         </form>
 
@@ -346,7 +382,7 @@
         </div>
 
         <div class="flex gap-3">
-          <button type="button" onclick="triggerRealGoogleAuth()" class="flex-1 bg-[#15151a] border border-gray-700 hover:border-purple-500 py-3 rounded-xl flex justify-center items-center gap-2 transition-colors group">
+          <button type="button" onclick="triggerRealGoogleAuth()" class="flex-1 bg-[#15151a] border border-gray-700 hover:border-purple-500 py-3 rounded-xl flex justify-center items-center gap-2 transition-colors group" title="دخول سريع بحساب الأدمن أو بحساب جوجل">
             <svg class="w-5 h-5" viewBox="0 0 24 24">
                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -369,7 +405,7 @@
     </div>
   </div>
 
-  <!-- 8. البروفايل والصورة الشخصية -->
+  <!-- 8. البروفايل والصورة الشخصية وتغيير كلمة المرور -->
   <div id="profile-view" class="view-section hidden p-4 max-w-xl mx-auto">
     <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-6 shadow-2xl">
       <div class="text-center mb-6">
@@ -402,12 +438,26 @@
       </div>
 
       <!-- زر مباشر لرفع الصورة الشخصية -->
-      <div class="border-t border-gray-800 pt-4 mb-6">
-        <button onclick="document.getElementById('customAvatarInput').click()" class="w-full bg-[#1c1c24] hover:bg-[#252530] border border-gray-700 hover:border-purple-500 text-gray-200 hover:text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition shadow-sm">
+      <div class="border-t border-gray-800 pt-4 mb-5">
+        <button onclick="document.getElementById('customAvatarInput').click()" class="w-full bg-[#1c1c24] hover:bg-[#252530] border border-gray-700 hover:border-purple-500 text-gray-200 hover:text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition shadow-sm">
           <i data-lucide="upload" class="w-4 h-4 text-purple-400"></i>
           <span>رفع صورة شخصية من جهازك</span>
         </button>
-        <p class="text-[11px] text-gray-500 text-center mt-2">اختر صورتك المفضلة من ملفات هاتفك أو حاسوبك</p>
+      </div>
+
+      <!-- قسم تغيير وتحديث كلمة المرور -->
+      <div class="bg-[#0b0b0e] border border-gray-800 rounded-2xl p-4 mb-6">
+        <h3 class="text-xs font-bold text-gray-300 mb-3 flex items-center gap-2">
+          <i data-lucide="key-round" class="w-4 h-4 text-purple-400"></i>
+          <span>تغيير كلمة المرور الخاصة بحسابك</span>
+        </h3>
+        <form onsubmit="handleChangePassword(event)" class="space-y-2.5 text-xs">
+          <input type="password" id="chgOldPass" placeholder="كلمة المرور الحالية" required class="w-full bg-[#15151a] border border-gray-700 rounded-xl p-2.5 text-gray-200 focus:outline-none focus:border-purple-500 text-left" dir="ltr">
+          <input type="password" id="chgNewPass" placeholder="كلمة المرور الجديدة" required class="w-full bg-[#15151a] border border-gray-700 rounded-xl p-2.5 text-gray-200 focus:outline-none focus:border-purple-500 text-left" dir="ltr">
+          <button type="submit" class="w-full bg-purple-900/80 hover:bg-purple-800 border border-purple-700 text-purple-200 font-bold py-2 rounded-xl transition">
+            تحديث كلمة المرور
+          </button>
+        </form>
       </div>
 
       <div class="flex flex-col gap-2">
@@ -448,9 +498,7 @@
         تحكّم في العمل الذي يظهر في صدارة الموقع أمام جميع الزوار في الصفحة الرئيسية. يمكنك تثبيت مانهوا أو رواية، أو إلغاء تثبيت أي عمل لإخفاء البنر.
       </p>
 
-      <div id="currentHeroStatusDisplay" class="mb-4 p-3 bg-[#0b0b0e] border border-gray-800 rounded-2xl text-xs flex items-center justify-between gap-3">
-        <!-- يتم توليده تلقائياً عبر الجافا سكريبت -->
-      </div>
+      <div id="currentHeroStatusDisplay" class="mb-4 p-3 bg-[#0b0b0e] border border-gray-800 rounded-2xl text-xs flex items-center justify-between gap-3"></div>
 
       <div class="flex flex-col sm:flex-row gap-2.5">
         <select id="admHeroSelect" class="flex-1 bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200 text-xs focus:outline-none focus:border-purple-500"></select>
@@ -571,7 +619,7 @@
       <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 text-xs">
         <h2 class="text-sm font-bold mb-2 border-r-4 border-purple-600 pr-2">قاعدة البيانات والنسخ الاحتياطي</h2>
         <p class="text-gray-400 mb-4 leading-relaxed">
-          تصدير أو استعادة كافة المانهوا والروايات والعمل الأسطوري المثبت وتعليقات القراء في ملف JSON:
+          تصدير أو استعادة كافة المانهوا والروايات وحسابات المستخدمين مع كلمات السر والعمل الأسطوري في ملف JSON:
         </p>
         <div class="flex flex-col sm:flex-row gap-3">
           <button onclick="exportFullDatabase()" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2">
@@ -607,7 +655,7 @@
   </nav>
 
   <!-- ========================================================================= -->
-  <!-- الجافا سكريبت الكامل المحدث -->
+  <!-- الجافا سكريبت الكامل مع التحقق التام من كلمات المرور وحفظها -->
   <!-- ========================================================================= -->
   <script>
     const REALMS = [
@@ -779,13 +827,26 @@
     let manhwaList = JSON.parse(localStorage.getItem("crest_manhwa_list")) || SEED_MANHWA;
     let novelsList = JSON.parse(localStorage.getItem("crest_novels_list")) || SEED_NOVELS;
     let staffMembers = JSON.parse(localStorage.getItem("crest_staff_list")) || SEED_STAFF;
-    let userRegistry = JSON.parse(localStorage.getItem("crest_user_registry")) || {
-      "zechal": { email: "zechal510010@gmail.com" }
-    };
     let commentsDB = JSON.parse(localStorage.getItem("crest_comments_db")) || {};
-    
-    // إدارة العمل الأسطوري المميز المثبت (Hero)
     let featuredHero = JSON.parse(localStorage.getItem("crest_featured_hero")) || { id: "m1", type: "manhwa" };
+
+    // قاعدة بيانات المستخدمين المحفوظة مع كلمات السر
+    let userRegistry = JSON.parse(localStorage.getItem("crest_user_registry")) || {};
+
+    // تهيئة حساب الأدمن والمؤسس الافتراضي بكلمة سر إذا لم يكن موجوداً
+    if (!userRegistry["zechal510010@gmail.com"]) {
+      userRegistry["zechal510010@gmail.com"] = {
+        username: "zechal",
+        name: "أحمد (Zechal)",
+        email: "zechal510010@gmail.com",
+        password: "admin", // كلمة المرور الافتراضية للأدمن
+        role: "المدير العام / مؤسس",
+        avatar: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=100",
+        readCount: 5200,
+        isAdmin: true,
+        history: []
+      };
+    }
 
     // تنظيف أي بيانات تجريبية
     manhwaList = manhwaList.filter(m => m && m.title && !m.title.toLowerCase().includes('test') && !m.title.includes('تجربة'));
@@ -806,8 +867,16 @@
     let novelFontSize = 16;
     let novelThemeIndex = 0;
     const novelThemes = ['novel-theme-dark', 'novel-theme-sepia', 'novel-theme-night'];
+    let authMode = 'login'; // إما login أو register
 
     function saveState() {
+      // مزامنة الحساب الحالي مع قاعدة بيانات المستخدمين
+      if (currentUser && currentUser.email) {
+        userRegistry[currentUser.email.toLowerCase()] = {
+          ...currentUser,
+          password: currentUser.password || (userRegistry[currentUser.email.toLowerCase()]?.password || "123456")
+        };
+      }
       localStorage.setItem("crest_user", JSON.stringify(currentUser));
       localStorage.setItem("crest_manhwa_list", JSON.stringify(manhwaList));
       localStorage.setItem("crest_novels_list", JSON.stringify(novelsList));
@@ -866,6 +935,7 @@
 
     function handleNavUserClick() {
       if (!currentUser) {
+        switchAuthMode('login');
         navigateTo('login-view');
       } else {
         renderProfileView();
@@ -873,59 +943,210 @@
       }
     }
 
+    // ==========================================
+    // نظام تسجيل الدخول وإنشاء الحساب مع كلمة السر
+    // ==========================================
+    function switchAuthMode(mode) {
+      authMode = mode;
+      const tabLogin = document.getElementById('tabAuthLogin');
+      const tabRegister = document.getElementById('tabAuthRegister');
+      const regUsernameField = document.getElementById('regUsernameField');
+      const regPassConfirmField = document.getElementById('regPassConfirmField');
+      const forgotContainer = document.getElementById('forgotPassContainer');
+      const submitBtn = document.getElementById('authSubmitBtn');
+      const subtitle = document.getElementById('authSubtitle');
+      hideAuthAlert();
+
+      if (mode === 'login') {
+        tabLogin.className = "flex-1 py-2 text-xs font-bold rounded-xl transition bg-purple-600 text-white shadow";
+        tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-xl transition text-gray-400 hover:text-white";
+        regUsernameField.classList.add('hidden');
+        regPassConfirmField.classList.add('hidden');
+        forgotContainer.classList.remove('hidden');
+        submitBtn.innerHTML = `<span>تسجيل الدخول</span> <i data-lucide="arrow-left" class="w-4 h-4"></i>`;
+        subtitle.innerText = "سجل دخولك لمتابعة أعمالك المفضلة ورتبتك";
+      } else {
+        tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-xl transition bg-purple-600 text-white shadow";
+        tabLogin.className = "flex-1 py-2 text-xs font-bold rounded-xl transition text-gray-400 hover:text-white";
+        regUsernameField.classList.remove('hidden');
+        regPassConfirmField.classList.remove('hidden');
+        forgotContainer.classList.add('hidden');
+        submitBtn.innerHTML = `<span>إنشاء الحساب والبدء</span> <i data-lucide="check" class="w-4 h-4"></i>`;
+        subtitle.innerText = "أنشئ حساباً جديداً وعيّن كلمة سر خاصة بك";
+      }
+      safeCreateIcons();
+    }
+
+    function showAuthAlert(type, message) {
+      const box = document.getElementById('authAlertBox');
+      box.classList.remove('hidden');
+      if (type === 'error') {
+        box.className = "mb-4 p-3 rounded-xl text-xs font-bold flex items-center gap-2 bg-red-950/80 border border-red-800 text-red-300";
+        box.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-red-400 shrink-0"></i> <span>${message}</span>`;
+      } else {
+        box.className = "mb-4 p-3 rounded-xl text-xs font-bold flex items-center gap-2 bg-emerald-950/80 border border-emerald-800 text-emerald-300";
+        box.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i> <span>${message}</span>`;
+      }
+      safeCreateIcons();
+    }
+
+    function hideAuthAlert() {
+      const box = document.getElementById('authAlertBox');
+      if (box) box.classList.add('hidden');
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('authPass').value;
+
+      if (!email) {
+        showAuthAlert('error', 'يرجى كتابة البريد الإلكتروني!');
+        return;
+      }
+
+      if (authMode === 'login') {
+        // حالة تسجيل الدخول
+        const userAcc = userRegistry[email];
+        if (!userAcc) {
+          showAuthAlert('error', 'هذا البريد غير مسجل بعد! اضغط على "إنشاء حساب جديد" بالأعلى لتعيين حسابك وكلمة سرك.');
+          return;
+        }
+
+        // التحقق من صحة كلمة المرور المحفوظة
+        if (userAcc.password && userAcc.password !== pass) {
+          showAuthAlert('error', 'كلمة المرور غير صحيحة! يرجى التأكد والمحاولة مرة أخرى.');
+          return;
+        }
+
+        // تسجيل الدخول بنجاح
+        currentUser = { ...userAcc };
+        saveState();
+        renderHome();
+        renderProfileView();
+        showAuthAlert('success', `أهلاً بك مجدداً @${currentUser.username}!`);
+        setTimeout(() => {
+          navigateTo(currentUser.isAdmin ? 'admin-view' : 'home-view');
+        }, 400);
+
+      } else {
+        // حالة إنشاء حساب جديد
+        const rawUsername = document.getElementById('regUsername').value.trim();
+        const username = rawUsername.toLowerCase().replace(/[^a-z0-9_]/g, '') || email.split('@')[0].replace(/[^a-z0-9_]/g, '');
+        const confirmPass = document.getElementById('regPassConfirm').value;
+
+        if (!pass || pass.length < 4) {
+          showAuthAlert('error', 'كلمة المرور يجب أن تتكون من 4 أحرف أو أرقام على الأقل!');
+          return;
+        }
+
+        if (pass !== confirmPass) {
+          showAuthAlert('error', 'كلمتا المرور غير متطابقتين! يرجى إعادة التأكيد.');
+          return;
+        }
+
+        if (userRegistry[email]) {
+          showAuthAlert('error', 'هذا البريد مسجل مسبقاً! قم بالتبديل إلى "تسجيل الدخول".');
+          return;
+        }
+
+        const isSuper = SUPER_ADMIN_EMAILS.some(e => e.toLowerCase() === email) || username === "zechal";
+        const staffMember = staffMembers.find(s => s.email.toLowerCase() === email || s.username === username);
+
+        const newUser = {
+          username: username,
+          name: username,
+          email: email,
+          password: pass, // حفظ كلمة المرور
+          avatar: isSuper ? "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=100" : "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=100",
+          role: isSuper ? "المدير العام / مؤسس" : (staffMember ? staffMember.role : "قارئ"),
+          readCount: isSuper ? 5200 : (staffMember ? 300 : 0),
+          isAdmin: isSuper || !!staffMember,
+          history: []
+        };
+
+        userRegistry[email] = newUser;
+        currentUser = newUser;
+        saveState();
+        renderHome();
+        renderProfileView();
+        showAuthAlert('success', 'تم إنشاء حسابك وتعيين كلمة المرور بنجاح!');
+        setTimeout(() => {
+          navigateTo(currentUser.isAdmin ? 'admin-view' : 'home-view');
+        }, 500);
+      }
+    }
+
+    function handleForgotPassword() {
+      const email = prompt("أدخل بريدك الإلكتروني المسجل في الموقع لاستعادة حسابك:");
+      if (!email) return;
+      const emLower = email.trim().toLowerCase();
+      const userAcc = userRegistry[emLower];
+      if (!userAcc) {
+        alert("هذا البريد الإلكتروني غير مسجل في الموقع!");
+        return;
+      }
+      const newPass = prompt(`تم العثور على حسابك (@${userAcc.username}). أدخل كلمة المرور الجديدة التي تريد تعيينها:`);
+      if (newPass && newPass.trim().length >= 4) {
+        userAcc.password = newPass.trim();
+        userRegistry[emLower] = userAcc;
+        if (currentUser && currentUser.email.toLowerCase() === emLower) {
+          currentUser.password = newPass.trim();
+        }
+        saveState();
+        alert("تم تحديث كلمة المرور بنجاح! يمكنك الآن تسجيل الدخول بها.");
+      } else {
+        alert("كلمة المرور قصيرة جداً أو تم الإلغاء!");
+      }
+    }
+
+    function handleChangePassword(e) {
+      e.preventDefault();
+      if (!currentUser) return;
+      const oldPass = document.getElementById('chgOldPass').value;
+      const newPass = document.getElementById('chgNewPass').value.trim();
+
+      const userAcc = userRegistry[currentUser.email.toLowerCase()];
+      const currentSavedPass = userAcc?.password || currentUser.password || "123456";
+
+      if (oldPass !== currentSavedPass) {
+        alert("كلمة المرور الحالية غير صحيحة!");
+        return;
+      }
+
+      if (newPass.length < 4) {
+        alert("كلمة المرور الجديدة يجب أن تكون 4 خانات على الأقل!");
+        return;
+      }
+
+      currentUser.password = newPass;
+      if (userAcc) userAcc.password = newPass;
+      saveState();
+
+      document.getElementById('chgOldPass').value = "";
+      document.getElementById('chgNewPass').value = "";
+      alert("تم تغيير كلمة المرور وحفظها بنجاح!");
+    }
+
     function triggerRealGoogleAuth() {
       const googleEmail = "zechal510010@gmail.com";
-      applyLogin("zechal", googleEmail, "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100");
-    }
-
-    function handleFormLogin(e) {
-      e.preventDefault();
-      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-      if (!email) return;
-      const username = email.split('@')[0].replace(/[^a-z0-9_]/g, '');
-      applyLogin(username, email);
-    }
-
-    function applyLogin(username, email, customAvatar = null) {
-      const isSuper = SUPER_ADMIN_EMAILS.some(e => e.toLowerCase() === email.toLowerCase()) || username === "zechal";
-      const staffMember = staffMembers.find(s => s.email.toLowerCase() === email.toLowerCase() || s.username === username);
-
-      if (isSuper) {
+      const userAcc = userRegistry[googleEmail];
+      if (userAcc) {
+        currentUser = { ...userAcc };
+      } else {
         currentUser = {
           username: "zechal",
           name: "أحمد (Zechal)",
-          email: email,
-          avatar: customAvatar || "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=100",
+          email: googleEmail,
+          password: "admin",
+          avatar: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=100",
           role: "المدير العام / مؤسس",
           readCount: 5200,
           isAdmin: true,
           history: []
         };
-      } else if (staffMember) {
-        currentUser = {
-          username: username,
-          name: staffMember.name,
-          email: email,
-          avatar: customAvatar || "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100",
-          role: staffMember.role,
-          readCount: 300,
-          isAdmin: true,
-          history: []
-        };
-      } else {
-        currentUser = {
-          username: username,
-          name: username,
-          email: email,
-          avatar: customAvatar || "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=100",
-          role: "قارئ",
-          readCount: 0,
-          isAdmin: false,
-          history: []
-        };
+        userRegistry[googleEmail] = currentUser;
       }
-
-      userRegistry[username] = { email: email };
       saveState();
       renderHome();
       renderProfileView();
@@ -990,7 +1211,6 @@
       const quickBtnContainer = document.getElementById('heroAdminQuickBtnContainer');
       const heroItem = getHeroItem();
 
-      // إظهار زر الإدارة السريع إذا كان المسجل أدمن
       if (currentUser && currentUser.isAdmin) {
         if (heroItem) {
           quickBtnContainer.classList.remove('hidden');
@@ -1002,7 +1222,6 @@
       }
 
       if (!heroItem) {
-        // في حال عدم وجود عمل مميز مثبت
         if (currentUser && currentUser.isAdmin) {
           heroSection.classList.remove('hidden');
           document.getElementById('heroCoverImg').src = 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1200';
@@ -1013,13 +1232,11 @@
           document.getElementById('heroDetailsBtn').innerText = 'فتح لوحة التحكم';
           document.getElementById('heroDetailsBtn').onclick = () => navigateTo('admin-view');
         } else {
-          // إخفاء البنر للزوار العاديين إذا لم يكن هناك عمل مثبت
           heroSection.classList.add('hidden');
         }
         return;
       }
 
-      // عرض العمل المثبت بشكل طبيعي
       heroSection.classList.remove('hidden');
       document.getElementById('heroCoverImg').src = heroItem.cover || 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1200';
       document.getElementById('heroBadgeText').innerText = featuredHero.type === 'novel' ? 'الرواية الأسطورية المميزة' : 'العمل الأسطوري المميز';
@@ -1472,7 +1689,6 @@
       const nSel = document.getElementById('admNovelSelect');
       if (nSel) nSel.innerHTML = novelsList.map(n => `<option value="${n.id}">${n.title}</option>`).join('');
 
-      // قائمة اختيار العمل المميز (Hero)
       const hSel = document.getElementById('admHeroSelect');
       if (hSel) {
         let optHtml = `<option value="">-- اختر عملاً لتثبيته في صدارة الموقع --</option>`;
@@ -1495,7 +1711,6 @@
         hSel.innerHTML = optHtml;
       }
 
-      // تحديث حالة العرض الحالي للعمل الأسطوري في لوحة الأدمن
       const statusDisplay = document.getElementById('currentHeroStatusDisplay');
       if (statusDisplay) {
         const heroItem = getHeroItem();
@@ -1819,9 +2034,25 @@
       const role = document.getElementById('admStaffRole').value;
 
       staffMembers.push({ id: "st_" + Date.now(), username, name: username, email, role });
+      
+      // إضافة العضو في سجل المستخدمين بكلمة سر افتراضية 123456 إن لم يكن مسجلاً
+      if (!userRegistry[email]) {
+        userRegistry[email] = {
+          username: username,
+          name: username,
+          email: email,
+          password: "123456",
+          avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100",
+          role: role,
+          readCount: 300,
+          isAdmin: true,
+          history: []
+        };
+      }
+
       saveState();
       renderAdminStaffList();
-      alert(`تمت إضافة @${username} برتبة (${role}) بنجاح!`);
+      alert(`تمت إضافة @${username} برتبة (${role}) بنجاح! كلمة السر الافتراضية له هي: 123456 ويمكنه تغييرها.`);
       document.getElementById('admStaffUser').value = "";
       document.getElementById('admStaffEmail').value = "";
     }
@@ -1891,7 +2122,7 @@
           if (data.featuredHero !== undefined) featuredHero = data.featuredHero;
           saveState();
           renderHome();
-          alert("تم استيراد قاعدة البيانات بالكامل وتحديث الموقع!");
+          alert("تم استيراد قاعدة البيانات بالكامل مع حسابات المستخدمين وتحديث الموقع!");
         } catch(err) {
           alert("خطأ أثناء قراءة ملف قاعدة البيانات: " + err.message);
         }
@@ -1908,7 +2139,7 @@
       const filteredManga = manhwaList.filter(m => m.title.toLowerCase().includes(q) || m.genres.some(g => g.toLowerCase().includes(q)));
       const filteredNovels = novelsList.filter(n => n.title.toLowerCase().includes(q) || n.genres.some(g => g.toLowerCase().includes(q)));
       
-      document.getElementById('homeManhwaGrid').innerHTML = filteredManga.map(m => createMediaCard(m, 'manhwa')).join('');
+      document.getElementById('homeManhwaGrid').innerHTML = filteredManga.map(m => createMediaCard(m, 'manhwahomeManhwaGrid').innerHTML = filteredManga.map(m => createMediaCard(m, 'manhwa')).join('');
       document.getElementById('homeNovelsGrid').innerHTML = filteredNovels.map(n => createMediaCard(n, 'novel')).join('');
       safeCreateIcons();
     }
