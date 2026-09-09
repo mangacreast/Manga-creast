@@ -374,8 +374,8 @@
   <!-- JavaScript (Supabase Real Database Integration) -->
   <!-- ========================================================================= -->
   <script>
-    // ⚠️ ضع الرابط والمفتاح الخاص بك هنا ⚠️
-    const supabaseUrl = 'https://tumtlkfcwetvhoemknre.supabase.co/rest/v1/'; 
+    // تم تركيب الرابط والمفتاح الخاص بك هنا مباشرة
+    const supabaseUrl = 'https://tumtlkfcwetvhoemknre.supabase.co'; 
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1bXRsa2Zjd2V0dmhvZW1rbnJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyMzIzMzYsImV4cCI6MjEwMTgwODMzNn0.HtFnKH__LvJdFTwmeecgq_jYIqQY6PXFvWM6eNtt5RQ';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
@@ -432,7 +432,7 @@
         const localUser = localStorage.getItem("crest_user");
         if (localUser) {
            const parsedUser = JSON.parse(localUser);
-           const { data: userData } = await supabase.from('profiles').select('*').eq('email', parsedUser.email).single();
+           const { data: userData } = await supabase.from('readers').select('*').eq('email', parsedUser.email).single();
            if(userData) currentUser = { ...userData, isAdmin: userData.email === SUPER_ADMIN_EMAIL };
         }
       } catch (err) {
@@ -456,8 +456,8 @@
           id: c.id,
           num: c.chapter_num,
           title: c.title,
-          content: c.content, // للنصوص
-          pages: c.content ? c.content.split(/[\n,]+/).map(u => u.trim()).filter(u => u.length > 5) : [] // للصور
+          content: c.content,
+          pages: c.content ? c.content.split(/[\n,]+/).map(u => u.trim()).filter(u => u.length > 5) : []
         }))
       };
     }
@@ -469,12 +469,12 @@
       const pass = document.getElementById('loginPass').value;
       if (!email || !pass) return showAuthMessage("يرجى تعبئة الحقول!");
 
-      const { data: existingUser } = await supabase.from('profiles').select('*').eq('email', email).single();
+      const { data: existingUser } = await supabase.from('readers').select('*').eq('email', email).single();
 
       if (authSubmitAction === 'register') {
         if (existingUser) return showAuthMessage("هذا الحساب مسجل مسبقاً! قم بتسجيل الدخول.");
         const username = email.split('@')[0].replace(/[^a-z0-9_]/g, '');
-        const { data, error } = await supabase.from('profiles').insert([{ 
+        const { data, error } = await supabase.from('readers').insert([{ 
           email: email, 
           username: username, 
           password: pass, 
@@ -514,7 +514,7 @@
       const imageUrl = prompt("يرجى إدخال رابط مباشر للصورة (URL):");
       if (imageUrl && currentUser) {
         currentUser.avatar = imageUrl;
-        await supabase.from('profiles').update({ avatar: imageUrl }).eq('id', currentUser.id);
+        await supabase.from('readers').update({ avatar: imageUrl }).eq('id', currentUser.id);
         renderProfileView();
         renderHeaderBadge();
         alert("تم التحديث بنجاح!");
@@ -583,7 +583,6 @@
       document.getElementById('fullNovelsGrid').innerHTML = novelsList.map(n => createMediaCard(n, 'novel')).join('');
       document.getElementById('novelsTotalCount').innerText = `${novelsList.length} رواية`;
       
-      // الهيرو بانر يعرض أحدث مانهوا كعمل مميز افتراضياً
       const heroItem = manhwaList[0];
       const heroSection = document.getElementById('heroSection');
       if(heroItem) {
@@ -651,7 +650,7 @@
 
       if (currentUser) {
         currentUser.read_count += 1;
-        await supabase.from('profiles').update({ read_count: currentUser.read_count }).eq('id', currentUser.id);
+        await supabase.from('readers').update({ read_count: currentUser.read_count }).eq('id', currentUser.id);
       }
 
       if (currentItemType === 'manhwa') {
@@ -704,7 +703,6 @@
       loadComments(listId, listId === 'novelCommentsList' ? 'novelCommentBoxArea' : 'commentBoxArea');
     }
 
-    // التنقل بين الفصول
     function goToPrevChapter() {
       const idx = currentItem.chapters.findIndex(c => c.id === currentChapter.id);
       if (idx > 0) openChapter(currentItem.chapters[idx - 1].id); else alert("أنت في أول فصل!");
@@ -714,7 +712,6 @@
       if (idx < currentItem.chapters.length - 1) openChapter(currentItem.chapters[idx + 1].id); else alert("لا توجد فصول تالية!");
     }
 
-    // أدوات لوحة التحكم
     async function handleAdminCreateManga(e) {
       e.preventDefault();
       const title = document.getElementById('admMangaTitle').value;
