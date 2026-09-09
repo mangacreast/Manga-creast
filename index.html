@@ -124,21 +124,27 @@
 
   <!-- 1. الرئيسية (HOME VIEW) -->
   <div id="home-view" class="view-section">
-    <!-- البنر المميز الديناميكي (يتحكم به الأدمن) -->
+    <!-- البنر المميز القابل للإدارة والتثبيت -->
     <section id="heroSection" class="relative w-full h-[380px] sm:h-[430px] bg-gray-900 overflow-hidden">
-       <img id="heroCoverImg" src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1200&auto=format&fit=crop&q=80" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800';" class="absolute inset-0 w-full h-full object-cover opacity-45 transition-all duration-500" alt="Hero">
+       <img id="heroCoverImg" src="" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1200';" class="absolute inset-0 w-full h-full object-cover opacity-45" alt="Hero">
        <div class="absolute inset-0 bg-gradient-to-t from-[#0b0b0e] via-[#0b0b0e]/70 to-transparent"></div>
+       
+       <!-- زر سريع للأدمن لإلغاء تثبيت العمل مباشرة -->
+       <div id="heroAdminQuickBtnContainer" class="absolute top-4 left-4 z-10 hidden">
+         <button onclick="handleAdminRemoveHeroQuick()" class="bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 text-xs px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 shadow-lg backdrop-blur">
+           <i data-lucide="pin-off" class="w-3.5 h-3.5"></i> إلغاء تثبيت هذا العمل المميز
+         </button>
+       </div>
+
        <div class="absolute bottom-0 left-0 p-4 sm:p-6 w-full max-w-4xl">
-          <span id="heroBadge" class="text-[11px] font-black bg-purple-600/20 text-purple-400 border border-purple-500/30 px-2.5 py-1 rounded-md mb-2 inline-block">العمل الأسطوري المميز</span>
-          <h1 id="heroTitle" class="text-2xl sm:text-4xl font-black mb-2 text-white">مرحباً بكم في مانجا كريست</h1>
-          <p id="heroDesc" class="text-xs sm:text-sm text-gray-300 mb-4 line-clamp-2 leading-relaxed">
-            منصتك الأولى لقراءة أحدث المانهوا والروايات المترجمة بأعلى جودة وسرعة.
-          </p>
-          <div id="heroActionButtons" class="flex gap-3">
-             <button onclick="readHeroFirstChapter()" class="flex-1 sm:flex-none sm:px-8 bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-900/40 transition">
+          <span id="heroBadgeText" class="text-[11px] font-black bg-purple-600/20 text-purple-400 border border-purple-500/30 px-2.5 py-1 rounded-md mb-2 inline-block">العمل الأسطوري المميز</span>
+          <h1 id="heroTitle" class="text-2xl sm:text-4xl font-black mb-2 text-white"></h1>
+          <p id="heroDesc" class="text-xs sm:text-sm text-gray-300 mb-4 line-clamp-2 leading-relaxed"></p>
+          <div class="flex gap-3">
+             <button id="heroReadBtn" onclick="readHeroFirstChapter()" class="flex-1 sm:flex-none sm:px-8 bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-900/40 transition">
                <i data-lucide="play" class="w-4 h-4"></i> اقرأ الآن
              </button>
-             <button onclick="openHeroDetails()" class="flex-1 sm:flex-none sm:px-6 bg-[#1a1a20] hover:bg-gray-800 border border-gray-700 text-white py-2.5 rounded-xl font-bold text-xs sm:text-sm transition">
+             <button id="heroDetailsBtn" onclick="openHeroDetails()" class="flex-1 sm:flex-none sm:px-6 bg-[#1a1a20] hover:bg-gray-800 border border-gray-700 text-white py-2.5 rounded-xl font-bold text-xs sm:text-sm transition">
                التفاصيل
              </button>
           </div>
@@ -302,7 +308,7 @@
         <div class="w-16 h-16 bg-purple-600 rounded-2xl mx-auto flex items-center justify-center font-black italic tracking-tighter text-3xl mb-3 shadow-lg shadow-purple-900/50 cursor-pointer" onclick="navigateTo('home-view')">
           M
         </div>
-        <h1 class="font-bold text-2xl tracking-wider text-gray-100">NEW MANGA</h1>
+        <h1 class="font-bold text-2xl tracking-wider text-gray-100">MANGA CREST</h1>
         <p class="text-gray-400 text-sm mt-1">سجل دخولك لمتابعة وحفظ أعمالك المفضلة</p>
       </div>
 
@@ -395,7 +401,7 @@
         </div>
       </div>
 
-      <!-- زر مباشر لرفع الصورة الشخصية بسهولة -->
+      <!-- زر مباشر لرفع الصورة الشخصية -->
       <div class="border-t border-gray-800 pt-4 mb-6">
         <button onclick="document.getElementById('customAvatarInput').click()" class="w-full bg-[#1c1c24] hover:bg-[#252530] border border-gray-700 hover:border-purple-500 text-gray-200 hover:text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition shadow-sm">
           <i data-lucide="upload" class="w-4 h-4 text-purple-400"></i>
@@ -415,7 +421,7 @@
     </div>
   </div>
 
-  <!-- 9. لوحة تحكم الأدمن الكاملة -->
+  <!-- 9. لوحة تحكم الأدمن -->
   <div id="admin-view" class="view-section hidden p-4 max-w-4xl mx-auto">
     <header class="flex justify-between items-center p-4 bg-[#15151a] border border-gray-800 rounded-2xl mb-6 shadow-xl">
       <div class="flex items-center gap-3">
@@ -432,12 +438,35 @@
       </button>
     </header>
 
+    <!-- قسم مخصص لإدارة وتثبيت العمل الأسطوري المميز -->
+    <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 shadow-xl mb-6">
+      <h2 class="text-sm font-bold mb-2 border-r-4 border-amber-500 pr-2 flex items-center gap-2 text-white">
+        <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
+        <span>إدارة وتثبيت العمل الأسطوري المميز (Hero Banner)</span>
+      </h2>
+      <p class="text-xs text-gray-400 mb-4 leading-relaxed">
+        تحكّم في العمل الذي يظهر في صدارة الموقع أمام جميع الزوار في الصفحة الرئيسية. يمكنك تثبيت مانهوا أو رواية، أو إلغاء تثبيت أي عمل لإخفاء البنر.
+      </p>
+
+      <div id="currentHeroStatusDisplay" class="mb-4 p-3 bg-[#0b0b0e] border border-gray-800 rounded-2xl text-xs flex items-center justify-between gap-3">
+        <!-- يتم توليده تلقائياً عبر الجافا سكريبت -->
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-2.5">
+        <select id="admHeroSelect" class="flex-1 bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200 text-xs focus:outline-none focus:border-purple-500"></select>
+        <button onclick="handleAdminSetHero()" class="bg-amber-600 hover:bg-amber-500 text-black font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-md">
+          <i data-lucide="pin" class="w-3.5 h-3.5"></i> تثبيت كعمل مميز
+        </button>
+        <button onclick="handleAdminRemoveHero()" class="bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> إلغاء التثبيت / إزالة
+        </button>
+      </div>
+    </div>
+
+    <!-- تبويبات لوحة التحكم -->
     <div class="flex gap-2 border-b border-gray-800 pb-3 mb-6 overflow-x-auto hide-scrollbar text-xs">
       <button onclick="switchAdminTab('manga-tab')" id="tabBtnManga" class="bg-purple-600 text-white font-bold px-4 py-2 rounded-xl">إدارة المانهوا وحذفها</button>
       <button onclick="switchAdminTab('novels-tab')" id="tabBtnNovels" class="bg-[#15151a] text-gray-300 font-bold px-4 py-2 rounded-xl">إدارة الروايات وحذفها</button>
-      <button onclick="switchAdminTab('hero-tab')" id="tabBtnHero" class="bg-[#15151a] text-amber-400 font-bold px-4 py-2 rounded-xl flex items-center gap-1.5">
-        <i data-lucide="star" class="w-3.5 h-3.5"></i> العمل المميز (البنر)
-      </button>
       <button onclick="switchAdminTab('team-tab')" id="tabBtnTeam" class="bg-[#15151a] text-gray-300 font-bold px-4 py-2 rounded-xl">رتب الفريق</button>
       <button onclick="switchAdminTab('backup-tab')" id="tabBtnBackup" class="bg-[#15151a] text-gray-300 font-bold px-4 py-2 rounded-xl">النسخ الاحتياطي</button>
     </div>
@@ -464,7 +493,7 @@
       </div>
 
       <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 shadow-lg">
-        <h2 class="text-sm font-bold mb-4 border-r-4 border-red-500 pr-2">قائمة أعمال المانهوا (حذف وإدارة الفصول والتثبيت)</h2>
+        <h2 class="text-sm font-bold mb-4 border-r-4 border-red-500 pr-2">قائمة أعمال المانهوا (تثبيت كمميز، إدارة الفصول، وحذف العمل)</h2>
         <div id="adminMangaListContainer" class="space-y-3 text-xs"></div>
       </div>
 
@@ -498,7 +527,7 @@
       </div>
 
       <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 shadow-lg">
-        <h2 class="text-sm font-bold mb-4 border-r-4 border-red-500 pr-2">قائمة الروايات المنشورة (حذف وإدارة الفصول والتثبيت)</h2>
+        <h2 class="text-sm font-bold mb-4 border-r-4 border-red-500 pr-2">قائمة الروايات المنشورة (تثبيت كمميز، إدارة الفصول، وحذف الرواية)</h2>
         <div id="adminNovelsListContainer" class="space-y-3 text-xs"></div>
       </div>
 
@@ -512,52 +541,6 @@
           <input type="text" id="admNewNovelGenres" placeholder="التصنيفات: غموض, زراعة, فانتازيا" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
           <textarea id="admNewNovelDesc" rows="3" placeholder="نبذة عن قصة الرواية" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200"></textarea>
           <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-black font-bold py-3 rounded-xl transition">حفظ وإضافة الرواية</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- تبويب التحكم في العمل المميز (البنر العلوي) -->
-    <div id="adminHeroTab" class="hidden space-y-6">
-      <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 shadow-lg">
-        <h2 class="text-sm font-bold mb-2 border-r-4 border-amber-500 pr-2">تثبيت وتعديل العمل الأسطوري المميز (البنر العلوي)</h2>
-        <p class="text-xs text-gray-400 mb-4 leading-relaxed">
-          اختر أي مانهوا أو رواية قمت بإضافتها لتثبيتها في البنر العلوي، أو قم بتخصيص البنر يدوياً كما تشاء:
-        </p>
-
-        <!-- اختيار عمل مثبت مسبقاً -->
-        <div class="bg-[#0b0b0e] p-4 rounded-2xl border border-gray-800 mb-5">
-          <label class="block text-xs font-bold text-gray-300 mb-2">تثبيت عمل من المضافين في موقعك بضغطة واحدة:</label>
-          <div class="flex flex-col sm:flex-row gap-2">
-            <select id="admQuickPinSelect" class="flex-1 bg-[#15151a] border border-gray-700 rounded-xl p-2.5 text-xs text-gray-200"></select>
-            <button onclick="applyPinFromSelect()" class="bg-amber-500 hover:bg-amber-600 text-black font-bold px-5 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
-              <i data-lucide="pin" class="w-3.5 h-3.5"></i> تثبيت كعمل مميز
-            </button>
-          </div>
-        </div>
-
-        <!-- تعديل يدوي حر للبنر -->
-        <h3 class="text-xs font-bold text-purple-400 mb-3">أو تعديل محتوى البنر العلوي يدوياً:</h3>
-        <form onsubmit="handleAdminSaveHeroCustom(event)" class="flex flex-col gap-3 text-xs">
-          <div>
-            <label class="block text-gray-400 mb-1">الشارة العلوية (Badge):</label>
-            <input type="text" id="admHeroBadge" placeholder="مثال: العمل الأسطوري المميز" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
-          </div>
-          <div>
-            <label class="block text-gray-400 mb-1">العنوان الرئيسي للعمل في البنر:</label>
-            <input type="text" id="admHeroTitle" placeholder="اسم العمل المميز" required class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
-          </div>
-          <div>
-            <label class="block text-gray-400 mb-1">وصف وقصة البنر:</label>
-            <textarea id="admHeroDesc" rows="3" placeholder="نبذة مختصرة مشوقة عن العمل..." class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200"></textarea>
-          </div>
-          <div>
-            <label class="block text-gray-400 mb-1">صورة خلفية البنر العريضة (رابط أو ملف من جهازك):</label>
-            <input type="text" id="admHeroCover" placeholder="رابط صورة عالية الجودة" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200 mb-2">
-            <input type="file" id="admHeroCoverFile" accept="image/*" class="text-xs text-gray-400">
-          </div>
-          <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition mt-2">
-            حفظ وتثبيت البنر العلوي
-          </button>
         </form>
       </div>
     </div>
@@ -588,7 +571,7 @@
       <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 text-xs">
         <h2 class="text-sm font-bold mb-2 border-r-4 border-purple-600 pr-2">قاعدة البيانات والنسخ الاحتياطي</h2>
         <p class="text-gray-400 mb-4 leading-relaxed">
-          تصدير أو استعادة كافة المانهوا والروايات والفصول المنشورة وتعليقات القراء في ملف JSON:
+          تصدير أو استعادة كافة المانهوا والروايات والعمل الأسطوري المثبت وتعليقات القراء في ملف JSON:
         </p>
         <div class="flex flex-col sm:flex-row gap-3">
           <button onclick="exportFullDatabase()" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2">
@@ -624,7 +607,7 @@
   </nav>
 
   <!-- ========================================================================= -->
-  <!-- الجافا سكريبت الكامل -->
+  <!-- الجافا سكريبت الكامل المحدث -->
   <!-- ========================================================================= -->
   <script>
     const REALMS = [
@@ -657,28 +640,164 @@
       "zechal510010@crest.com"
     ];
 
+    const SEED_MANHWA = [
+      {
+        id: "m1",
+        title: "إمبراطور السحر (Magic Emperor)",
+        cover: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop&q=80",
+        genres: ["إمبراطور شيطاني", "تناسخ", "دهاء", "أكشن"],
+        status: "مستمرة",
+        desc: "بعد خيانة تلميذه وقتله، يولد الإمبراطور الشيطاني تشو فان من جديد في جسد خادم عاجز لعشيرة لوه المنهارة. باستخدام إرث كتاب السجلات الشيطانية، يبدأ رحلته لإعادة بناء قواه وسحق أعدائه!",
+        chapters: [
+          {
+            id: "mc2",
+            num: 2,
+            title: "عقد الدم ونيران الإمبراطور الشيطاني",
+            date: "2026-09-08",
+            pages: [
+              "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000",
+              "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=1000"
+            ]
+          },
+          {
+            id: "mc1",
+            num: 1,
+            title: "سقوط إمبراطور الشياطين ونهوض الخادم",
+            date: "2026-09-05",
+            pages: [
+              "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=1000",
+              "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000"
+            ]
+          }
+        ]
+      },
+      {
+        id: "m2",
+        title: "سولو ليفلينغ (Solo Leveling)",
+        cover: "https://images.unsplash.com/photo-1563089145-599997674d42?w=600&auto=format&fit=crop&q=80",
+        genres: ["صيادين", "بوابات", "سيد الظلال", "قوة"],
+        status: "مكتملة",
+        desc: "سونغ جين وو، أضعف صياد من الرتبة E. بعد مواجهة الموت في زنزانة مزدوجة غامضة، يستيقظ ليجد نظاماً فريداً يمنحه القدرة على رفع مستواه بلا حدود حتى يصبح حاكم الظلال!",
+        chapters: [
+          {
+            id: "mc2-1",
+            num: 1,
+            title: "الزنزانة المزدوجة وصحوة اللاعب",
+            date: "2026-09-07",
+            pages: [
+              "https://images.unsplash.com/photo-1563089145-599997674d42?w=1000",
+              "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000"
+            ]
+          }
+        ]
+      },
+      {
+        id: "m3",
+        title: "أنا الشرير المقدر (I Am The Fated Villain)",
+        cover: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80",
+        genres: ["شرير مقدر", "عوالم عليا", "دهاء", "زراعة"],
+        status: "مستمرة",
+        desc: "انتقل غو تشانغي إلى عالم علوي عريق ليكتشف أنه تجسد كشرير من عائلة خالدة يمتلك هالة معادية لأبناء الحظ! كيف سيتلاعب بأقدارهم ويسحق كل من يقف أمامه؟",
+        chapters: [
+          {
+            id: "mc3-1",
+            num: 1,
+            title: "نزول السيد الشاب وقمع ابن السماء",
+            date: "2026-09-06",
+            pages: [
+              "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1000"
+            ]
+          }
+        ]
+      }
+    ];
+
+    const SEED_NOVELS = [
+      {
+        id: "n1",
+        title: "سيد الغموض (Lord of the Mysteries)",
+        author: "كلوفلاي (Cuttlefish)",
+        cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&auto=format&fit=crop&q=80",
+        genres: ["غموض", "ستيمبانك", "فيكتوري", "خيمياء"],
+        status: "مستمرة",
+        desc: "في عالم يمتزج فيه البخار والآلات بالسحر الفيكتوري والجرعات الخيميائية المحرمة، يستيقظ تشو مينغ روي في جسد كلاين موريتي ليجد نفسه محاطاً بأسرار آلهة قديمة وطوائف سرية غامضة!",
+        chapters: [
+          {
+            id: "nc1",
+            num: 1,
+            title: "القرمزي والموت الغامض",
+            date: "2026-09-08",
+            content: "ألم... ألم شديد يمزق رأسه كأن سكيناً صدئة تحفر في دماغه.\n\nفتح كلاين موريتي عينيه ليجد نفسه مستلقياً أمام طاولة خشبية عتيقة، ومسدس أسطواني أسود اللون تفوح منه رائحة البارود موضوع بجانب ورقة ملطخة بقطرات دماء داكنة.\n\nنظر في المرآة المعلقة على الحائط المقابل، كان انعكاس شاب ذي شعر أسود وعينين بنيتين، وثقب رصاصة واضح في صدغه الأيمن... ومع ذلك، كان قلبه لا يزال ينبض!\n\nتمتم بصوت خافت: 'أين أنا؟ هل هذا حلم؟ أم انتقال لعالم آخر؟'\n\nمد يده المرتجفة نحو المسدس الأسطواني البارد، متسائلاً عن الجريمة أو الطقس السحري الذي قاده إلى هنا..."
+          }
+        ]
+      },
+      {
+        id: "n2",
+        title: "قس الخلود (Reverend Insanity)",
+        author: "غو تشن رين (Gu Zhen Ren)",
+        cover: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80",
+        genres: ["سيد الغو", "تناسخ", "دهاء مطلق", "زراعة قاسية"],
+        status: "مكتملة",
+        desc: "فانغ يوان، خبير شيطاني عاش 500 عام قبل أن تحاصره الطوائف العادلة وتقتله. باستخدام حشرة ربيع خريف غو الأسطورية، يعود بالزمن 500 سنة إلى الوراء ليبدأ مسيرته بقلب أبرد من الجليد سعياً وراء الخلود المطلق!",
+        chapters: [
+          {
+            id: "nc2-1",
+            num: 1,
+            title: "قلب الشيطان لا يندم أبداً",
+            date: "2026-09-06",
+            content: "على قمة جبل تشينغ ماو، تجمعت مئات الشخصيات البارزة من الطوائف العادلة لمطاردة الخبير الشيطاني الأعتى فانغ يوان.\n\nكان جسده ملطخاً بالدماء، لكن عينيه كانتا هادئتين مثل بئر ماء عميق لا قاع له.\n\nنظر إليهم وابتسم ابتسامة باردة: 'خمس مئة عام من الصراع... ارتكبت المجازر، وسحقت الأعداء، ولم أندم لحظة واحدة على طريقي.'\n\nوفجأة، انبثق وهج أخضر ساطع من قلبه، واهتزت حشرة ربيع خريف غو لتبتلع الزمان والمكان، وتعيده إلى قريته القديمة قبل خمسة قرون!"
+          }
+        ]
+      },
+      {
+        id: "n3",
+        title: "البداية بعد النهاية (The Beginning After The End)",
+        author: "تيرتل مي (TurtleMe)",
+        cover: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80",
+        genres: ["تناسخ", "ملك سابق", "سحر", "مغامرة"],
+        status: "مستمرة",
+        desc: "الملك غراي، حاكم يمتلك قوة وثروة لا مثيل لها ولكنه كان يعيش وحيداً وميتاً من الداخل. يولد من جديد في عالم سحري رائع مليء بالوحوش والتنانين كطفل يدعى آرثر ليون ليصحح أخطاء حياته السابقة!",
+        chapters: [
+          {
+            id: "nc3-1",
+            num: 1,
+            title: "ضوء في نهاية النفق والولادة الجديدة",
+            date: "2026-09-05",
+            content: "الموت لم يكن بارداً كما تخيلت، بل كان مجرد ظلام هادئ.\n\nاستيقظت لأجد نفسي عاجزاً عن الكلام، وكل ما أستطيع فعله هو البكاء... كنت داخل جسد رضيع في عالم غريب بالكامل!\n\nسمعت صوتاً دافئاً لامرأة تحتضنني بحنان: 'مرحباً بك في العالم، آرثر الصغير.'\n\nأدركت حينها أن السماء منحتني فرصة ثانية لحياة جديدة، وهذه المرة لن أكون حاكماً وحيداً، بل سأحمي عائلتي مهما كلف الثمن!"
+          }
+        ]
+      }
+    ];
+
     const SEED_STAFF = [
-      { id: "st1", username: "zechal", name: "أحمد (Zechal)", email: "zechal510010@gmail.com", role: "المدير العام / مؤسس" }
+      { id: "st1", username: "zechal", name: "أحمد (Zechal)", email: "zechal510010@gmail.com", role: "المدير العام / مؤسس" },
+      { id: "st2", username: "cleaner_pro", name: "المبيض المحترف", email: "cleaner@crest.com", role: "مبيض (Redrawer)" },
+      { id: "st3", username: "typesetter_gold", name: "المحرر الذهبي", email: "editor@crest.com", role: "محرر (Typesetter)" }
     ];
 
     let currentUser = JSON.parse(localStorage.getItem("crest_user")) || null;
-    let manhwaList = JSON.parse(localStorage.getItem("crest_manhwa_list")) || [];
-    let novelsList = JSON.parse(localStorage.getItem("crest_novels_list")) || [];
+    let manhwaList = JSON.parse(localStorage.getItem("crest_manhwa_list")) || SEED_MANHWA;
+    let novelsList = JSON.parse(localStorage.getItem("crest_novels_list")) || SEED_NOVELS;
     let staffMembers = JSON.parse(localStorage.getItem("crest_staff_list")) || SEED_STAFF;
     let userRegistry = JSON.parse(localStorage.getItem("crest_user_registry")) || {
       "zechal": { email: "zechal510010@gmail.com" }
     };
     let commentsDB = JSON.parse(localStorage.getItem("crest_comments_db")) || {};
+    
+    // إدارة العمل الأسطوري المميز المثبت (Hero)
+    let featuredHero = JSON.parse(localStorage.getItem("crest_featured_hero")) || { id: "m1", type: "manhwa" };
 
-    // إعدادات البنر العلوي المميز المحفوظة
-    let heroConfig = JSON.parse(localStorage.getItem("crest_hero_config")) || {
-      itemId: null,
-      itemType: null,
-      badge: "العمل الأسطوري المميز",
-      title: "مرحباً بكم في مانجا كريست",
-      desc: "منصتك الأولى لقراءة أحدث المانهوا والروايات المترجمة بأعلى جودة وسرعة.",
-      cover: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1200&auto=format&fit=crop&q=80"
-    };
+    // تنظيف أي بيانات تجريبية
+    manhwaList = manhwaList.filter(m => m && m.title && !m.title.toLowerCase().includes('test') && !m.title.includes('تجربة'));
+    if (!manhwaList.length) manhwaList = SEED_MANHWA;
+    manhwaList.forEach(m => {
+      if (m.cover && m.cover.includes('1618336753974-aae8e04506aa')) {
+        m.cover = 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop&q=80';
+      }
+    });
+
+    novelsList = novelsList.filter(n => n && n.title && !n.title.toLowerCase().includes('test') && !n.title.includes('تجربة'));
+    if (!novelsList.length) novelsList = SEED_NOVELS;
 
     let currentItem = null;
     let currentItemType = 'manhwa';
@@ -695,9 +814,11 @@
       localStorage.setItem("crest_staff_list", JSON.stringify(staffMembers));
       localStorage.setItem("crest_user_registry", JSON.stringify(userRegistry));
       localStorage.setItem("crest_comments_db", JSON.stringify(commentsDB));
-      localStorage.setItem("crest_hero_config", JSON.stringify(heroConfig));
+      localStorage.setItem("crest_featured_hero", JSON.stringify(featuredHero));
       renderHeaderBadge();
     }
+
+    saveState();
 
     function safeCreateIcons() {
       if (window.lucide && typeof lucide.createIcons === 'function') {
@@ -853,89 +974,123 @@
       `;
     }
 
-    // تحديث عرض البنر العلوي بناءً على العمل المثبت
-    function renderHero() {
-      let targetItem = null;
-      if (heroConfig.itemId) {
-        if (heroConfig.itemType === 'manhwa') {
-          targetItem = manhwaList.find(m => m.id === heroConfig.itemId);
-        } else {
-          targetItem = novelsList.find(n => n.id === heroConfig.itemId);
-        }
+    // ==========================================
+    // إدارة العمل الأسطوري المميز (Hero Banner)
+    // ==========================================
+    function getHeroItem() {
+      if (!featuredHero || !featuredHero.id) return null;
+      if (featuredHero.type === 'novel') {
+        return novelsList.find(n => n.id === featuredHero.id) || null;
       }
+      return manhwaList.find(m => m.id === featuredHero.id) || null;
+    }
 
-      const img = document.getElementById('heroCoverImg');
-      const badge = document.getElementById('heroBadge');
-      const title = document.getElementById('heroTitle');
-      const desc = document.getElementById('heroDesc');
-      const btns = document.getElementById('heroActionButtons');
+    function renderHeroBanner() {
+      const heroSection = document.getElementById('heroSection');
+      const quickBtnContainer = document.getElementById('heroAdminQuickBtnContainer');
+      const heroItem = getHeroItem();
 
-      if (targetItem) {
-        img.src = targetItem.cover || heroConfig.cover;
-        badge.innerText = heroConfig.badge || "العمل الأسطوري المميز";
-        title.innerText = targetItem.title;
-        desc.innerText = targetItem.desc || "عمل رائع ومميز يُنصح بمتابعته الآن على مانجا كريست.";
-        btns.classList.remove('hidden');
+      // إظهار زر الإدارة السريع إذا كان المسجل أدمن
+      if (currentUser && currentUser.isAdmin) {
+        if (heroItem) {
+          quickBtnContainer.classList.remove('hidden');
+        } else {
+          quickBtnContainer.classList.add('hidden');
+        }
       } else {
-        img.src = heroConfig.cover;
-        badge.innerText = heroConfig.badge || "العمل الأسطوري المميز";
-        title.innerText = heroConfig.title || "مرحباً بكم في مانجا كريست";
-        desc.innerText = heroConfig.desc || "منصتك الأولى لمتابعة وقراءة أحدث فصول المانهوا والروايات.";
-        if (!manhwaList.length && !novelsList.length) {
-          btns.classList.add('hidden');
-        } else {
-          btns.classList.remove('hidden');
-        }
+        quickBtnContainer.classList.add('hidden');
       }
+
+      if (!heroItem) {
+        // في حال عدم وجود عمل مميز مثبت
+        if (currentUser && currentUser.isAdmin) {
+          heroSection.classList.remove('hidden');
+          document.getElementById('heroCoverImg').src = 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1200';
+          document.getElementById('heroBadgeText').innerText = 'تنبيه الإدارة';
+          document.getElementById('heroTitle').innerText = 'لا يوجد عمل أسطوري مثبت حالياً';
+          document.getElementById('heroDesc').innerText = 'بصفتك مديراً، يمكنك الذهاب إلى لوحة تحكم الإدارة وتثبيت أي مانهوا أو رواية كعمل أسطوري مميز في واجهة الموقع.';
+          document.getElementById('heroReadBtn').classList.add('hidden');
+          document.getElementById('heroDetailsBtn').innerText = 'فتح لوحة التحكم';
+          document.getElementById('heroDetailsBtn').onclick = () => navigateTo('admin-view');
+        } else {
+          // إخفاء البنر للزوار العاديين إذا لم يكن هناك عمل مثبت
+          heroSection.classList.add('hidden');
+        }
+        return;
+      }
+
+      // عرض العمل المثبت بشكل طبيعي
+      heroSection.classList.remove('hidden');
+      document.getElementById('heroCoverImg').src = heroItem.cover || 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1200';
+      document.getElementById('heroBadgeText').innerText = featuredHero.type === 'novel' ? 'الرواية الأسطورية المميزة' : 'العمل الأسطوري المميز';
+      document.getElementById('heroTitle').innerText = heroItem.title;
+      document.getElementById('heroDesc').innerText = heroItem.desc || 'قصة ملحمية ومثيرة!';
+      
+      const readBtn = document.getElementById('heroReadBtn');
+      const detailsBtn = document.getElementById('heroDetailsBtn');
+      readBtn.classList.remove('hidden');
+      detailsBtn.classList.remove('hidden');
+      detailsBtn.innerText = 'التفاصيل';
+      detailsBtn.onclick = openHeroDetails;
     }
 
     function readHeroFirstChapter() {
-      let targetItem = null;
-      let type = heroConfig.itemType;
-      if (heroConfig.itemId) {
-        targetItem = type === 'manhwa' 
-          ? manhwaList.find(m => m.id === heroConfig.itemId)
-          : novelsList.find(n => n.id === heroConfig.itemId);
-      }
-      if (!targetItem) {
-        if (manhwaList.length) { targetItem = manhwaList[0]; type = 'manhwa'; }
-        else if (novelsList.length) { targetItem = novelsList[0]; type = 'novel'; }
-      }
-
-      if (targetItem && targetItem.chapters.length) {
-        currentItem = targetItem;
-        currentItemType = type;
-        openChapter(targetItem.chapters[targetItem.chapters.length - 1].id);
-      } else if (targetItem) {
-        alert("لا توجد فصول منشورة لهذا العمل بعد!");
+      const heroItem = getHeroItem();
+      if (heroItem && heroItem.chapters && heroItem.chapters.length) {
+        currentItem = heroItem;
+        currentItemType = featuredHero.type;
+        openChapter(heroItem.chapters[heroItem.chapters.length - 1].id);
       } else {
-        alert("لم يتم إضافة أي أعمال بعد، أضف عملاً من لوحة الإدارة!");
+        alert("لا توجد فصول منشورة لهذا العمل بعد!");
       }
     }
 
     function openHeroDetails() {
-      let targetItem = null;
-      let type = heroConfig.itemType;
-      if (heroConfig.itemId) {
-        targetItem = type === 'manhwa' 
-          ? manhwaList.find(m => m.id === heroConfig.itemId)
-          : novelsList.find(n => n.id === heroConfig.itemId);
+      const heroItem = getHeroItem();
+      if (heroItem) {
+        openItemDetails(heroItem.id, featuredHero.type);
       }
-      if (!targetItem) {
-        if (manhwaList.length) { targetItem = manhwaList[0]; type = 'manhwa'; }
-        else if (novelsList.length) { targetItem = novelsList[0]; type = 'novel'; }
-      }
+    }
 
-      if (targetItem) {
-        openItemDetails(targetItem.id, type);
-      } else {
-        alert("أضف أعمالك أولاً من لوحة تحكم الأدمن!");
+    function setFeaturedHero(id, type) {
+      featuredHero = { id, type };
+      saveState();
+      renderHome();
+      populateAdminSelects();
+      renderAdminLists();
+      alert("تم تثبيت العمل كعمل أسطوري مميز في واجهة الموقع بنجاح!");
+    }
+
+    function removeFeaturedHero() {
+      if (!featuredHero) return;
+      if (confirm("هل تريد بالتأكيد إلغاء تثبيت العمل المميز من الواجهة الرئيسية؟")) {
+        featuredHero = null;
+        saveState();
+        renderHome();
+        populateAdminSelects();
+        renderAdminLists();
+        alert("تم إلغاء التثبيت وحذف العمل من البنر المميز!");
       }
+    }
+
+    function handleAdminSetHero() {
+      const sel = document.getElementById('admHeroSelect');
+      if (!sel || !sel.value) return alert("يرجى اختيار عمل أولاً!");
+      const [type, id] = sel.value.split(':');
+      setFeaturedHero(id, type);
+    }
+
+    function handleAdminRemoveHero() {
+      removeFeaturedHero();
+    }
+
+    function handleAdminRemoveHeroQuick() {
+      removeFeaturedHero();
     }
 
     function renderHome() {
       renderHeaderBadge();
-      renderHero();
+      renderHeroBanner();
 
       const widget = document.getElementById('user-cultivation-widget');
       if (currentUser) {
@@ -976,37 +1131,15 @@
       }
 
       const mGrid = document.getElementById('homeManhwaGrid');
-      if (!manhwaList.length) {
-        mGrid.innerHTML = `
-          <div class="col-span-full py-8 text-center bg-[#15151a] rounded-2xl border border-gray-800 text-gray-400 text-xs">
-            <i data-lucide="layers" class="w-6 h-6 mx-auto mb-2 text-purple-400 opacity-60"></i>
-            <span>لم يتم إضافة أعمال مانهوا بعد. أضف أعمالك الآن من لوحة الإدارة!</span>
-          </div>
-        `;
-      } else {
-        mGrid.innerHTML = manhwaList.slice(0, 5).map(m => createMediaCard(m, 'manhwa')).join('');
-      }
+      mGrid.innerHTML = manhwaList.slice(0, 5).map(m => createMediaCard(m, 'manhwa')).join('');
 
       const nGrid = document.getElementById('homeNovelsGrid');
-      if (!novelsList.length) {
-        nGrid.innerHTML = `
-          <div class="col-span-full py-8 text-center bg-[#15151a] rounded-2xl border border-gray-800 text-gray-400 text-xs">
-            <i data-lucide="book-open" class="w-6 h-6 mx-auto mb-2 text-amber-400 opacity-60"></i>
-            <span>لم يتم إضافة روايات بعد. أضف رواياتك الآن من لوحة الإدارة!</span>
-          </div>
-        `;
-      } else {
-        nGrid.innerHTML = novelsList.slice(0, 5).map(n => createMediaCard(n, 'novel')).join('');
-      }
+      nGrid.innerHTML = novelsList.slice(0, 5).map(n => createMediaCard(n, 'novel')).join('');
 
-      document.getElementById('fullManhwaGrid').innerHTML = manhwaList.length 
-        ? manhwaList.map(m => createMediaCard(m, 'manhwa')).join('')
-        : `<div class="col-span-full py-10 text-center text-gray-400 text-xs">لا توجد أعمال مانهوا مضافة بعد.</div>`;
+      document.getElementById('fullManhwaGrid').innerHTML = manhwaList.map(m => createMediaCard(m, 'manhwa')).join('');
       document.getElementById('manhwaTotalCount').innerText = `${manhwaList.length} عمل`;
 
-      document.getElementById('fullNovelsGrid').innerHTML = novelsList.length 
-        ? novelsList.map(n => createMediaCard(n, 'novel')).join('')
-        : `<div class="col-span-full py-10 text-center text-gray-400 text-xs">لا توجد روايات مضافة بعد.</div>`;
+      document.getElementById('fullNovelsGrid').innerHTML = novelsList.map(n => createMediaCard(n, 'novel')).join('');
       document.getElementById('novelsTotalCount').innerText = `${novelsList.length} رواية`;
 
       renderAdminLists();
@@ -1017,18 +1150,22 @@
       const isNovel = type === 'novel';
       const badgeColor = isNovel ? 'bg-amber-950/80 text-amber-300 border-amber-500/40' : 'bg-purple-950/80 text-purple-300 border-purple-500/40';
       const badgeText = isNovel ? 'رواية' : 'مانهوا';
+      const isFeatured = featuredHero && featuredHero.id === item.id;
 
       return `
-        <div onclick="openItemDetails('${item.id}', '${type}')" class="bg-[#15151a] hover:bg-[#1a1a22] border border-gray-800 hover:border-purple-600/60 rounded-2xl overflow-hidden cursor-pointer flex flex-col group transition duration-300 shadow-md">
+        <div onclick="openItemDetails('${item.id}', '${type}')" class="bg-[#15151a] hover:bg-[#1a1a22] border ${isFeatured ? 'border-amber-500/80 ring-1 ring-amber-500/40' : 'border-gray-800'} hover:border-purple-600/60 rounded-2xl overflow-hidden cursor-pointer flex flex-col group transition duration-300 shadow-md">
           <div class="relative aspect-[3/4] bg-gray-900 overflow-hidden">
             <img src="${item.cover}" alt="${item.title}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600';" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
             <div class="absolute inset-0 bg-gradient-to-t from-[#15151a] via-transparent to-transparent opacity-80"></div>
-            <span class="absolute top-2 right-2 text-[10px] font-bold border px-2 py-0.5 rounded-lg ${badgeColor}">${badgeText}</span>
+            <div class="absolute top-2 right-2 flex flex-col gap-1 items-end">
+              <span class="text-[10px] font-bold border px-2 py-0.5 rounded-lg ${badgeColor}">${badgeText}</span>
+              ${isFeatured ? `<span class="text-[9px] font-black bg-amber-500 text-black px-1.5 py-0.5 rounded shadow">مميز ⭐</span>` : ''}
+            </div>
           </div>
           <div class="p-3 flex-1 flex flex-col justify-between">
             <h3 class="font-bold text-xs sm:text-sm text-white line-clamp-1 group-hover:text-purple-400 transition">${item.title}</h3>
             <div class="flex justify-between items-center text-[11px] text-gray-400 mt-2 pt-2 border-t border-gray-800/80 font-bold">
-              <span>${(item.chapters || []).length} فصل</span>
+              <span>${item.chapters.length} فصل</span>
               <span class="${isNovel ? 'text-amber-400' : 'text-purple-400'}">اقرأ ➔</span>
             </div>
           </div>
@@ -1047,7 +1184,6 @@
 
       const container = document.getElementById('detailsContent');
       const isNovel = type === 'novel';
-      const chapters = currentItem.chapters || [];
 
       container.innerHTML = `
         <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 sm:p-6 mb-6 shadow-xl">
@@ -1062,37 +1198,35 @@
               <div class="flex flex-wrap gap-1">
                 ${(currentItem.genres || []).map(g => `<span class="bg-[#0b0b0e] border border-gray-800 text-gray-300 text-[11px] px-2.5 py-0.5 rounded-lg">${g}</span>`).join('')}
               </div>
-              <p class="text-xs sm:text-sm text-gray-300 leading-relaxed bg-[#0b0b0e] p-3.5 rounded-xl border border-gray-800">${currentItem.desc || 'لا يوجد وصف متاح.'}</p>
-              ${chapters.length ? `
+              <p class="text-xs sm:text-sm text-gray-300 leading-relaxed bg-[#0b0b0e] p-3.5 rounded-xl border border-gray-800">${currentItem.desc}</p>
+              ${currentItem.chapters.length ? `
                 <button onclick="startReadingFirstChapter()" class="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
                   <i data-lucide="play" class="w-4 h-4"></i> ابدأ من الفصل الأول
                 </button>
-              ` : '<span class="text-xs text-gray-500 font-bold block pt-2">لا توجد فصول مضافة بعد. أضف فصولاً من لوحة الإدارة!</span>'}
+              ` : '<span class="text-xs text-gray-500 font-bold">لا توجد فصول مضافة بعد.</span>'}
             </div>
           </div>
         </div>
 
         <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 shadow-xl">
           <h2 class="text-sm font-bold text-white mb-4 border-b border-gray-800 pb-3 flex items-center justify-between">
-            <span>قائمة الفصول (${chapters.length})</span>
+            <span>قائمة الفصول (${currentItem.chapters.length})</span>
             <span class="text-xs text-gray-400">مرتبة من الأحدث للأقدم</span>
           </h2>
-          ${chapters.length ? `
-            <div class="space-y-2">
-              ${chapters.map(ch => `
-                <div onclick="openChapter('${ch.id}')" class="flex justify-between items-center p-3 bg-[#0b0b0e] hover:bg-[#1a1a24] border border-gray-800/80 hover:border-purple-600/50 rounded-xl cursor-pointer transition">
-                  <div class="flex items-center gap-2.5">
-                    <span class="w-7 h-7 rounded-lg bg-purple-950/80 border border-purple-800 flex items-center justify-center text-xs font-bold text-purple-300">${ch.num}</span>
-                    <div>
-                      <h3 class="text-xs sm:text-sm font-bold text-white">${ch.title}</h3>
-                      <span class="text-[10px] text-gray-500">${ch.date || 'اليوم'}</span>
-                    </div>
+          <div class="space-y-2">
+            ${currentItem.chapters.map(ch => `
+              <div onclick="openChapter('${ch.id}')" class="flex justify-between items-center p-3 bg-[#0b0b0e] hover:bg-[#1a1a24] border border-gray-800/80 hover:border-purple-600/50 rounded-xl cursor-pointer transition">
+                <div class="flex items-center gap-2.5">
+                  <span class="w-7 h-7 rounded-lg bg-purple-950/80 border border-purple-800 flex items-center justify-center text-xs font-bold text-purple-300">${ch.num}</span>
+                  <div>
+                    <h3 class="text-xs sm:text-sm font-bold text-white">${ch.title}</h3>
+                    <span class="text-[10px] text-gray-500">${ch.date || 'اليوم'}</span>
                   </div>
-                  <i data-lucide="chevron-left" class="w-4 h-4 text-gray-400"></i>
                 </div>
-              `).join('')}
-            </div>
-          ` : `<p class="text-xs text-gray-500 text-center py-6">لم يتم رفع أي فصول لهذا العمل بعد.</p>`}
+                <i data-lucide="chevron-left" class="w-4 h-4 text-gray-400"></i>
+              </div>
+            `).join('')}
+          </div>
         </div>
       `;
 
@@ -1109,13 +1243,13 @@
     }
 
     function startReadingFirstChapter() {
-      if (!currentItem || !currentItem.chapters || !currentItem.chapters.length) return;
+      if (!currentItem || !currentItem.chapters.length) return;
       const firstCh = currentItem.chapters[currentItem.chapters.length - 1];
       openChapter(firstCh.id);
     }
 
     function openChapter(chId) {
-      if (!currentItem || !currentItem.chapters) return;
+      if (!currentItem) return;
       currentChapter = currentItem.chapters.find(c => c.id === chId);
       if (!currentChapter) return;
 
@@ -1143,7 +1277,7 @@
       document.getElementById('readerChapterNum').innerText = `الفصل ${currentChapter.num}: ${currentChapter.title}`;
       
       const container = document.getElementById('webtoonPagesContainer');
-      container.innerHTML = (currentChapter.pages || []).map((p, i) => `
+      container.innerHTML = currentChapter.pages.map((p, i) => `
         <div class="w-full">
           <img src="${p}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000';" class="w-full block select-none" alt="Page ${i + 1}">
         </div>
@@ -1177,7 +1311,7 @@
     }
 
     function goToPrevChapter() {
-      if (!currentItem || !currentChapter || !currentItem.chapters) return;
+      if (!currentItem || !currentChapter) return;
       const idx = currentItem.chapters.findIndex(c => c.id === currentChapter.id);
       if (idx < currentItem.chapters.length - 1) {
         openChapter(currentItem.chapters[idx + 1].id);
@@ -1187,7 +1321,7 @@
     }
 
     function goToNextChapter() {
-      if (!currentItem || !currentChapter || !currentItem.chapters) return;
+      if (!currentItem || !currentChapter) return;
       const idx = currentItem.chapters.findIndex(c => c.id === currentChapter.id);
       if (idx > 0) {
         openChapter(currentItem.chapters[idx - 1].id);
@@ -1306,11 +1440,10 @@
     function switchAdminTab(tabId) {
       document.getElementById('adminMangaTab').classList.add('hidden');
       document.getElementById('adminNovelsTab').classList.add('hidden');
-      document.getElementById('adminHeroTab').classList.add('hidden');
       document.getElementById('adminTeamTab').classList.add('hidden');
       document.getElementById('adminBackupTab').classList.add('hidden');
 
-      ['tabBtnManga', 'tabBtnNovels', 'tabBtnHero', 'tabBtnTeam', 'tabBtnBackup'].forEach(btn => {
+      ['tabBtnManga', 'tabBtnNovels', 'tabBtnTeam', 'tabBtnBackup'].forEach(btn => {
         document.getElementById(btn).className = "bg-[#15151a] text-gray-300 font-bold px-4 py-2 rounded-xl";
       });
 
@@ -1320,10 +1453,6 @@
       } else if (tabId === 'novels-tab') {
         document.getElementById('adminNovelsTab').classList.remove('hidden');
         document.getElementById('tabBtnNovels').className = "bg-amber-600 text-black font-bold px-4 py-2 rounded-xl";
-      } else if (tabId === 'hero-tab') {
-        document.getElementById('adminHeroTab').classList.remove('hidden');
-        document.getElementById('tabBtnHero').className = "bg-amber-500 text-black font-bold px-4 py-2 rounded-xl flex items-center gap-1.5";
-        populateHeroTabFields();
       } else if (tabId === 'team-tab') {
         document.getElementById('adminTeamTab').classList.remove('hidden');
         document.getElementById('tabBtnTeam').className = "bg-purple-600 text-white font-bold px-4 py-2 rounded-xl";
@@ -1338,91 +1467,60 @@
 
     function populateAdminSelects() {
       const mSel = document.getElementById('admChMangaSelect');
-      if (mSel) {
-        mSel.innerHTML = manhwaList.length 
-          ? manhwaList.map(m => `<option value="${m.id}">${m.title}</option>`).join('')
-          : `<option value="">-- لا توجد مانهوا، أضف عملاً أولاً --</option>`;
-      }
+      if (mSel) mSel.innerHTML = manhwaList.map(m => `<option value="${m.id}">${m.title}</option>`).join('');
 
       const nSel = document.getElementById('admNovelSelect');
-      if (nSel) {
-        nSel.innerHTML = novelsList.length 
-          ? novelsList.map(n => `<option value="${n.id}">${n.title}</option>`).join('')
-          : `<option value="">-- لا توجد روايات، أضف عملاً أولاً --</option>`;
+      if (nSel) nSel.innerHTML = novelsList.map(n => `<option value="${n.id}">${n.title}</option>`).join('');
+
+      // قائمة اختيار العمل المميز (Hero)
+      const hSel = document.getElementById('admHeroSelect');
+      if (hSel) {
+        let optHtml = `<option value="">-- اختر عملاً لتثبيته في صدارة الموقع --</option>`;
+        if (manhwaList.length) {
+          optHtml += `<optgroup label="أعمال المانهوا">`;
+          manhwaList.forEach(m => {
+            const isSel = (featuredHero && featuredHero.type === 'manhwa' && featuredHero.id === m.id) ? 'selected' : '';
+            optHtml += `<option value="manhwa:${m.id}" ${isSel}>مانهوا: ${m.title}</option>`;
+          });
+          optHtml += `</optgroup>`;
+        }
+        if (novelsList.length) {
+          optHtml += `<optgroup label="مكتبة الروايات">`;
+          novelsList.forEach(n => {
+            const isSel = (featuredHero && featuredHero.type === 'novel' && featuredHero.id === n.id) ? 'selected' : '';
+            optHtml += `<option value="novel:${n.id}" ${isSel}>رواية: ${n.title}</option>`;
+          });
+          optHtml += `</optgroup>`;
+        }
+        hSel.innerHTML = optHtml;
       }
 
-      const heroSel = document.getElementById('admQuickPinSelect');
-      if (heroSel) {
-        let opts = `<option value="">-- اختر مانهوا أو رواية لتثبيتها كعمل مميز --</option>`;
-        manhwaList.forEach(m => {
-          opts += `<option value="manhwa:${m.id}">[مانهوا] ${m.title}</option>`;
-        });
-        novelsList.forEach(n => {
-          opts += `<option value="novel:${n.id}">[رواية] ${n.title}</option>`;
-        });
-        heroSel.innerHTML = opts;
+      // تحديث حالة العرض الحالي للعمل الأسطوري في لوحة الأدمن
+      const statusDisplay = document.getElementById('currentHeroStatusDisplay');
+      if (statusDisplay) {
+        const heroItem = getHeroItem();
+        if (heroItem) {
+          statusDisplay.innerHTML = `
+            <div class="flex items-center gap-3">
+              <img src="${heroItem.cover}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600';" class="w-10 h-14 object-cover rounded-lg border border-amber-500">
+              <div>
+                <span class="text-amber-400 font-bold block">العمل المثبت حالياً:</span>
+                <span class="text-white font-bold text-xs sm:text-sm">${heroItem.title} (${featuredHero.type === 'novel' ? 'رواية' : 'مانهوا'})</span>
+              </div>
+            </div>
+            <button onclick="handleAdminRemoveHero()" class="bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 text-xs px-3 py-1.5 rounded-xl font-bold flex items-center gap-1">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i> إلغاء التثبيت
+            </button>
+          `;
+        } else {
+          statusDisplay.innerHTML = `
+            <div class="flex items-center gap-2 text-gray-400">
+              <i data-lucide="alert-circle" class="w-4 h-4 text-amber-400"></i>
+              <span>لا يوجد عمل أسطوري مميز مثبت حالياً (البنر مخفي عن الزوار).</span>
+            </div>
+          `;
+        }
       }
-    }
-
-    function populateHeroTabFields() {
-      populateAdminSelects();
-      document.getElementById('admHeroBadge').value = heroConfig.badge || "العمل الأسطوري المميز";
-      document.getElementById('admHeroTitle').value = heroConfig.title || "";
-      document.getElementById('admHeroDesc').value = heroConfig.desc || "";
-      document.getElementById('admHeroCover').value = heroConfig.cover || "";
-    }
-
-    // تثبيت سريع لأي عمل في البنر بضغطة زر
-    function pinWorkAsHero(itemId, type) {
-      const item = type === 'manhwa' ? manhwaList.find(m => m.id === itemId) : novelsList.find(n => n.id === itemId);
-      if (!item) return;
-
-      heroConfig = {
-        itemId: item.id,
-        itemType: type,
-        badge: type === 'manhwa' ? "المانهوا المميزة" : "الرواية المميزة",
-        title: item.title,
-        desc: item.desc || "عمل رائع ومميز يُنصح بمتابعته الآن على مانجا كريست.",
-        cover: item.cover || "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1200"
-      };
-
-      saveState();
-      renderHome();
-      renderAdminLists();
-      alert(`⭐ تم تثبيت عمل "${item.title}" في البنر العلوي بنجاح!`);
-    }
-
-    function applyPinFromSelect() {
-      const sel = document.getElementById('admQuickPinSelect').value;
-      if (!sel) return alert("يرجى اختيار عمل من القائمة أولاً!");
-      const [type, id] = sel.split(':');
-      pinWorkAsHero(id, type);
-    }
-
-    async function handleAdminSaveHeroCustom(e) {
-      e.preventDefault();
-      const badge = document.getElementById('admHeroBadge').value.trim() || "العمل الأسطوري المميز";
-      const title = document.getElementById('admHeroTitle').value.trim();
-      const desc = document.getElementById('admHeroDesc').value.trim();
-      let cover = document.getElementById('admHeroCover').value.trim() || heroConfig.cover;
-      const file = document.getElementById('admHeroCoverFile').files[0];
-
-      if (file) {
-        cover = await readFileAsBase64(file);
-      }
-
-      heroConfig = {
-        itemId: null,
-        itemType: null,
-        badge,
-        title,
-        desc,
-        cover
-      };
-
-      saveState();
-      renderHome();
-      alert("تم تحديث وتثبيت البنر العلوي بنجاح!");
     }
 
     function renderAdminLists() {
@@ -1431,62 +1529,84 @@
       const mangaContainer = document.getElementById('adminMangaListContainer');
       if (mangaContainer) {
         if (!manhwaList.length) {
-          mangaContainer.innerHTML = `<p class="text-gray-500 text-center py-3">لا توجد أعمال مانهوا مضافة حالياً. يمكنك إضافة أول مانهوا بالأسفل!</p>`;
+          mangaContainer.innerHTML = `<p class="text-gray-500 text-center py-3">لا توجد أعمال مانهوا منشورة حالياً.</p>`;
         } else {
-          mangaContainer.innerHTML = manhwaList.map(m => `
-            <div class="bg-[#0b0b0e] border border-gray-800 p-3 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div class="flex items-center gap-3">
-                <img src="${m.cover}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600';" class="w-12 h-16 object-cover rounded-xl border border-gray-700">
-                <div>
-                  <h3 class="font-bold text-white text-xs sm:text-sm">${m.title}</h3>
-                  <span class="text-[11px] text-gray-400">${(m.chapters || []).length} فصول منشورة</span>
-                  ${heroConfig.itemId === m.id ? '<span class="mr-2 text-[10px] bg-amber-950 text-amber-300 border border-amber-800 px-2 py-0.5 rounded-md font-bold">⭐ مثبت بالبنر</span>' : ''}
+          mangaContainer.innerHTML = manhwaList.map(m => {
+            const isFeatured = featuredHero && featuredHero.type === 'manhwa' && featuredHero.id === m.id;
+            return `
+              <div class="bg-[#0b0b0e] border ${isFeatured ? 'border-amber-500/80 ring-1 ring-amber-500/30' : 'border-gray-800'} p-3 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <img src="${m.cover}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600';" class="w-12 h-16 object-cover rounded-xl border border-gray-700">
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h3 class="font-bold text-white text-xs sm:text-sm">${m.title}</h3>
+                      ${isFeatured ? `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] px-2 py-0.5 rounded-full font-bold">العمل الأسطوري المميز ⭐</span>` : ''}
+                    </div>
+                    <span class="text-[11px] text-gray-400">${m.chapters.length} فصول منشورة</span>
+                  </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                  ${isFeatured ? `
+                    <button onclick="removeFeaturedHero()" class="flex-1 sm:flex-none bg-amber-950/80 hover:bg-amber-900 border border-amber-800 text-amber-300 px-3 py-1.5 rounded-xl font-bold flex items-center justify-center gap-1">
+                      <i data-lucide="pin-off" class="w-3.5 h-3.5"></i> إلغاء التميز
+                    </button>
+                  ` : `
+                    <button onclick="setFeaturedHero('${m.id}', 'manhwa')" class="flex-1 sm:flex-none bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/50 text-amber-300 px-3 py-1.5 rounded-xl font-bold flex items-center justify-center gap-1">
+                      <i data-lucide="pin" class="w-3.5 h-3.5"></i> تثبيت كمميز
+                    </button>
+                  `}
+                  <button onclick="manageItemChapters('${m.id}', 'manhwa')" class="flex-1 sm:flex-none bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 px-3 py-1.5 rounded-xl font-bold">
+                    فصول العمل (${m.chapters.length})
+                  </button>
+                  <button onclick="deleteEntireManga('${m.id}')" class="flex-1 sm:flex-none bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 font-bold px-3 py-1.5 rounded-xl flex items-center justify-center gap-1">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> حذف المانهوا
+                  </button>
                 </div>
               </div>
-              <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap">
-                <button onclick="pinWorkAsHero('${m.id}', 'manhwa')" class="bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-black border border-amber-500/50 px-2.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
-                  <i data-lucide="pin" class="w-3 h-3"></i> تثبيت بالبنر
-                </button>
-                <button onclick="manageItemChapters('${m.id}', 'manhwa')" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 px-3 py-1.5 rounded-xl font-bold">
-                  فصول العمل (${(m.chapters || []).length})
-                </button>
-                <button onclick="deleteEntireManga('${m.id}')" class="bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 font-bold px-3 py-1.5 rounded-xl flex items-center justify-center gap-1">
-                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> حذف
-                </button>
-              </div>
-            </div>
-          `).join('');
+            `;
+          }).join('');
         }
       }
 
       const novelsContainer = document.getElementById('adminNovelsListContainer');
       if (novelsContainer) {
         if (!novelsList.length) {
-          novelsContainer.innerHTML = `<p class="text-gray-500 text-center py-3">لا توجد روايات مضافة حالياً. يمكنك إضافة أول رواية بالأسفل!</p>`;
+          novelsContainer.innerHTML = `<p class="text-gray-500 text-center py-3">لا توجد روايات منشورة حالياً.</p>`;
         } else {
-          novelsContainer.innerHTML = novelsList.map(n => `
-            <div class="bg-[#0b0b0e] border border-gray-800 p-3 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div class="flex items-center gap-3">
-                <img src="${n.cover}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600';" class="w-12 h-16 object-cover rounded-xl border border-gray-700">
-                <div>
-                  <h3 class="font-bold text-white text-xs sm:text-sm">${n.title}</h3>
-                  <span class="text-[11px] text-gray-400">${(n.chapters || []).length} فصول | الكاتب: ${n.author || 'مجهول'}</span>
-                  ${heroConfig.itemId === n.id ? '<span class="mr-2 text-[10px] bg-amber-950 text-amber-300 border border-amber-800 px-2 py-0.5 rounded-md font-bold">⭐ مثبت بالبنر</span>' : ''}
+          novelsContainer.innerHTML = novelsList.map(n => {
+            const isFeatured = featuredHero && featuredHero.type === 'novel' && featuredHero.id === n.id;
+            return `
+              <div class="bg-[#0b0b0e] border ${isFeatured ? 'border-amber-500/80 ring-1 ring-amber-500/30' : 'border-gray-800'} p-3 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <img src="${n.cover}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600';" class="w-12 h-16 object-cover rounded-xl border border-gray-700">
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h3 class="font-bold text-white text-xs sm:text-sm">${n.title}</h3>
+                      ${isFeatured ? `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] px-2 py-0.5 rounded-full font-bold">الرواية الأسطورية المميزة ⭐</span>` : ''}
+                    </div>
+                    <span class="text-[11px] text-gray-400">${n.chapters.length} فصول | الكاتب: ${n.author || 'مجهول'}</span>
+                  </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                  ${isFeatured ? `
+                    <button onclick="removeFeaturedHero()" class="flex-1 sm:flex-none bg-amber-950/80 hover:bg-amber-900 border border-amber-800 text-amber-300 px-3 py-1.5 rounded-xl font-bold flex items-center justify-center gap-1">
+                      <i data-lucide="pin-off" class="w-3.5 h-3.5"></i> إلغاء التميز
+                    </button>
+                  ` : `
+                    <button onclick="setFeaturedHero('${n.id}', 'novel')" class="flex-1 sm:flex-none bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/50 text-amber-300 px-3 py-1.5 rounded-xl font-bold flex items-center justify-center gap-1">
+                      <i data-lucide="pin" class="w-3.5 h-3.5"></i> تثبيت كمميز
+                    </button>
+                  `}
+                  <button onclick="manageItemChapters('${n.id}', 'novel')" class="flex-1 sm:flex-none bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 px-3 py-1.5 rounded-xl font-bold">
+                    فصول الرواية (${n.chapters.length})
+                  </button>
+                  <button onclick="deleteEntireNovel('${n.id}')" class="flex-1 sm:flex-none bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 font-bold px-3 py-1.5 rounded-xl flex items-center justify-center gap-1">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> حذف الرواية
+                  </button>
                 </div>
               </div>
-              <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap">
-                <button onclick="pinWorkAsHero('${n.id}', 'novel')" class="bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-black border border-amber-500/50 px-2.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
-                  <i data-lucide="pin" class="w-3 h-3"></i> تثبيت بالبنر
-                </button>
-                <button onclick="manageItemChapters('${n.id}', 'novel')" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 px-3 py-1.5 rounded-xl font-bold">
-                  فصول الرواية (${(n.chapters || []).length})
-                </button>
-                <button onclick="deleteEntireNovel('${n.id}')" class="bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 font-bold px-3 py-1.5 rounded-xl flex items-center justify-center gap-1">
-                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> حذف
-                </button>
-              </div>
-            </div>
-          `).join('');
+            `;
+          }).join('');
         }
       }
       safeCreateIcons();
@@ -1497,10 +1617,8 @@
       if (!item) return;
       if (confirm(`هل أنت متأكد من حذف مانهوا "${item.title}" وجميع فصولها نهائياً؟`)) {
         manhwaList = manhwaList.filter(m => m.id !== id);
-        if (heroConfig.itemId === id) {
-          heroConfig.itemId = null;
-          heroConfig.title = "مرحباً بكم في مانجا كريست";
-          heroConfig.desc = "منصتك الأولى لمتابعة وقراءة أحدث فصول المانهوا والروايات.";
+        if (featuredHero && featuredHero.id === id) {
+          featuredHero = null;
         }
         saveState();
         renderHome();
@@ -1515,10 +1633,8 @@
       if (!item) return;
       if (confirm(`هل أنت متأكد من حذف رواية "${item.title}" وجميع فصولها نهائياً؟`)) {
         novelsList = novelsList.filter(n => n.id !== id);
-        if (heroConfig.itemId === id) {
-          heroConfig.itemId = null;
-          heroConfig.title = "مرحباً بكم في مانجا كريست";
-          heroConfig.desc = "منصتك الأولى لمتابعة وقراءة أحدث فصول المانهوا والروايات.";
+        if (featuredHero && featuredHero.id === id) {
+          featuredHero = null;
         }
         saveState();
         renderHome();
@@ -1532,7 +1648,7 @@
       const item = type === 'manhwa' ? manhwaList.find(m => m.id === itemId) : novelsList.find(n => n.id === itemId);
       if (!item) return;
 
-      if (!item.chapters || !item.chapters.length) {
+      if (!item.chapters.length) {
         alert("لا توجد فصول منشورة لهذا العمل بعد!");
         return;
       }
@@ -1559,7 +1675,6 @@
     async function handleAdminUploadMangaChapter(e) {
       e.preventDefault();
       const mId = document.getElementById('admChMangaSelect').value;
-      if (!mId) return alert("يرجى اختيار مانهوا أولاً!");
       const num = parseFloat(document.getElementById('admChNum').value);
       const title = document.getElementById('admChTitle').value.trim() || `الفصل ${num}`;
       const urlsText = document.getElementById('admChUrls').value.trim();
@@ -1570,6 +1685,7 @@
       submitBtn.innerText = "جاري نشر ومعالجة الصور...";
 
       let pages = [];
+
       if (urlsText) {
         pages = urlsText.split(/[\n,]+/).map(u => u.trim()).filter(u => u.length > 5);
       }
@@ -1590,7 +1706,6 @@
 
       const targetManga = manhwaList.find(m => m.id === mId);
       if (targetManga) {
-        targetManga.chapters = targetManga.chapters || [];
         targetManga.chapters.unshift({
           id: "ch_" + Date.now(),
           num: num,
@@ -1621,7 +1736,7 @@
         cover = await readFileAsBase64(file);
       }
 
-      const newManga = {
+      manhwaList.unshift({
         id: "m_" + Date.now(),
         title,
         cover,
@@ -1629,21 +1744,7 @@
         status: "مستمرة",
         desc,
         chapters: []
-      };
-
-      manhwaList.unshift(newManga);
-
-      // إذا كان أول عمل تتم إضافته، يتم تثبيته في البنر تلقائياً
-      if (manhwaList.length === 1 && !novelsList.length) {
-        heroConfig = {
-          itemId: newManga.id,
-          itemType: 'manhwa',
-          badge: "المانهوا المميزة",
-          title: newManga.title,
-          desc: newManga.desc,
-          cover: newManga.cover
-        };
-      }
+      });
 
       saveState();
       renderHome();
@@ -1651,13 +1752,11 @@
       renderAdminLists();
       alert("تمت إضافة المانهوا بنجاح!");
       document.getElementById('admMangaTitle').value = "";
-      document.getElementById('admMangaCover').value = "";
     }
 
     function handleAdminUploadNovelChapter(e) {
       e.preventDefault();
       const nId = document.getElementById('admNovelSelect').value;
-      if (!nId) return alert("يرجى اختيار رواية أولاً!");
       const num = parseInt(document.getElementById('admNovelChNum').value);
       const title = document.getElementById('admNovelChTitle').value.trim() || `الفصل ${num}`;
       const content = document.getElementById('admNovelChContent').value.trim();
@@ -1666,7 +1765,6 @@
 
       const targetNovel = novelsList.find(n => n.id === nId);
       if (targetNovel) {
-        targetNovel.chapters = targetNovel.chapters || [];
         targetNovel.chapters.unshift({
           id: "nc_" + Date.now(),
           num: num,
@@ -1695,7 +1793,7 @@
         cover = await readFileAsBase64(file);
       }
 
-      const newNovel = {
+      novelsList.unshift({
         id: "n_" + Date.now(),
         title,
         author,
@@ -1704,9 +1802,7 @@
         status: "مستمرة",
         desc,
         chapters: []
-      };
-
-      novelsList.unshift(newNovel);
+      });
 
       saveState();
       renderHome();
@@ -1714,7 +1810,6 @@
       renderAdminLists();
       alert("تمت إضافة الرواية بنجاح إلى المكتبة!");
       document.getElementById('admNewNovelTitle').value = "";
-      document.getElementById('admNewNovelCover').value = "";
     }
 
     function handleAdminAddStaff(e) {
@@ -1771,7 +1866,7 @@
         staff: staffMembers,
         users: userRegistry,
         comments: commentsDB,
-        heroConfig: heroConfig,
+        featuredHero: featuredHero,
         exportDate: new Date().toISOString()
       };
       const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" });
@@ -1793,7 +1888,7 @@
           if (data.staff) staffMembers = data.staff;
           if (data.users) userRegistry = data.users;
           if (data.comments) commentsDB = data.comments;
-          if (data.heroConfig) heroConfig = data.heroConfig;
+          if (data.featuredHero !== undefined) featuredHero = data.featuredHero;
           saveState();
           renderHome();
           alert("تم استيراد قاعدة البيانات بالكامل وتحديث الموقع!");
@@ -1810,10 +1905,8 @@
         renderHome();
         return;
       }
-      const filteredManga = manhwaList.filter(m => m.title.toLowerCase().includes(q) || (m.genres || []).some(g => g.toLowerCase().includes(q)));
-      const filteredNovels = novelsList.filter(n => n.title.toLowerCase().includes(q) || (n.genres || []).some(g => g.toLowerCase().includes(q)));
-      
-      ) || (n.genres || []).some(g => g.toLowerCase().includes(q)));
+      const filteredManga = manhwaList.filter(m => m.title.toLowerCase().includes(q) || m.genres.some(g => g.toLowerCase().includes(q)));
+      const filteredNovels = novelsList.filter(n => n.title.toLowerCase().includes(q) || n.genres.some(g => g.toLowerCase().includes(q)));
       
       document.getElementById('homeManhwaGrid').innerHTML = filteredManga.map(m => createMediaCard(m, 'manhwa')).join('');
       document.getElementById('homeNovelsGrid').innerHTML = filteredNovels.map(n => createMediaCard(n, 'novel')).join('');
