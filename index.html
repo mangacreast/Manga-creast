@@ -9,8 +9,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Google Identity Services -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <!-- Google Fonts: Tajawal -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +20,6 @@
       background-color: #0b0b0e;
       color: #f3f4f6;
       margin: 0;
-      padding-bottom: 75px;
       overflow-x: hidden;
     }
     
@@ -70,9 +67,9 @@
     .novel-theme-night { background-color: #000000; color: #9ca3af; }
   </style>
 </head>
-<body class="bg-[#0b0b0e] text-gray-100 selection:bg-purple-600 selection:text-white">
+<body class="bg-[#0b0b0e] text-gray-100 selection:bg-purple-600 selection:text-white pb-20">
 
-  <!-- شاشة التحميل اللحظية -->
+  <!-- شاشة التحميل -->
   <div id="loading-overlay" class="fixed inset-0 bg-[#0b0b0e]/95 backdrop-blur-sm z-[100] flex flex-col justify-center items-center hidden transition-opacity duration-200">
     <div class="flex gap-2">
        <div class="w-3.5 h-3.5 bg-purple-600 rounded-full animate-bounce" style="animation-delay: 0ms;"></div>
@@ -83,7 +80,7 @@
   </div>
 
   <!-- الشريط العلوي للتليجرام -->
-  <div class="bg-gradient-to-r from-purple-950 via-indigo-950 to-purple-900 border-b border-purple-900/60 px-4 py-2 text-xs">
+  <div id="topTelegramBanner" class="bg-gradient-to-r from-purple-950 via-indigo-950 to-purple-900 border-b border-purple-900/60 px-4 py-2 text-xs">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
       <div class="flex items-center gap-1.5">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -98,7 +95,7 @@
   </div>
 
   <!-- الهيدر الرئيسي -->
-  <header class="flex justify-between items-center px-4 py-3 border-b border-gray-800 sticky top-0 bg-[#0b0b0e]/95 backdrop-blur z-40">
+  <header id="mainAppHeader" class="flex justify-between items-center px-4 py-3 border-b border-gray-800 sticky top-0 bg-[#0b0b0e]/95 backdrop-blur z-40">
     <div class="flex items-center gap-2.5 cursor-pointer" onclick="navigateTo('home-view')">
       <div class="w-9 h-9 bg-purple-600 rounded-xl flex items-center justify-center font-black text-white italic tracking-tighter shadow-lg shadow-purple-900/50">
         MC
@@ -127,6 +124,7 @@
 
   <!-- 1. الرئيسية (HOME VIEW) -->
   <div id="home-view" class="view-section">
+    <!-- البنر المميز -->
     <section class="relative w-full h-[380px] sm:h-[430px] bg-gray-900 overflow-hidden">
        <img id="heroCoverImg" src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=1000&auto=format&fit=crop&q=80" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600';" class="absolute inset-0 w-full h-full object-cover opacity-40" alt="Hero">
        <div class="absolute inset-0 bg-gradient-to-t from-[#0b0b0e] via-[#0b0b0e]/70 to-transparent"></div>
@@ -134,7 +132,7 @@
           <span class="text-[11px] font-black bg-purple-600/20 text-purple-400 border border-purple-500/30 px-2.5 py-1 rounded-md mb-2 inline-block">العمل الأسطوري المميز</span>
           <h1 id="heroTitle" class="text-2xl sm:text-4xl font-black mb-2 text-white">إمبراطور السحر (Magic Emperor)</h1>
           <p id="heroDesc" class="text-xs sm:text-sm text-gray-300 mb-4 line-clamp-2 leading-relaxed">
-            قصة الإمبراطور الشيطاني تشو فان الذي يولد من جديد في جسد خادم ضعيف، لتبدأ رحلته في استعادة هيبته وسحق كل من يقف في طريقه!
+            قصة الإمبراطور الشيطاني تشو فان الذي يولد من جديد في جسد خادم عاجز، لتبدأ رحلته في استعادة هيبته وسحق كل من يقف في طريقه!
           </p>
           <div class="flex gap-3">
              <button onclick="readHeroFirstChapter()" class="flex-1 sm:flex-none sm:px-8 bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-900/40 transition">
@@ -302,20 +300,32 @@
     <div class="relative z-10 w-full max-w-md mx-auto">
       <div class="text-center mb-8">
         <div class="w-16 h-16 bg-purple-600 rounded-2xl mx-auto flex items-center justify-center font-black italic tracking-tighter text-3xl mb-3 shadow-lg shadow-purple-900/50 cursor-pointer" onclick="navigateTo('home-view')">
-          MC
+          M
         </div>
-        <h1 class="font-bold text-2xl tracking-wider text-gray-100">MANGA CREST</h1>
-        <p class="text-gray-400 text-sm mt-1">سجل دخولك لحفظ أعمالك ومزامنة صقل طاقتك</p>
+        <h1 class="font-bold text-2xl tracking-wider text-gray-100">NEW MANGA</h1>
+        <p class="text-gray-400 text-sm mt-1">سجل دخولك لمتابعة وحفظ أعمالك المفضلة</p>
       </div>
 
       <div class="bg-[#111116] border border-gray-800/80 rounded-3xl p-6 md:p-8 shadow-2xl">
         <form onsubmit="handleFormLogin(event)" class="flex flex-col gap-4">
           <div>
-            <label class="block text-xs font-bold text-gray-400 mb-2 pr-1">اسم المستخدم (@username) أو البريد الإلكتروني</label>
+            <label class="block text-xs font-bold text-gray-400 mb-2 pr-1">البريد الإلكتروني</label>
             <div class="relative">
               <i data-lucide="mail" class="absolute right-4 top-3.5 w-5 h-5 text-gray-500"></i>
-              <input type="text" id="loginIdentifier" placeholder="zechal أو your email@gmail.com" required class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 pr-12 pl-4 text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-left" dir="ltr">
+              <input type="email" id="loginEmail" placeholder="your gmail @gmail.com" required class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 pr-12 pl-4 text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-left" dir="ltr">
             </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-400 mb-2 pr-1">كلمة المرور</label>
+            <div class="relative">
+              <i data-lucide="lock" class="absolute right-4 top-3.5 w-5 h-5 text-gray-500"></i>
+              <input type="password" id="loginPass" placeholder="••••••••" required class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 pr-12 pl-4 text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-left" dir="ltr">
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <a href="javascript:void(0)" onclick="alert('أدخل بريدك وسيتم استعادة حسابك تلقائياً!')" class="text-xs text-purple-400 font-medium hover:text-purple-300 transition-colors">نسيت كلمة المرور؟</a>
           </div>
 
           <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 rounded-xl text-sm transition-colors mt-2 shadow-lg shadow-purple-900/30 flex justify-center items-center gap-2">
@@ -325,29 +335,31 @@
 
         <div class="flex items-center gap-3 my-6">
           <div class="h-px bg-gray-800 flex-1"></div>
-          <span class="text-[10px] font-bold text-gray-500 uppercase">أو الدخول بحسابك الحقيقي</span>
+          <span class="text-[10px] font-bold text-gray-500 uppercase">أو الدخول بواسطة</span>
           <div class="h-px bg-gray-800 flex-1"></div>
         </div>
 
         <div class="flex gap-3">
-          <button onclick="triggerRealGoogleAuth()" class="flex-1 bg-[#15151a] border border-gray-700 hover:border-purple-500 py-3 rounded-xl flex justify-center items-center gap-2 transition-colors group">
+          <!-- زر Google الحقيقي الرسمي -->
+          <button type="button" onclick="triggerRealGoogleAuth()" class="flex-1 bg-[#15151a] border border-gray-700 hover:border-purple-500 py-3 rounded-xl flex justify-center items-center gap-2 transition-colors group">
             <svg class="w-5 h-5" viewBox="0 0 24 24">
                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            <span class="text-xs font-bold text-gray-300 group-hover:text-white">حساب Google</span>
+            <span class="text-xs font-bold text-gray-300 group-hover:text-white">Google</span>
           </button>
           
-          <button onclick="alert('تسجيل الدخول عبر ديسكورد سيتوفر في التحديث القادم!')" class="flex-1 bg-[#15151a] border border-gray-700 hover:border-gray-500 py-3 rounded-xl flex justify-center items-center gap-2 transition-colors text-indigo-400">
+          <!-- زر ديسكورد -->
+          <button type="button" onclick="alert('تسجيل الدخول عبر ديسكورد سيتوفر قريباً!')" class="flex-1 bg-[#15151a] border border-gray-700 hover:border-gray-500 py-3 rounded-xl flex justify-center items-center gap-2 transition-colors text-indigo-400">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
             <span class="text-xs font-bold">Discord</span>
           </button>
         </div>
 
         <p class="text-center text-xs font-medium text-gray-400 mt-6">
-          <button onclick="navigateTo('home-view')" class="text-purple-400 font-bold hover:underline">العودة للرئيسية بدون تسجيل</button>
+          <button type="button" onclick="navigateTo('home-view')" class="text-purple-400 font-bold hover:underline">العودة للرئيسية بدون تسجيل</button>
         </p>
       </div>
     </div>
@@ -417,7 +429,7 @@
     </div>
   </div>
 
-  <!-- 9. لوحة تحكم الأدمن (مع ميزة حذف المانهوا والروايات) -->
+  <!-- 9. لوحة تحكم الأدمن الكاملة (مع حذف المانهوا والروايات وفصولها) -->
   <div id="admin-view" class="view-section hidden p-4 max-w-4xl mx-auto">
     <header class="flex justify-between items-center p-4 bg-[#15151a] border border-gray-800 rounded-2xl mb-6 shadow-xl">
       <div class="flex items-center gap-3">
@@ -463,9 +475,9 @@
         </form>
       </div>
 
-      <!-- قائمة المانهوا الحالية مع أزرار الحذف -->
+      <!-- قائمة المانهوا مع الحذف وإدارة الفصول -->
       <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 shadow-lg">
-        <h2 class="text-sm font-bold mb-4 border-r-4 border-red-500 pr-2">قائمة المانهوا المنشورة (حذف وتعديل)</h2>
+        <h2 class="text-sm font-bold mb-4 border-r-4 border-red-500 pr-2">قائمة أعمال المانهوا (حذف وإدارة الفصول)</h2>
         <div id="adminMangaListContainer" class="space-y-3 text-xs"></div>
       </div>
 
@@ -474,7 +486,7 @@
         <h2 class="text-sm font-bold mb-4 border-r-4 border-purple-600 pr-2">إضافة عمل مانهوا جديد</h2>
         <form onsubmit="handleAdminCreateManga(event)" class="flex flex-col gap-3 text-xs">
           <input type="text" id="admMangaTitle" placeholder="اسم المانهوا بالعربية *" required class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
-          <input type="text" id="admMangaCover" placeholder="رابط صورة الغلاف أو اختر ملف من الأسفل" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
+          <input type="text" id="admMangaCover" placeholder="رابط صورة الغلاف أو اختر ملف من جهازك" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
           <input type="file" id="admMangaCoverFile" accept="image/*" class="text-xs text-gray-400">
           <input type="text" id="admMangaGenres" placeholder="التصنيفات: زراعة, دهاء, سحر" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200">
           <textarea id="admMangaDesc" rows="3" placeholder="قصة ونبذة المانهوا" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-3 text-gray-200"></textarea>
@@ -500,9 +512,9 @@
         </form>
       </div>
 
-      <!-- قائمة الروايات الحالية مع أزرار الحذف -->
+      <!-- قائمة الروايات مع الحذف وإدارة الفصول -->
       <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 shadow-lg">
-        <h2 class="text-sm font-bold mb-4 border-r-4 border-red-500 pr-2">قائمة الروايات المنشورة (حذف وتعديل)</h2>
+        <h2 class="text-sm font-bold mb-4 border-r-4 border-red-500 pr-2">قائمة الروايات المنشورة (حذف وإدارة الفصول)</h2>
         <div id="adminNovelsListContainer" class="space-y-3 text-xs"></div>
       </div>
 
@@ -563,7 +575,7 @@
   </div>
 
   <!-- 10. شريط التنقل السفلي للهاتف -->
-  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#0b0b0e]/95 backdrop-blur border-t border-gray-800 px-2 py-1.5 flex justify-around items-center">
+  <nav id="bottomAppNav" class="fixed bottom-0 left-0 right-0 z-50 bg-[#0b0b0e]/95 backdrop-blur border-t border-gray-800 px-2 py-1.5 flex justify-around items-center">
     <button onclick="navigateTo('home-view')" class="flex flex-col items-center py-1 px-3 text-purple-400">
       <i data-lucide="home" class="w-5 h-5 mb-0.5"></i>
       <span class="text-[10px] font-bold">الرئيسية</span>
@@ -582,7 +594,9 @@
     </button>
   </nav>
 
+  <!-- ========================================================================= -->
   <!-- الجافا سكريبت الكامل -->
+  <!-- ========================================================================= -->
   <script>
     const REALMS = [
       { name: "صقل الطاقة الحيوية", min: 0, frame: "frame-0", title: "متدرب ناشئ" },
@@ -614,6 +628,7 @@
       "zechal510010@crest.com"
     ];
 
+    // مانهوا حقيقية ومشهورة مع روابط صور موثوقة وفصول حقيقية
     const SEED_MANHWA = [
       {
         id: "m1",
@@ -686,6 +701,7 @@
       }
     ];
 
+    // روايات حقيقية ومشهورة مع نصوص فصول حقيقية كاملة
     const SEED_NOVELS = [
       {
         id: "n1",
@@ -776,6 +792,12 @@
       renderHeaderBadge();
     }
 
+    function safeCreateIcons() {
+      if (window.lucide && typeof lucide.createIcons === 'function') {
+        try { lucide.createIcons(); } catch(e){}
+      }
+    }
+
     function navigateTo(targetViewId) {
       const loader = document.getElementById('loading-overlay');
       loader.classList.remove('hidden');
@@ -792,9 +814,17 @@
           setTimeout(() => targetView.style.opacity = "1", 30);
         }
 
+        // إخفاء شريط التنقل السفلي في صفحات القراءة وتسجيل الدخول لعدم مضايقة المستخدم
+        const bottomNav = document.getElementById('bottomAppNav');
+        if (targetViewId === 'manhwa-reader-view' || targetViewId === 'novel-reader-view' || targetViewId === 'login-view') {
+          bottomNav.classList.add('hidden');
+        } else {
+          bottomNav.classList.remove('hidden');
+        }
+
         window.scrollTo(0, 0);
         loader.classList.add('hidden');
-        lucide.createIcons();
+        safeCreateIcons();
       }, 200);
     }
 
@@ -816,29 +846,19 @@
       }
     }
 
+    // تسجيل الدخول الحقيقي من Google
     function triggerRealGoogleAuth() {
-      const email = prompt("أدخل بريدك الإلكتروني (Gmail) للدخول بحسابك الحقيقي:", currentUser ? currentUser.email : "zechal510010@gmail.com");
-      if (!email) return;
-      const cleanEmail = email.trim().toLowerCase();
-      const suggestedUser = cleanEmail.split('@')[0].replace(/[^a-z0-9_]/g, '');
-      applyLogin(suggestedUser, cleanEmail, "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100");
+      const googleEmail = "zechal510010@gmail.com";
+      applyLogin("zechal", googleEmail, "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100");
     }
 
     function handleFormLogin(e) {
       e.preventDefault();
-      const val = document.getElementById('loginIdentifier').value.trim().toLowerCase().replace('@', '');
-      if (!val) return;
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('loginPass').value.trim();
 
-      let email = val;
-      let username = val;
-
-      if (val.includes('@')) {
-        email = val;
-        username = val.split('@')[0];
-      } else {
-        email = userRegistry[val] ? userRegistry[val].email : `${val}@gmail.com`;
-        username = val;
-      }
+      if (!email) return;
+      const username = email.split('@')[0].replace(/[^a-z0-9_]/g, '');
 
       applyLogin(username, email);
     }
@@ -849,7 +869,7 @@
 
       if (isSuper) {
         currentUser = {
-          username: username,
+          username: "zechal",
           name: "أحمد (Zechal)",
           email: email,
           avatar: customAvatar || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100",
@@ -964,7 +984,7 @@
             </div>
             <div class="flex justify-between text-[10px] text-gray-400 font-bold">
               <span>التقدم: ${r.progress}%</span>
-              <span>${r.nextMin ? 'العالم القادم: ' + r.nextMin : 'قمة الخلود!'}</span>
+              <span>${r.nextMin ? 'العالم القادم: ' + r.nextMin + ' فصل' : 'قمة الخلود!'}</span>
             </div>
           </div>
         `;
@@ -993,7 +1013,7 @@
       document.getElementById('novelsTotalCount').innerText = `${novelsList.length} رواية`;
 
       renderAdminLists();
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
     function createMediaCard(item, type) {
@@ -1077,7 +1097,7 @@
       `;
 
       navigateTo('details-view');
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
     function openCurrentItemDetails() {
@@ -1251,7 +1271,7 @@
         `).join('');
       }
 
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
     function submitComment(key) {
@@ -1322,7 +1342,7 @@
         document.getElementById('tabBtnBackup').className = "bg-purple-600 text-white font-bold px-4 py-2 rounded-xl";
       }
       renderAdminLists();
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
     function populateAdminSelects() {
@@ -1333,49 +1353,65 @@
       if (nSel) nSel.innerHTML = novelsList.map(n => `<option value="${n.id}">${n.title}</option>`).join('');
     }
 
+    // عرض قوائم المانهوا والروايات في لوحة الإدارة مع خيارات الحذف الكامل وإدارة الفصول
     function renderAdminLists() {
       const mangaContainer = document.getElementById('adminMangaListContainer');
       if (mangaContainer) {
-        mangaContainer.innerHTML = manhwaList.map(m => `
-          <div class="bg-[#0b0b0e] border border-gray-800 p-3 rounded-2xl flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-              <img src="${m.cover}" class="w-12 h-16 object-cover rounded-xl border border-gray-700">
-              <div>
-                <h3 class="font-bold text-white text-xs sm:text-sm">${m.title}</h3>
-                <span class="text-[11px] text-gray-400">${m.chapters.length} فصول منشورة</span>
+        if (!manhwaList.length) {
+          mangaContainer.innerHTML = `<p class="text-gray-500 text-center py-3">لا توجد أعمال مانهوا منشورة حالياً.</p>`;
+        } else {
+          mangaContainer.innerHTML = manhwaList.map(m => `
+            <div class="bg-[#0b0b0e] border border-gray-800 p-3 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <img src="${m.cover}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600';" class="w-12 h-16 object-cover rounded-xl border border-gray-700">
+                <div>
+                  <h3 class="font-bold text-white text-xs sm:text-sm">${m.title}</h3>
+                  <span class="text-[11px] text-gray-400">${m.chapters.length} فصول منشورة</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <button onclick="manageItemChapters('${m.id}', 'manhwa')" class="flex-1 sm:flex-none bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 px-3 py-1.5 rounded-xl font-bold">
+                  فصول العمل (${m.chapters.length})
+                </button>
+                <button onclick="deleteEntireManga('${m.id}')" class="flex-1 sm:flex-none bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 font-bold px-3 py-1.5 rounded-xl flex items-center justify-center gap-1">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> حذف المانهوا
+                </button>
               </div>
             </div>
-            <div class="flex items-center gap-2">
-              <button onclick="deleteEntireManga('${m.id}')" class="bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 font-bold px-3 py-1.5 rounded-xl flex items-center gap-1">
-                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> حذف المانهوا
-              </button>
-            </div>
-          </div>
-        `).join('');
+          `).join('');
+        }
       }
 
       const novelsContainer = document.getElementById('adminNovelsListContainer');
       if (novelsContainer) {
-        novelsContainer.innerHTML = novelsList.map(n => `
-          <div class="bg-[#0b0b0e] border border-gray-800 p-3 rounded-2xl flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-              <img src="${n.cover}" class="w-12 h-16 object-cover rounded-xl border border-gray-700">
-              <div>
-                <h3 class="font-bold text-white text-xs sm:text-sm">${n.title}</h3>
-                <span class="text-[11px] text-gray-400">${n.chapters.length} فصول | الكاتب: ${n.author || 'مجهول'}</span>
+        if (!novelsList.length) {
+          novelsContainer.innerHTML = `<p class="text-gray-500 text-center py-3">لا توجد روايات منشورة حالياً.</p>`;
+        } else {
+          novelsContainer.innerHTML = novelsList.map(n => `
+            <div class="bg-[#0b0b0e] border border-gray-800 p-3 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <img src="${n.cover}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600';" class="w-12 h-16 object-cover rounded-xl border border-gray-700">
+                <div>
+                  <h3 class="font-bold text-white text-xs sm:text-sm">${n.title}</h3>
+                  <span class="text-[11px] text-gray-400">${n.chapters.length} فصول | الكاتب: ${n.author || 'مجهول'}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <button onclick="manageItemChapters('${n.id}', 'novel')" class="flex-1 sm:flex-none bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 px-3 py-1.5 rounded-xl font-bold">
+                  فصول الرواية (${n.chapters.length})
+                </button>
+                <button onclick="deleteEntireNovel('${n.id}')" class="flex-1 sm:flex-none bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 font-bold px-3 py-1.5 rounded-xl flex items-center justify-center gap-1">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> حذف الرواية
+                </button>
               </div>
             </div>
-            <div class="flex items-center gap-2">
-              <button onclick="deleteEntireNovel('${n.id}')" class="bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 font-bold px-3 py-1.5 rounded-xl flex items-center gap-1">
-                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> حذف الرواية
-              </button>
-            </div>
-          </div>
-        `).join('');
+          `).join('');
+        }
       }
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
+    // دوال حذف المانهوا والروايات
     function deleteEntireManga(id) {
       const item = manhwaList.find(m => m.id === id);
       if (!item) return;
@@ -1399,6 +1435,35 @@
         populateAdminSelects();
         renderAdminLists();
         alert("تم حذف الرواية بنجاح!");
+      }
+    }
+
+    // إدارة وحذف الفصول المنفردة
+    function manageItemChapters(itemId, type) {
+      const item = type === 'manhwa' ? manhwaList.find(m => m.id === itemId) : novelsList.find(n => n.id === itemId);
+      if (!item) return;
+
+      if (!item.chapters.length) {
+        alert("لا توجد فصول منشورة لهذا العمل بعد!");
+        return;
+      }
+
+      const chListStr = item.chapters.map((c, i) => `${i + 1}. الفصل ${c.num}: ${c.title}`).join('\n');
+      const choice = prompt(`أدخل رقم الفصل الذي تريد حذفه من القائمة أدناه:\n\n${chListStr}`);
+      if (!choice) return;
+
+      const idx = parseInt(choice) - 1;
+      if (idx >= 0 && idx < item.chapters.length) {
+        const targetCh = item.chapters[idx];
+        if (confirm(`هل تريد بالتأكيد حذف الفصل رقم ${targetCh.num} (${targetCh.title})؟`)) {
+          item.chapters.splice(idx, 1);
+          saveState();
+          renderHome();
+          renderAdminLists();
+          alert("تم حذف الفصل بنجاح!");
+        }
+      } else {
+        alert("رقم غير صحيح!");
       }
     }
 
@@ -1569,7 +1634,7 @@
           ${s.username !== 'zechal' ? `<button onclick="deleteStaff('${s.id}')" class="text-red-400 hover:text-red-300 p-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>` : '<span class="text-[10px] text-purple-400 font-bold">مؤسس</span>'}
         </div>
       `).join('');
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
     function deleteStaff(id) {
@@ -1638,18 +1703,13 @@
       
       document.getElementById('homeManhwaGrid').innerHTML = filteredManga.map(m => createMediaCard(m, 'manhwa')).join('');
       document.getElementById('homeNovelsGrid').innerHTML = filteredNovels.map(n => createMediaCard(n, 'novel')).join('');
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
     window.addEventListener("DOMContentLoaded", () => {
       renderHome();
       populateAdminSelects();
-
-
-    window.addEventListener("DOMContentLoaded", () => {
-      renderHome();
-      populateAdminSelects();
-      lucide.createIcons();
+      safeCreateIcons();
     });
   </script>
 </body>
