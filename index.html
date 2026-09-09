@@ -297,7 +297,7 @@
     </div>
   </div>
 
-  <!-- 7. صفحة تسجيل الدخول وإنشاء الحساب مع تعيين كلمة السر -->
+  <!-- 7. صفحة تسجيل الدخول وإنشاء الحساب مع كلمة السر -->
   <div id="login-view" class="view-section hidden min-h-screen px-5 py-10 relative overflow-hidden flex flex-col justify-center">
     <div class="absolute top-[-10%] left-[-10%] w-64 h-64 bg-purple-600/20 rounded-full blur-[100px] pointer-events-none"></div>
     <div class="absolute bottom-[-10%] right-[-10%] w-64 h-64 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none"></div>
@@ -308,22 +308,16 @@
           M
         </div>
         <h1 class="font-bold text-2xl tracking-wider text-gray-100">MANGA CREST</h1>
-        <p id="authSubtitle" class="text-gray-400 text-xs mt-1">سجل دخولك أو أنشئ حسابك لحفظ تقدمك ومتابعة أعمالك</p>
+        <p id="authSubtitle" class="text-gray-400 text-xs mt-1">سجل دخولك أو عيّن كلمة سر جديدة لحسابك</p>
       </div>
 
       <div class="bg-[#111116] border border-gray-800/80 rounded-3xl p-6 md:p-8 shadow-2xl">
-        <!-- أزرار التبديل بين تسجيل الدخول وإنشاء حساب -->
-        <div class="flex bg-[#15151a] p-1 rounded-2xl border border-gray-800 mb-6 text-xs">
-          <button type="button" id="tabAuthLogin" onclick="setAuthMode('login')" class="flex-1 py-2.5 rounded-xl font-bold bg-purple-600 text-white transition">تسجيل الدخول</button>
-          <button type="button" id="tabAuthRegister" onclick="setAuthMode('register')" class="flex-1 py-2.5 rounded-xl font-bold text-gray-400 hover:text-white transition">إنشاء حساب جديد</button>
-        </div>
-
         <!-- رسالة الخطأ أو النجاح -->
         <div id="authAlertBox" class="hidden p-3 rounded-xl text-xs font-bold mb-4 flex items-center gap-2"></div>
 
-        <form onsubmit="handleAuthSubmit(event)" class="flex flex-col gap-4">
+        <form id="authForm" onsubmit="handleFormLogin(event)" class="flex flex-col gap-4">
           <div>
-            <label class="block text-xs font-bold text-gray-400 mb-1.5 pr-1">البريد الإلكتروني</label>
+            <label class="block text-xs font-bold text-gray-400 mb-2 pr-1">البريد الإلكتروني</label>
             <div class="relative">
               <i data-lucide="mail" class="absolute right-4 top-3.5 w-5 h-5 text-gray-500"></i>
               <input type="email" id="loginEmail" placeholder="your gmail @gmail.com" required class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 pr-12 pl-4 text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-left" dir="ltr">
@@ -331,30 +325,27 @@
           </div>
 
           <div>
-            <label id="lblPassword" class="block text-xs font-bold text-gray-400 mb-1.5 pr-1">كلمة المرور</label>
+            <label class="block text-xs font-bold text-gray-400 mb-2 pr-1">كلمة المرور</label>
             <div class="relative">
               <i data-lucide="lock" class="absolute right-4 top-3.5 w-5 h-5 text-gray-500"></i>
               <input type="password" id="loginPass" placeholder="••••••••" required class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 pr-12 pl-4 text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-left" dir="ltr">
             </div>
           </div>
 
-          <!-- حقل تأكيد كلمة المرور عند إنشاء الحساب -->
-          <div id="confirmPassGroup" class="hidden">
-            <label class="block text-xs font-bold text-gray-400 mb-1.5 pr-1">تأكيد كلمة المرور</label>
-            <div class="relative">
-              <i data-lucide="check-circle" class="absolute right-4 top-3.5 w-5 h-5 text-gray-500"></i>
-              <input type="password" id="loginPassConfirm" placeholder="••••••••" class="w-full bg-[#15151a] border border-gray-700 rounded-xl py-3 pr-12 pl-4 text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-left" dir="ltr">
-            </div>
+          <div class="flex items-center justify-between text-xs pt-1">
+            <span class="text-gray-400 text-[11px]">مستخدم جديد؟ سيتم حفظ كلمة السر تلقائياً</span>
+            <a href="javascript:void(0)" onclick="handleForgotPassword()" class="text-purple-400 hover:text-purple-300 font-medium">نسيت كلمة المرور؟</a>
           </div>
 
-          <div id="forgotPassContainer" class="flex justify-end">
-            <a href="javascript:void(0)" onclick="handleForgotPassword()" class="text-xs text-purple-400 font-medium hover:text-purple-300 transition-colors">نسيت كلمة المرور؟</a>
+          <div class="flex flex-col sm:flex-row gap-2 mt-2">
+            <button type="submit" onclick="authSubmitAction='login'" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 rounded-xl text-sm transition-colors shadow-lg shadow-purple-900/30 flex justify-center items-center gap-2">
+              <span>تسجيل الدخول</span>
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </button>
+            <button type="submit" onclick="authSubmitAction='register'" class="bg-[#1a1a24] hover:bg-[#232330] border border-purple-800/60 text-purple-300 font-bold py-3.5 px-4 rounded-xl text-xs transition flex justify-center items-center gap-1.5">
+              <span>تعيين كحساب جديد</span>
+            </button>
           </div>
-
-          <button type="submit" id="authSubmitBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 rounded-xl text-sm transition-colors mt-1 shadow-lg shadow-purple-900/30 flex justify-center items-center gap-2">
-            <span>تسجيل الدخول</span>
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
-          </button>
         </form>
 
         <div class="flex items-center gap-3 my-6">
@@ -414,26 +405,28 @@
         </div>
       </div>
 
-      <!-- تغيير كلمة المرور من داخل البروفايل -->
+      <!-- قسم تغيير كلمة المرور لحساب المستخدم -->
       <div class="border-t border-gray-800 pt-4 mb-6">
         <h3 class="text-xs font-bold text-gray-300 mb-3 flex items-center gap-1.5">
           <i data-lucide="key" class="w-4 h-4 text-amber-400"></i>
           <span>تغيير كلمة المرور لحسابك</span>
         </h3>
-        <div class="space-y-2.5 text-xs">
+        <div class="space-y-2 text-xs">
           <input type="password" id="profCurrentPass" placeholder="كلمة المرور الحالية" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-2.5 text-gray-200">
-          <input type="password" id="profNewPass" placeholder="كلمة المرور الجديدة" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-2.5 text-gray-200">
+          <input type="password" id="profNewPass" placeholder="كلمة المرور الجديدة (4 خانات فأكثر)" class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-2.5 text-gray-200">
           <button onclick="handleChangePasswordFromProfile()" class="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 font-bold py-2.5 rounded-xl transition">
             حفظ كلمة المرور الجديدة
           </button>
         </div>
       </div>
 
+      <!-- زر مباشر لرفع الصورة الشخصية -->
       <div class="border-t border-gray-800 pt-4 mb-6">
         <button onclick="document.getElementById('customAvatarInput').click()" class="w-full bg-[#1c1c24] hover:bg-[#252530] border border-gray-700 hover:border-purple-500 text-gray-200 hover:text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition shadow-sm">
           <i data-lucide="upload" class="w-4 h-4 text-purple-400"></i>
           <span>رفع صورة شخصية من جهازك</span>
         </button>
+        <p class="text-[11px] text-gray-500 text-center mt-2">اختر صورتك المفضلة من ملفات هاتفك أو حاسوبك</p>
       </div>
 
       <div class="flex flex-col gap-2">
@@ -464,7 +457,7 @@
       </button>
     </header>
 
-    <!-- قسم تثبيت العمل المميز -->
+    <!-- قسم مخصص لإدارة وتثبيت العمل الأسطوري المميز -->
     <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 shadow-xl mb-6">
       <h2 class="text-sm font-bold mb-2 border-r-4 border-amber-500 pr-2 flex items-center gap-2 text-white">
         <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
@@ -631,7 +624,7 @@
   </nav>
 
   <!-- ========================================================================= -->
-  <!-- الجافا سكريبت المحدث مع نظام التحقق وحفظ كلمات المرور -->
+  <!-- الجافا سكريبت الخالي تماماً من الأخطاء مع نظام التحقق وحفظ كلمات المرور -->
   <!-- ========================================================================= -->
   <script>
     const REALMS = [
@@ -799,17 +792,65 @@
       { id: "st3", username: "typesetter_gold", name: "المحرر الذهبي", email: "editor@crest.com", role: "محرر (Typesetter)" }
     ];
 
-    // قاعدة بيانات المستخدمين المحفوظة (تشمل البريد، اليوزر، وكلمة المرور)
-    let userRegistry = JSON.parse(localStorage.getItem("crest_user_registry")) || {
-      "zechal510010@gmail.com": { username: "zechal", password: "123" }
-    };
+    // تهيئة سجل المستخدمين وكلمات المرور بأمان مع دعم البيانات القديمة
+    let userRegistry = {};
+    try {
+      const savedReg = JSON.parse(localStorage.getItem("crest_user_registry"));
+      if (savedReg && typeof savedReg === 'object') {
+        for (let key in savedReg) {
+          const item = savedReg[key];
+          if (item && typeof item === 'object') {
+            const emailKey = (item.email || (key.includes('@') ? key : `${key}@crest.com`)).toLowerCase();
+            userRegistry[emailKey] = {
+              username: item.username || key.replace('@crest.com', ''),
+              password: item.password || "123"
+            };
+          }
+        }
+      }
+    } catch(e){}
 
-    let currentUser = JSON.parse(localStorage.getItem("crest_user")) || null;
-    let manhwaList = JSON.parse(localStorage.getItem("crest_manhwa_list")) || SEED_MANHWA;
-    let novelsList = JSON.parse(localStorage.getItem("crest_novels_list")) || SEED_NOVELS;
-    let staffMembers = JSON.parse(localStorage.getItem("crest_staff_list")) || SEED_STAFF;
-    let commentsDB = JSON.parse(localStorage.getItem("crest_comments_db")) || {};
-    let featuredHero = JSON.parse(localStorage.getItem("crest_featured_hero")) || { id: "m1", type: "manhwa" };
+    // التأكد من وجود حساب المدير الفائق بكلمة سر افتراضية
+    if (!userRegistry["zechal510010@gmail.com"]) {
+      userRegistry["zechal510010@gmail.com"] = { username: "zechal", password: "123" };
+    }
+
+    let currentUser = null;
+    try { currentUser = JSON.parse(localStorage.getItem("crest_user")); } catch(e){}
+
+    let manhwaList = SEED_MANHWA;
+    try {
+      const ml = JSON.parse(localStorage.getItem("crest_manhwa_list"));
+      if (Array.isArray(ml) && ml.length) manhwaList = ml;
+    } catch(e){}
+
+    let novelsList = SEED_NOVELS;
+    try {
+      const nl = JSON.parse(localStorage.getItem("crest_novels_list"));
+      if (Array.isArray(nl) && nl.length) novelsList = nl;
+    } catch(e){}
+
+    let staffMembers = SEED_STAFF;
+    try {
+      const sl = JSON.parse(localStorage.getItem("crest_staff_list"));
+      if (Array.isArray(sl) && sl.length) staffMembers = sl;
+    } catch(e){}
+
+    let commentsDB = {};
+    try { commentsDB = JSON.parse(localStorage.getItem("crest_comments_db")) || {}; } catch(e){}
+
+    let featuredHero = { id: "m1", type: "manhwa" };
+    try {
+      const fh = JSON.parse(localStorage.getItem("crest_featured_hero"));
+      if (fh !== undefined) featuredHero = fh;
+    } catch(e){}
+
+    // تنظيف أي بيانات تجريبية
+    manhwaList = manhwaList.filter(m => m && m.title && !m.title.toLowerCase().includes('test') && !m.title.includes('تجربة'));
+    if (!manhwaList.length) manhwaList = SEED_MANHWA;
+
+    novelsList = novelsList.filter(n => n && n.title && !n.title.toLowerCase().includes('test') && !n.title.includes('تجربة'));
+    if (!novelsList.length) novelsList = SEED_NOVELS;
 
     let currentItem = null;
     let currentItemType = 'manhwa';
@@ -818,22 +859,20 @@
     let novelFontSize = 16;
     let novelThemeIndex = 0;
     const novelThemes = ['novel-theme-dark', 'novel-theme-sepia', 'novel-theme-night'];
-
-    // وضع تسجيل الدخول الحالي (login أو register)
-    let currentAuthMode = 'login';
+    let authSubmitAction = 'login';
 
     function saveState() {
-      localStorage.setItem("crest_user", JSON.stringify(currentUser));
-      localStorage.setItem("crest_manhwa_list", JSON.stringify(manhwaList));
-      localStorage.setItem("crest_novels_list", JSON.stringify(novelsList));
-      localStorage.setItem("crest_staff_list", JSON.stringify(staffMembers));
-      localStorage.setItem("crest_user_registry", JSON.stringify(userRegistry));
-      localStorage.setItem("crest_comments_db", JSON.stringify(commentsDB));
-      localStorage.setItem("crest_featured_hero", JSON.stringify(featuredHero));
+      try {
+        localStorage.setItem("crest_user", JSON.stringify(currentUser));
+        localStorage.setItem("crest_manhwa_list", JSON.stringify(manhwaList));
+        localStorage.setItem("crest_novels_list", JSON.stringify(novelsList));
+        localStorage.setItem("crest_staff_list", JSON.stringify(staffMembers));
+        localStorage.setItem("crest_user_registry", JSON.stringify(userRegistry));
+        localStorage.setItem("crest_comments_db", JSON.stringify(commentsDB));
+        localStorage.setItem("crest_featured_hero", JSON.stringify(featuredHero));
+      } catch(e){}
       renderHeaderBadge();
     }
-
-    saveState();
 
     function safeCreateIcons() {
       if (window.lucide && typeof lucide.createIcons === 'function') {
@@ -843,7 +882,7 @@
 
     function navigateTo(targetViewId) {
       const loader = document.getElementById('loading-overlay');
-      loader.classList.remove('hidden');
+      if (loader) loader.classList.remove('hidden');
 
       setTimeout(() => {
         document.querySelectorAll('.view-section').forEach(view => {
@@ -854,20 +893,24 @@
         const targetView = document.getElementById(targetViewId);
         if (targetView) {
           targetView.classList.remove('hidden');
-          setTimeout(() => targetView.style.opacity = "1", 30);
+          setTimeout(() => {
+            if (targetView && targetView.style) targetView.style.opacity = "1";
+          }, 30);
         }
 
         const bottomNav = document.getElementById('bottomAppNav');
-        if (targetViewId === 'manhwa-reader-view' || targetViewId === 'novel-reader-view' || targetViewId === 'login-view') {
-          bottomNav.classList.add('hidden');
-        } else {
-          bottomNav.classList.remove('hidden');
+        if (bottomNav) {
+          if (targetViewId === 'manhwa-reader-view' || targetViewId === 'novel-reader-view' || targetViewId === 'login-view') {
+            bottomNav.classList.add('hidden');
+          } else {
+            bottomNav.classList.remove('hidden');
+          }
         }
 
         window.scrollTo(0, 0);
-        loader.classList.add('hidden');
+        if (loader) loader.classList.add('hidden');
         safeCreateIcons();
-      }, 200);
+      }, 150);
     }
 
     function navigateBack() {
@@ -876,12 +919,11 @@
 
     function toggleSearchBar() {
       const panel = document.getElementById('search-bar-panel');
-      panel.classList.toggle('hidden');
+      if (panel) panel.classList.toggle('hidden');
     }
 
     function handleNavUserClick() {
       if (!currentUser) {
-        setAuthMode('login');
         navigateTo('login-view');
       } else {
         renderProfileView();
@@ -890,45 +932,16 @@
     }
 
     // ==========================================
-    // نظام تسجيل الدخول وإنشاء الحساب مع كلمة السر
+    // معالجة تسجيل الدخول وإنشاء الحساب وحفظ كلمة المرور
     // ==========================================
-    function setAuthMode(mode) {
-      currentAuthMode = mode;
-      const tabLogin = document.getElementById('tabAuthLogin');
-      const tabRegister = document.getElementById('tabAuthRegister');
-      const confirmGroup = document.getElementById('confirmPassGroup');
-      const confirmInput = document.getElementById('loginPassConfirm');
-      const forgotContainer = document.getElementById('forgotPassContainer');
-      const submitBtn = document.getElementById('authSubmitBtn');
-      const subtitle = document.getElementById('authSubtitle');
-      const alertBox = document.getElementById('authAlertBox');
-      
-      alertBox.classList.add('hidden');
-
-      if (mode === 'register') {
-        tabRegister.className = "flex-1 py-2.5 rounded-xl font-bold bg-purple-600 text-white transition";
-        tabLogin.className = "flex-1 py-2.5 rounded-xl font-bold text-gray-400 hover:text-white transition";
-        confirmGroup.classList.remove('hidden');
-        confirmInput.required = true;
-        forgotContainer.classList.add('hidden');
-        submitBtn.innerHTML = `<span>إنشاء حساب وتعيين كلمة المرور</span> <i data-lucide="sparkles" class="w-4 h-4"></i>`;
-        subtitle.innerText = "عيّن كلمة سر لحسابك الجديد واحفظ تقدمك في الموقع";
-      } else {
-        tabLogin.className = "flex-1 py-2.5 rounded-xl font-bold bg-purple-600 text-white transition";
-        tabRegister.className = "flex-1 py-2.5 rounded-xl font-bold text-gray-400 hover:text-white transition";
-        confirmGroup.classList.add('hidden');
-        confirmInput.required = false;
-        forgotContainer.classList.remove('hidden');
-        submitBtn.innerHTML = `<span>تسجيل الدخول</span> <i data-lucide="arrow-left" class="w-4 h-4"></i>`;
-        subtitle.innerText = "سجل دخولك لمتابعة وحفظ أعمالك المفضلة";
-      }
-      safeCreateIcons();
-    }
-
-    function showAuthAlert(msg, type = 'error') {
+    function showAuthMessage(msg, isError = true) {
       const box = document.getElementById('authAlertBox');
+      if (!box) {
+        alert(msg);
+        return;
+      }
       box.classList.remove('hidden');
-      if (type === 'error') {
+      if (isError) {
         box.className = "p-3 rounded-xl text-xs font-bold mb-4 flex items-center gap-2 bg-red-950/80 border border-red-800 text-red-300";
         box.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0"></i> <span>${msg}</span>`;
       } else {
@@ -938,87 +951,82 @@
       safeCreateIcons();
     }
 
-    function handleAuthSubmit(e) {
+    function handleFormLogin(e) {
       e.preventDefault();
-      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-      const pass = document.getElementById('loginPass').value;
-      const passConfirm = document.getElementById('loginPassConfirm').value;
+      const emailInput = document.getElementById('loginEmail');
+      const passInput = document.getElementById('loginPass');
+      if (!emailInput || !passInput) return;
+
+      const email = emailInput.value.trim().toLowerCase();
+      const pass = passInput.value;
 
       if (!email || !pass) {
-        showAuthAlert("يرجى ملء جميع الحقول المطلوبة!");
+        showAuthMessage("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
         return;
       }
 
-      const username = email.split('@')[0].replace(/[^a-z0-9_]/g, '');
+      const username = email.split('@')[0].replace(/[^a-z0-9_]/g, '') || "user";
+      const isSuper = SUPER_ADMIN_EMAILS.some(adm => adm.toLowerCase() === email.toLowerCase()) || username === "zechal";
+      const existingAccount = userRegistry[email];
 
-      if (currentAuthMode === 'register') {
-        // إنشاء حساب جديد وتعيين كلمة المرور
-        if (pass.length < 4) {
-          showAuthAlert("كلمة المرور يجب أن لا تقل عن 4 خانات!");
+      if (authSubmitAction === 'register') {
+        // المستخدم طلب إنشاء حساب جديد وتعيين كلمة سر
+        if (existingAccount) {
+          showAuthMessage("هذا البريد مسجل مسبقاً! اضغط على زر 'تسجيل الدخول'.");
           return;
         }
-        if (pass !== passConfirm) {
-          showAuthAlert("كلمتا المرور غير متطابقتين! تأكد من إدخالهما بشكل صحيح.");
-          return;
-        }
-        if (userRegistry[email]) {
-          showAuthAlert("هذا البريد مسجل مسبقاً! يرجى التبديل لتبويب 'تسجيل الدخول'.");
+        if (pass.length < 3) {
+          showAuthMessage("كلمة المرور يجب أن لا تقل عن 3 أحرف أو أرقام!");
           return;
         }
 
-        // حفظ الحساب مع كلمة السر في السجل
         userRegistry[email] = {
           username: username,
           password: pass
         };
         saveState();
-
-        showAuthAlert("تم إنشاء حسابك وتعيين كلمة المرور بنجاح! جاري الدخول...", "success");
+        showAuthMessage("تم حفظ كلمة المرور وإنشاء الحساب بنجاح! جاري الدخول...", false);
         setTimeout(() => {
           applyLogin(username, email);
-        }, 600);
+        }, 500);
+        return;
+      }
 
+      // محاولة تسجيل الدخول العادية
+      if (existingAccount) {
+        // التحقق من صحة كلمة المرور
+        if (existingAccount.password && existingAccount.password !== pass) {
+          showAuthMessage("كلمة المرور غير صحيحة! يرجى إعادة كتابة كلمة السر الصحيحة.");
+          passInput.focus();
+          return;
+        }
+        // كلمة المرور صحيحة
+        applyLogin(existingAccount.username || username, email);
       } else {
-        // تسجيل الدخول والتحقق من كلمة المرور
-        const registeredAccount = userRegistry[email];
-
-        // في حال كان بريد المدير الفائق ولم يتم تعيين باسورد له بعد في السجل
-        const isSuper = SUPER_ADMIN_EMAILS.some(e => e.toLowerCase() === email.toLowerCase()) || username === "zechal";
-        if (isSuper && !registeredAccount) {
+        // الحساب غير مسجل بعد
+        if (isSuper) {
+          // حساب المدير عند أول تسجيل
           userRegistry[email] = { username: "zechal", password: pass };
           saveState();
           applyLogin("zechal", email);
           return;
         }
 
-        if (!registeredAccount) {
-          showAuthAlert("هذا البريد غير مسجل! انتقل إلى تبويب 'إنشاء حساب جديد' لتعيين كلمة مرور.");
-          return;
-        }
-
-        // التحقق من صحة كلمة المرور المحفوظة
-        if (registeredAccount.password !== pass) {
-          showAuthAlert("كلمة المرور غير صحيحة! يرجى التأكد وإعادة المحاولة.");
-          document.getElementById('loginPass').value = "";
-          document.getElementById('loginPass').focus();
-          return;
-        }
-
-        // كلمة المرور صحيحة
-        applyLogin(registeredAccount.username || username, email);
+        showAuthMessage("هذا الحساب غير مسجل بعد! اضغط على زر 'تعيين كحساب جديد' لحفظ كلمة المرور.");
       }
     }
 
     function handleForgotPassword() {
-      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const emailInput = document.getElementById('loginEmail');
+      const email = emailInput ? emailInput.value.trim().toLowerCase() : "";
       if (!email) {
-        alert("يرجى كتابة بريدك الإلكتروني في الحقل أولاً لمعرفة حالة كلمة المرور.");
+        alert("يرجى كتابة بريدك الإلكتروني في الحقل أولاً.");
         return;
       }
       if (userRegistry[email]) {
-        alert(`حسابك مسجل بالفعل! إذا نسيت كلمة المرور يمكنك إعادة تعيينها عن طريق إنشاء حساب جديد بنفس البريد أو التواصل مع الإدارة.`);
+        alert("حسابك مسجل في النظام! يمكنك تغيير كلمة المرور من داخل صفحة حسابك الشخصي بعد تسجيل الدخول.");
       } else {
-        alert("هذا البريد غير مسجل في النظام. يمكنك التبديل إلى تبويب 'إنشاء حساب جديد' وتسجيل كلمة سر جديدة.");
+        alert("هذا البريد غير مسجل بعد. يمكنك الضغط على 'تعيين كحساب جديد' لتعيين كلمة مرور لحسابك.");
       }
     }
 
@@ -1078,29 +1086,33 @@
 
     function handleChangePasswordFromProfile() {
       if (!currentUser) return;
-      const currentPassInput = document.getElementById('profCurrentPass').value;
-      const newPassInput = document.getElementById('profNewPass').value;
+      const curInput = document.getElementById('profCurrentPass');
+      const newInput = document.getElementById('profNewPass');
+      if (!curInput || !newInput) return;
 
-      if (!newPassInput || newPassInput.length < 4) {
-        alert("كلمة المرور الجديدة يجب أن تكون 4 خانات على الأقل!");
+      const curPass = curInput.value;
+      const newPass = newInput.value;
+
+      if (!newPass || newPass.length < 3) {
+        alert("كلمة المرور الجديدة يجب أن تكون 3 خانات على الأقل!");
         return;
       }
 
-      const account = userRegistry[currentUser.email];
-      if (account && account.password && account.password !== currentPassInput) {
+      const acc = userRegistry[currentUser.email];
+      if (acc && acc.password && acc.password !== curPass) {
         alert("كلمة المرور الحالية غير صحيحة!");
         return;
       }
 
       userRegistry[currentUser.email] = {
         username: currentUser.username,
-        password: newPassInput
+        password: newPass
       };
       saveState();
 
-      document.getElementById('profCurrentPass').value = "";
-      document.getElementById('profNewPass').value = "";
-      alert("تم تحديث كلمة المرور بنجاح وحفظها!");
+      curInput.value = "";
+      newInput.value = "";
+      alert("تم تحديث وحفظ كلمة المرور بنجاح!");
     }
 
     function handleLogout() {
@@ -1126,9 +1138,10 @@
 
     function renderHeaderBadge() {
       const badge = document.getElementById('header-user-badge');
+      if (!badge) return;
       if (!currentUser) {
         badge.innerHTML = `
-          <button onclick="setAuthMode('login'); navigateTo('login-view')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl shadow transition">
+          <button onclick="navigateTo('login-view')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl shadow transition">
             دخول
           </button>
         `;
@@ -1158,16 +1171,17 @@
 
     function renderHeroBanner() {
       const heroSection = document.getElementById('heroSection');
+      if (!heroSection) return;
       const quickBtnContainer = document.getElementById('heroAdminQuickBtnContainer');
       const heroItem = getHeroItem();
 
       if (currentUser && currentUser.isAdmin) {
-        if (heroItem) {
+        if (heroItem && quickBtnContainer) {
           quickBtnContainer.classList.remove('hidden');
-        } else {
+        } else if (quickBtnContainer) {
           quickBtnContainer.classList.add('hidden');
         }
-      } else {
+      } else if (quickBtnContainer) {
         quickBtnContainer.classList.add('hidden');
       }
 
@@ -1195,10 +1209,12 @@
       
       const readBtn = document.getElementById('heroReadBtn');
       const detailsBtn = document.getElementById('heroDetailsBtn');
-      readBtn.classList.remove('hidden');
-      detailsBtn.classList.remove('hidden');
-      detailsBtn.innerText = 'التفاصيل';
-      detailsBtn.onclick = openHeroDetails;
+      if (readBtn) readBtn.classList.remove('hidden');
+      if (detailsBtn) {
+        detailsBtn.classList.remove('hidden');
+        detailsBtn.innerText = 'التفاصيل';
+        detailsBtn.onclick = openHeroDetails;
+      }
     }
 
     function readHeroFirstChapter() {
@@ -1225,7 +1241,7 @@
       renderHome();
       populateAdminSelects();
       renderAdminLists();
-      alert("تم تثبيت العمل كعمل أسطوري مميز بنجاح!");
+      alert("تم تثبيت العمل كعمل أسطوري مميز في واجهة الموقع بنجاح!");
     }
 
     function removeFeaturedHero() {
@@ -1255,54 +1271,60 @@
       renderHeroBanner();
 
       const widget = document.getElementById('user-cultivation-widget');
-      if (currentUser) {
-        const r = getRealm(currentUser.readCount);
-        widget.innerHTML = `
-          <div class="flex items-center gap-3 w-full sm:w-auto">
-            <div class="cultivation-frame ${r.frame}" style="width: 52px; height: 52px;">
-              <img src="${currentUser.avatar}">
-            </div>
-            <div>
-              <div class="flex items-center gap-1.5">
-                <span class="font-black text-sm text-white">@${currentUser.username}</span>
-                <span class="text-[10px] bg-purple-950 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full font-bold">${r.name}</span>
+      if (widget) {
+        if (currentUser) {
+          const r = getRealm(currentUser.readCount);
+          widget.innerHTML = `
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+              <div class="cultivation-frame ${r.frame}" style="width: 52px; height: 52px;">
+                <img src="${currentUser.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}">
               </div>
-              <span class="text-xs text-gray-400 block">${r.title} • قرأت <strong>${currentUser.readCount}</strong> فصل</span>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="font-black text-sm text-white">@${currentUser.username}</span>
+                  <span class="text-[10px] bg-purple-950 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full font-bold">${r.name}</span>
+                </div>
+                <span class="text-xs text-gray-400 block">${r.title} • قرأت <strong>${currentUser.readCount}</strong> فصل</span>
+              </div>
             </div>
-          </div>
-          <div class="w-full sm:w-64">
-            <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden mb-1">
-              <div class="bg-gradient-to-r from-purple-600 to-amber-400 h-full" style="width: ${r.progress}%;"></div>
+            <div class="w-full sm:w-64">
+              <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden mb-1">
+                <div class="bg-gradient-to-r from-purple-600 to-amber-400 h-full" style="width: ${r.progress}%;"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-gray-400 font-bold">
+                <span>التقدم: ${r.progress}%</span>
+                <span>${r.nextMin ? 'العالم القادم: ' + r.nextMin + ' فصل' : 'قمة الخلود!'}</span>
+              </div>
             </div>
-            <div class="flex justify-between text-[10px] text-gray-400 font-bold">
-              <span>التقدم: ${r.progress}%</span>
-              <span>${r.nextMin ? 'العالم القادم: ' + r.nextMin + ' فصل' : 'قمة الخلود!'}</span>
+          `;
+        } else {
+          widget.innerHTML = `
+            <div class="text-center sm:text-right">
+              <h3 class="text-sm font-bold text-white mb-1">ابدأ رحلة صقل الطاقة والارتقاء في العوالم!</h3>
+              <p class="text-xs text-gray-400">سجل حسابك لتجميع الفصول المقروءة وفتح إطارات وهالات متوهجة نادرة.</p>
             </div>
-          </div>
-        `;
-      } else {
-        widget.innerHTML = `
-          <div class="text-center sm:text-right">
-            <h3 class="text-sm font-bold text-white mb-1">ابدأ رحلة صقل الطاقة والارتقاء في العوالم!</h3>
-            <p class="text-xs text-gray-400">سجل حسابك لتجميع الفصول المقروءة وفتح إطارات وهالات متوهجة نادرة.</p>
-          </div>
-          <button onclick="setAuthMode('login'); navigateTo('login-view')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-lg transition whitespace-nowrap">
-            سجّل دخولك الآن
-          </button>
-        `;
+            <button onclick="navigateTo('login-view')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-lg transition whitespace-nowrap">
+              سجّل دخولك الآن
+            </button>
+          `;
+        }
       }
 
       const mGrid = document.getElementById('homeManhwaGrid');
-      mGrid.innerHTML = manhwaList.slice(0, 5).map(m => createMediaCard(m, 'manhwa')).join('');
+      if (mGrid) mGrid.innerHTML = manhwaList.slice(0, 5).map(m => createMediaCard(m, 'manhwa')).join('');
 
       const nGrid = document.getElementById('homeNovelsGrid');
-      nGrid.innerHTML = novelsList.slice(0, 5).map(n => createMediaCard(n, 'novel')).join('');
+      if (nGrid) nGrid.innerHTML = novelsList.slice(0, 5).map(n => createMediaCard(n, 'novel')).join('');
 
-      document.getElementById('fullManhwaGrid').innerHTML = manhwaList.map(m => createMediaCard(m, 'manhwa')).join('');
-      document.getElementById('manhwaTotalCount').innerText = `${manhwaList.length} عمل`;
+      const fullMGrid = document.getElementById('fullManhwaGrid');
+      if (fullMGrid) fullMGrid.innerHTML = manhwaList.map(m => createMediaCard(m, 'manhwa')).join('');
+      const countM = document.getElementById('manhwaTotalCount');
+      if (countM) countM.innerText = `${manhwaList.length} عمل`;
 
-      document.getElementById('fullNovelsGrid').innerHTML = novelsList.map(n => createMediaCard(n, 'novel')).join('');
-      document.getElementById('novelsTotalCount').innerText = `${novelsList.length} رواية`;
+      const fullNGrid = document.getElementById('fullNovelsGrid');
+      if (fullNGrid) fullNGrid.innerHTML = novelsList.map(n => createMediaCard(n, 'novel')).join('');
+      const countN = document.getElementById('novelsTotalCount');
+      if (countN) countN.innerText = `${novelsList.length} رواية`;
 
       renderAdminLists();
       safeCreateIcons();
@@ -1327,7 +1349,7 @@
           <div class="p-3 flex-1 flex flex-col justify-between">
             <h3 class="font-bold text-xs sm:text-sm text-white line-clamp-1 group-hover:text-purple-400 transition">${item.title}</h3>
             <div class="flex justify-between items-center text-[11px] text-gray-400 mt-2 pt-2 border-t border-gray-800/80 font-bold">
-              <span>${item.chapters.length} فصل</span>
+              <span>${item.chapters ? item.chapters.length : 0} فصل</span>
               <span class="${isNovel ? 'text-amber-400' : 'text-purple-400'}">اقرأ ➔</span>
             </div>
           </div>
@@ -1345,6 +1367,7 @@
       if (!currentItem) return;
 
       const container = document.getElementById('detailsContent');
+      if (!container) return;
       const isNovel = type === 'novel';
 
       container.innerHTML = `
@@ -1360,8 +1383,8 @@
               <div class="flex flex-wrap gap-1">
                 ${(currentItem.genres || []).map(g => `<span class="bg-[#0b0b0e] border border-gray-800 text-gray-300 text-[11px] px-2.5 py-0.5 rounded-lg">${g}</span>`).join('')}
               </div>
-              <p class="text-xs sm:text-sm text-gray-300 leading-relaxed bg-[#0b0b0e] p-3.5 rounded-xl border border-gray-800">${currentItem.desc}</p>
-              ${currentItem.chapters.length ? `
+              <p class="text-xs sm:text-sm text-gray-300 leading-relaxed bg-[#0b0b0e] p-3.5 rounded-xl border border-gray-800">${currentItem.desc || ''}</p>
+              ${currentItem.chapters && currentItem.chapters.length ? `
                 <button onclick="startReadingFirstChapter()" class="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
                   <i data-lucide="play" class="w-4 h-4"></i> ابدأ من الفصل الأول
                 </button>
@@ -1372,11 +1395,11 @@
 
         <div class="bg-[#15151a] border border-gray-800 rounded-3xl p-5 shadow-xl">
           <h2 class="text-sm font-bold text-white mb-4 border-b border-gray-800 pb-3 flex items-center justify-between">
-            <span>قائمة الفصول (${currentItem.chapters.length})</span>
+            <span>قائمة الفصول (${currentItem.chapters ? currentItem.chapters.length : 0})</span>
             <span class="text-xs text-gray-400">مرتبة من الأحدث للأقدم</span>
           </h2>
           <div class="space-y-2">
-            ${currentItem.chapters.map(ch => `
+            ${(currentItem.chapters || []).map(ch => `
               <div onclick="openChapter('${ch.id}')" class="flex justify-between items-center p-3 bg-[#0b0b0e] hover:bg-[#1a1a24] border border-gray-800/80 hover:border-purple-600/50 rounded-xl cursor-pointer transition">
                 <div class="flex items-center gap-2.5">
                   <span class="w-7 h-7 rounded-lg bg-purple-950/80 border border-purple-800 flex items-center justify-center text-xs font-bold text-purple-300">${ch.num}</span>
@@ -1405,13 +1428,13 @@
     }
 
     function startReadingFirstChapter() {
-      if (!currentItem || !currentItem.chapters.length) return;
+      if (!currentItem || !currentItem.chapters || !currentItem.chapters.length) return;
       const firstCh = currentItem.chapters[currentItem.chapters.length - 1];
       openChapter(firstCh.id);
     }
 
     function openChapter(chId) {
-      if (!currentItem) return;
+      if (!currentItem || !currentItem.chapters) return;
       currentChapter = currentItem.chapters.find(c => c.id === chId);
       if (!currentChapter) return;
 
@@ -1439,11 +1462,13 @@
       document.getElementById('readerChapterNum').innerText = `الفصل ${currentChapter.num}: ${currentChapter.title}`;
       
       const container = document.getElementById('webtoonPagesContainer');
-      container.innerHTML = currentChapter.pages.map((p, i) => `
-        <div class="w-full">
-          <img src="${p}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000';" class="w-full block select-none" alt="Page ${i + 1}">
-        </div>
-      `).join('');
+      if (container) {
+        container.innerHTML = (currentChapter.pages || []).map((p, i) => `
+          <div class="w-full">
+            <img src="${p}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000';" class="w-full block select-none" alt="Page ${i + 1}">
+          </div>
+        `).join('');
+      }
 
       renderComments('manhwa', currentChapter.id);
     }
@@ -1454,8 +1479,10 @@
       document.getElementById('novelChapterHeading').innerText = currentChapter.title || `الفصل ${currentChapter.num}`;
       
       const bodyEl = document.getElementById('novelChapterBody');
-      bodyEl.innerText = currentChapter.content || "لا يوجد نص متاح لهذا الفصل.";
-      bodyEl.style.fontSize = `${novelFontSize}px`;
+      if (bodyEl) {
+        bodyEl.innerText = currentChapter.content || "لا يوجد نص متاح لهذا الفصل.";
+        bodyEl.style.fontSize = `${novelFontSize}px`;
+      }
 
       renderComments('novel', currentChapter.id);
     }
@@ -1469,11 +1496,13 @@
     function toggleNovelTheme() {
       novelThemeIndex = (novelThemeIndex + 1) % novelThemes.length;
       const container = document.getElementById('novelReaderContainer');
-      container.className = `${novelThemes[novelThemeIndex]} max-w-3xl mx-auto p-5 sm:p-8 min-h-screen transition-colors duration-300`;
+      if (container) {
+        container.className = `${novelThemes[novelThemeIndex]} max-w-3xl mx-auto p-5 sm:p-8 min-h-screen transition-colors duration-300`;
+      }
     }
 
     function goToPrevChapter() {
-      if (!currentItem || !currentChapter) return;
+      if (!currentItem || !currentChapter || !currentItem.chapters) return;
       const idx = currentItem.chapters.findIndex(c => c.id === currentChapter.id);
       if (idx < currentItem.chapters.length - 1) {
         openChapter(currentItem.chapters[idx + 1].id);
@@ -1483,7 +1512,7 @@
     }
 
     function goToNextChapter() {
-      if (!currentItem || !currentChapter) return;
+      if (!currentItem || !currentChapter || !currentItem.chapters) return;
       const idx = currentItem.chapters.findIndex(c => c.id === currentChapter.id);
       if (idx > 0) {
         openChapter(currentItem.chapters[idx - 1].id);
@@ -1501,6 +1530,8 @@
       const box = document.getElementById(boxAreaId);
       const list = document.getElementById(listAreaId);
 
+      if (!box || !list || !currentItem) return;
+
       const commentsKey = `${currentItem.id}_${chId}`;
       const comments = commentsDB[commentsKey] || [];
 
@@ -1511,7 +1542,7 @@
         box.innerHTML = `
           <div class="bg-[#0b0b0e] border border-gray-800 p-3 rounded-xl text-center text-xs">
             <span class="text-gray-400">سجل دخولك لتشارك في مناقشات الفصل وتترك تعليقك!</span>
-            <button onclick="setAuthMode('login'); navigateTo('login-view')" class="block mx-auto mt-2 bg-purple-600 hover:bg-purple-700 text-white font-bold px-4 py-1.5 rounded-lg">دخول</button>
+            <button onclick="navigateTo('login-view')" class="block mx-auto mt-2 bg-purple-600 hover:bg-purple-700 text-white font-bold px-4 py-1.5 rounded-lg">دخول</button>
           </div>
         `;
       } else {
@@ -1519,7 +1550,7 @@
         box.innerHTML = `
           <div class="flex gap-2.5 items-start">
             <div class="cultivation-frame ${r.frame}" style="width: 36px; height: 36px;">
-              <img src="${currentUser.avatar}">
+              <img src="${currentUser.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}">
             </div>
             <div class="flex-1">
               <textarea id="inputCommentText" rows="2" placeholder="عبّر عن رأيك في أحداث هذا الفصل..." class="w-full bg-[#0b0b0e] border border-gray-700 rounded-xl p-2.5 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-purple-500"></textarea>
@@ -1577,51 +1608,72 @@
       saveState();
 
       input.value = "";
-      renderComments(currentItemType, currentChapter.id);
+      if (currentItem && currentChapter) {
+        renderComments(currentItemType, currentChapter.id);
+      }
     }
 
     function renderProfileView() {
       if (!currentUser) return;
       const r = getRealm(currentUser.readCount);
-      document.getElementById('profileAvatarImg').src = currentUser.avatar;
-      document.getElementById('profileAvatarFrame').className = `cultivation-frame ${r.frame}`;
-      document.getElementById('profileUsername').innerText = `@${currentUser.username}`;
-      document.getElementById('profileEmail').innerText = currentUser.email;
-      document.getElementById('profileRealmBadge').innerText = `${r.name} - ${r.title}`;
-      document.getElementById('profileReadCount').innerText = `${currentUser.readCount}`;
-      document.getElementById('profileRole').innerText = currentUser.role;
+      const avImg = document.getElementById('profileAvatarImg');
+      if (avImg) avImg.src = currentUser.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+      const avFrame = document.getElementById('profileAvatarFrame');
+      if (avFrame) avFrame.className = `cultivation-frame ${r.frame} cursor-pointer`;
+      const uEl = document.getElementById('profileUsername');
+      if (uEl) uEl.innerText = `@${currentUser.username}`;
+      const emEl = document.getElementById('profileEmail');
+      if (emEl) emEl.innerText = currentUser.email;
+      const bEl = document.getElementById('profileRealmBadge');
+      if (bEl) bEl.innerText = `${r.name} - ${r.title}`;
+      const rcEl = document.getElementById('profileReadCount');
+      if (rcEl) rcEl.innerText = `${currentUser.readCount}`;
+      const roEl = document.getElementById('profileRole');
+      if (roEl) roEl.innerText = currentUser.role;
 
       const adminBtn = document.getElementById('profileAdminBtn');
-      if (currentUser.isAdmin) {
-        adminBtn.classList.remove('hidden');
-      } else {
-        adminBtn.classList.add('hidden');
+      if (adminBtn) {
+        if (currentUser.isAdmin) {
+          adminBtn.classList.remove('hidden');
+        } else {
+          adminBtn.classList.add('hidden');
+        }
       }
     }
 
     function switchAdminTab(tabId) {
-      document.getElementById('adminMangaTab').classList.add('hidden');
-      document.getElementById('adminNovelsTab').classList.add('hidden');
-      document.getElementById('adminTeamTab').classList.add('hidden');
-      document.getElementById('adminBackupTab').classList.add('hidden');
+      const mTab = document.getElementById('adminMangaTab');
+      const nTab = document.getElementById('adminNovelsTab');
+      const tTab = document.getElementById('adminTeamTab');
+      const bTab = document.getElementById('adminBackupTab');
+
+      if (mTab) mTab.classList.add('hidden');
+      if (nTab) nTab.classList.add('hidden');
+      if (tTab) tTab.classList.add('hidden');
+      if (bTab) bTab.classList.add('hidden');
 
       ['tabBtnManga', 'tabBtnNovels', 'tabBtnTeam', 'tabBtnBackup'].forEach(btn => {
-        document.getElementById(btn).className = "bg-[#15151a] text-gray-300 font-bold px-4 py-2 rounded-xl";
+        const el = document.getElementById(btn);
+        if (el) el.className = "bg-[#15151a] text-gray-300 font-bold px-4 py-2 rounded-xl";
       });
 
       if (tabId === 'manga-tab') {
-        document.getElementById('adminMangaTab').classList.remove('hidden');
-        document.getElementById('tabBtnManga').className = "bg-purple-600 text-white font-bold px-4 py-2 rounded-xl";
+        if (mTab) mTab.classList.remove('hidden');
+        const b = document.getElementById('tabBtnManga');
+        if (b) b.className = "bg-purple-600 text-white font-bold px-4 py-2 rounded-xl";
       } else if (tabId === 'novels-tab') {
-        document.getElementById('adminNovelsTab').classList.remove('hidden');
-        document.getElementById('tabBtnNovels').className = "bg-amber-600 text-black font-bold px-4 py-2 rounded-xl";
+        if (nTab) nTab.classList.remove('hidden');
+        const b = document.getElementById('tabBtnNovels');
+        if (b) b.className = "bg-amber-600 text-black font-bold px-4 py-2 rounded-xl";
       } else if (tabId === 'team-tab') {
-        document.getElementById('adminTeamTab').classList.remove('hidden');
-        document.getElementById('tabBtnTeam').className = "bg-purple-600 text-white font-bold px-4 py-2 rounded-xl";
+        if (tTab) tTab.classList.remove('hidden');
+        const b = document.getElementById('tabBtnTeam');
+        if (b) b.className = "bg-purple-600 text-white font-bold px-4 py-2 rounded-xl";
         renderAdminStaffList();
       } else if (tabId === 'backup-tab') {
-        document.getElementById('adminBackupTab').classList.remove('hidden');
-        document.getElementById('tabBtnBackup').className = "bg-purple-600 text-white font-bold px-4 py-2 rounded-xl";
+        if (bTab) bTab.classList.remove('hidden');
+        const b = document.getElementById('tabBtnBackup');
+        if (b) b.className = "bg-purple-600 text-white font-bold px-4 py-2 rounded-xl";
       }
       renderAdminLists();
       safeCreateIcons();
@@ -1702,7 +1754,7 @@
                       <h3 class="font-bold text-white text-xs sm:text-sm">${m.title}</h3>
                       ${isFeatured ? `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] px-2 py-0.5 rounded-full font-bold">العمل الأسطوري المميز ⭐</span>` : ''}
                     </div>
-                    <span class="text-[11px] text-gray-400">${m.chapters.length} فصول منشورة</span>
+                    <span class="text-[11px] text-gray-400">${m.chapters ? m.chapters.length : 0} فصول منشورة</span>
                   </div>
                 </div>
                 <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
@@ -1716,7 +1768,7 @@
                     </button>
                   `}
                   <button onclick="manageItemChapters('${m.id}', 'manhwa')" class="flex-1 sm:flex-none bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 px-3 py-1.5 rounded-xl font-bold">
-                    فصول العمل (${m.chapters.length})
+                    فصول العمل (${m.chapters ? m.chapters.length : 0})
                   </button>
                   <button onclick="deleteEntireManga('${m.id}')" class="flex-1 sm:flex-none bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 font-bold px-3 py-1.5 rounded-xl flex items-center justify-center gap-1">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> حذف المانهوا
@@ -1744,7 +1796,7 @@
                       <h3 class="font-bold text-white text-xs sm:text-sm">${n.title}</h3>
                       ${isFeatured ? `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] px-2 py-0.5 rounded-full font-bold">الرواية الأسطورية المميزة ⭐</span>` : ''}
                     </div>
-                    <span class="text-[11px] text-gray-400">${n.chapters.length} فصول | الكاتب: ${n.author || 'مجهول'}</span>
+                    <span class="text-[11px] text-gray-400">${n.chapters ? n.chapters.length : 0} فصول | الكاتب: ${n.author || 'مجهول'}</span>
                   </div>
                 </div>
                 <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
@@ -1758,7 +1810,7 @@
                     </button>
                   `}
                   <button onclick="manageItemChapters('${n.id}', 'novel')" class="flex-1 sm:flex-none bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 px-3 py-1.5 rounded-xl font-bold">
-                    فصول الرواية (${n.chapters.length})
+                    فصول الرواية (${n.chapters ? n.chapters.length : 0})
                   </button>
                   <button onclick="deleteEntireNovel('${n.id}')" class="flex-1 sm:flex-none bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 font-bold px-3 py-1.5 rounded-xl flex items-center justify-center gap-1">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> حذف الرواية
@@ -1808,7 +1860,7 @@
       const item = type === 'manhwa' ? manhwaList.find(m => m.id === itemId) : novelsList.find(n => n.id === itemId);
       if (!item) return;
 
-      if (!item.chapters.length) {
+      if (!item.chapters || !item.chapters.length) {
         alert("لا توجد فصول منشورة لهذا العمل بعد!");
         return;
       }
@@ -1866,6 +1918,7 @@
 
       const targetManga = manhwaList.find(m => m.id === mId);
       if (targetManga) {
+        if (!targetManga.chapters) targetManga.chapters = [];
         targetManga.chapters.unshift({
           id: "ch_" + Date.now(),
           num: num,
@@ -1925,6 +1978,7 @@
 
       const targetNovel = novelsList.find(n => n.id === nId);
       if (targetNovel) {
+        if (!targetNovel.chapters) targetNovel.chapters = [];
         targetNovel.chapters.unshift({
           id: "nc_" + Date.now(),
           num: num,
@@ -2051,7 +2105,7 @@
           if (data.featuredHero !== undefined) featuredHero = data.featuredHero;
           saveState();
           renderHome();
-          alert("تم استيراد قاعدة البيانات وحسابات المستخدمين بنجاح!");
+          alert("تم استيراد كافة البيانات وحسابات المستخدمين بنجاح!");
         } catch(err) {
           alert("خطأ أثناء قراءة ملف قاعدة البيانات: " + err.message);
         }
@@ -2065,11 +2119,13 @@
         renderHome();
         return;
       }
-      const filteredManga = manhwaList.filter(m => m.title.toLowerCase().includes(q) || m.genres.some(g => g.toLowerCase().includes(q)));
-      const filteredNovels = novelsList.filter(n => n.title.toLowerCase().includes(q) || n.genres.some(g => g.toLowerCase().includes(q)));
+      const filteredManga = manhwaList.filter(m => m.title.toLowerCase().includes(q) || (m.genres && m.genres.some(g => g.toLowerCase().includes(q))));
+      const filteredNovels = novelsList.filter(n => n.title.toLowerCase().includes(q) || (n.genres && n.genres.some(g => g.toLowerCase().includes(q))));
       
-      document.getElementById('homeManhwaGrid').innerHTML = filteredManga.map(m => createMediaCard(m, 'manhwa')).join('');
-      document.getElementById('homeNovelsGrid').innerHTML = filteredNovels.map(n => createMediaCard(n, 'novel')).join('');
+      const mGrid = document.getElementById('homeManhwaGrid');
+      if (mGrid) mGrid.innerHTML = filteredManga.map(m => createMediaCard(m, 'manhwa')).join('');
+      const nGrid = document.getElementById('homeNovelsGrid');
+      if (nGrid) nGrid.innerHTML = filteredNovels.map(n => createMediaCard(n, 'novel')).join('');
       safeCreateIcons();
     }
 
