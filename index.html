@@ -58,6 +58,16 @@
     <span class="text-purple-400 text-xs font-bold mt-4 tracking-widest">جاري الاتصال بالطائفة...</span>
   </div>
 
+  <!-- سكربت الإخفاء الإجباري المستقل تماماً عن قاعدة البيانات -->
+  <script>
+    setTimeout(function() {
+      var loader = document.getElementById('loading-overlay');
+      if (loader) {
+        loader.style.display = 'none';
+      }
+    }, 2000);
+  </script>
+
   <div id="topTelegramBanner" class="bg-gradient-to-r from-purple-950 via-indigo-950 to-purple-900 border-b border-purple-900/60 px-4 py-2 text-xs">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
       <div class="flex items-center gap-1.5">
@@ -417,7 +427,6 @@
       return { ...REALMS[0], progress: 0, nextMin: 25 };
     }
 
-    // جلب البيانات مع فحص الأخطاء وعرضها
     async function loadDataFromSupabase() {
       try {
         const { data: mediaData, error: mediaError } = await supabase.from('media').select('*').order('created_at', { ascending: false });
@@ -434,12 +443,12 @@
         const localUser = localStorage.getItem("crest_user");
         if (localUser) {
            const parsedUser = JSON.parse(localUser);
-           const { data: userData, error: userError } = await supabase.from('readers').select('*').eq('email', parsedUser.email).single();
+           const { data: userData } = await supabase.from('readers').select('*').eq('email', parsedUser.email).single();
            if(userData) currentUser = { ...userData, isAdmin: userData.email === SUPER_ADMIN_EMAIL };
         }
       } catch (err) {
         console.error("Error loading data:", err);
-        alert("خطأ من قاعدة البيانات! يرجى التأكد من الـ RLS Policies أو أسماء العواميد. التفاصيل: " + (err.message || JSON.stringify(err)));
+        alert("تنبيه: يوجد خطأ في الاتصال بقاعدة البيانات. (قد تكون الجداول فارغة أو غير صحيحة)");
       }
       
       renderHome();
@@ -798,11 +807,11 @@
     function changeFontSize(delta) { novelFontSize = Math.max(12, Math.min(28, novelFontSize + delta)); document.getElementById('novelChapterBody').style.fontSize = `${novelFontSize}px`; }
     function toggleNovelTheme() { novelThemeIndex = (novelThemeIndex + 1) % novelThemes.length; document.getElementById('novelReaderContainer').className = `${novelThemes[novelThemeIndex]} max-w-3xl mx-auto p-5 sm:p-8 min-h-screen transition-colors duration-300`; }
 
-    // الكود المعدل: الاستدعاء المباشر لضمان إخفاء شاشة التحميل مهما حدث
+    // تشغيل كود جلب البيانات وإخفاء الشاشة
     loadDataFromSupabase().finally(() => {
       const loader = document.getElementById('loading-overlay');
       if (loader) {
-        loader.classList.add('hidden');
+        loader.style.display = 'none';
       }
     });
   </script>
