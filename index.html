@@ -374,7 +374,6 @@
   <!-- JavaScript (Supabase Real Database Integration) -->
   <!-- ========================================================================= -->
   <script>
-    // تم تركيب الرابط والمفتاح الخاص بك هنا مباشرة
     const supabaseUrl = 'https://tumtlkfcwetvhoemknre.supabase.co'; 
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1bXRsa2Zjd2V0dmhvZW1rbnJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyMzIzMzYsImV4cCI6MjEwMTgwODMzNn0.HtFnKH__LvJdFTwmeecgq_jYIqQY6PXFvWM6eNtt5RQ';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -418,11 +417,14 @@
       return { ...REALMS[0], progress: 0, nextMin: 25 };
     }
 
-    // جلب البيانات من الجداول الحقيقية
+    // جلب البيانات مع فحص الأخطاء وعرضها
     async function loadDataFromSupabase() {
       try {
-        const { data: mediaData } = await supabase.from('media').select('*').order('created_at', { ascending: false });
-        const { data: chaptersData } = await supabase.from('chapters').select('*').order('chapter_num', { ascending: true });
+        const { data: mediaData, error: mediaError } = await supabase.from('media').select('*').order('created_at', { ascending: false });
+        if (mediaError) throw mediaError;
+
+        const { data: chaptersData, error: chaptersError } = await supabase.from('chapters').select('*').order('chapter_num', { ascending: true });
+        if (chaptersError) throw chaptersError;
 
         if (mediaData) {
           manhwaList = mediaData.filter(m => m.type === 'manhwa').map(m => mapMediaData(m, chaptersData));
@@ -432,11 +434,12 @@
         const localUser = localStorage.getItem("crest_user");
         if (localUser) {
            const parsedUser = JSON.parse(localUser);
-           const { data: userData } = await supabase.from('readers').select('*').eq('email', parsedUser.email).single();
+           const { data: userData, error: userError } = await supabase.from('readers').select('*').eq('email', parsedUser.email).single();
            if(userData) currentUser = { ...userData, isAdmin: userData.email === SUPER_ADMIN_EMAIL };
         }
       } catch (err) {
         console.error("Error loading data:", err);
+        alert("خطأ من قاعدة البيانات! يرجى التأكد من الـ RLS Policies أو أسماء العواميد. التفاصيل: " + (err.message || JSON.stringify(err)));
       }
       
       renderHome();
@@ -462,7 +465,6 @@
       };
     }
 
-    // Auth - تسجيل الدخول
     async function handleFormLogin(e) {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value.trim().toLowerCase();
@@ -796,10 +798,12 @@
     function changeFontSize(delta) { novelFontSize = Math.max(12, Math.min(28, novelFontSize + delta)); document.getElementById('novelChapterBody').style.fontSize = `${novelFontSize}px`; }
     function toggleNovelTheme() { novelThemeIndex = (novelThemeIndex + 1) % novelThemes.length; document.getElementById('novelReaderContainer').className = `${novelThemes[novelThemeIndex]} max-w-3xl mx-auto p-5 sm:p-8 min-h-screen transition-colors duration-300`; }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      loadDataFromSupabase().then(() => {
-        document.getElementById('loading-overlay').classList.add('hidden');
-      });
+    // الكود المعدل: الاستدعاء المباشر لضمان إخفاء شاشة التحميل مهما حدث
+    loadDataFromSupabase().finally(() => {
+      const loader = document.getElementById('loading-overlay');
+      if (loader) {
+        loader.classList.add('hidden');
+      }
     });
   </script>
 </body>
