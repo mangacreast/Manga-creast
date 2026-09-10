@@ -7,10 +7,9 @@
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
+  <!-- سيرفرات بديلة لمكتبات الأيقونات وقاعدة البيانات لتفادي الحجب -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Supabase JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <!-- Google Fonts: Tajawal -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -58,13 +57,11 @@
     <span class="text-purple-400 text-xs font-bold mt-4 tracking-widest">جاري الاتصال بالطائفة...</span>
   </div>
 
-  <!-- سكربت الإخفاء الإجباري المستقل تماماً عن قاعدة البيانات -->
+  <!-- إخفاء الشاشة إجبارياً بعد ثانيتين -->
   <script>
     setTimeout(function() {
       var loader = document.getElementById('loading-overlay');
-      if (loader) {
-        loader.style.display = 'none';
-      }
+      if (loader) loader.style.display = 'none';
     }, 2000);
   </script>
 
@@ -102,7 +99,7 @@
     </div>
   </div>
 
-  <!-- 1. الرئيسية (HOME VIEW) -->
+  <!-- 1. الرئيسية -->
   <div id="home-view" class="view-section">
     <section id="heroSection" class="relative w-full h-[380px] sm:h-[430px] bg-gray-900 overflow-hidden hidden">
        <img id="heroCoverImg" src="" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1200';" class="absolute inset-0 w-full h-full object-cover opacity-45" alt="Hero">
@@ -147,7 +144,7 @@
     </section>
   </div>
 
-  <!-- باقي القوائم -->
+  <!-- القوائم -->
   <div id="manhwa-list-view" class="view-section hidden p-4 max-w-7xl mx-auto">
     <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-3">
       <h1 class="text-lg font-black text-white flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-purple-400"></i><span>دليل المانهوا</span></h1>
@@ -187,9 +184,7 @@
         <button onclick="goToNextChapter()" class="text-xs bg-purple-600 hover:bg-purple-700 text-white font-bold px-2.5 py-1.5 rounded-lg">التالي</button>
       </div>
     </div>
-
     <div id="webtoonPagesContainer" class="max-w-2xl mx-auto bg-black min-h-screen py-2 space-y-0"></div>
-
     <div class="max-w-2xl mx-auto p-4">
       <div class="bg-[#15151a] border border-gray-800 rounded-2xl p-4 text-center mb-6">
         <p class="text-sm font-bold text-gray-200 mb-3">وصلت لنهاية الفصل!</p>
@@ -225,12 +220,10 @@
         <button onclick="toggleNovelTheme()" class="w-7 h-7 bg-[#15151a] rounded-lg border border-gray-700 text-amber-400 flex justify-center items-center"><i data-lucide="palette" class="w-3.5 h-3.5"></i></button>
       </div>
     </div>
-
     <div id="novelReaderContainer" class="novel-theme-dark max-w-3xl mx-auto p-5 sm:p-8 min-h-screen transition-colors duration-300">
       <h1 id="novelChapterHeading" class="text-xl sm:text-2xl font-black mb-6 text-center border-b border-gray-800 pb-4"></h1>
       <div id="novelChapterBody" class="text-sm sm:text-base leading-loose whitespace-pre-line text-justify select-text"></div>
     </div>
-
     <div class="max-w-3xl mx-auto p-4">
       <div class="bg-[#15151a] border border-gray-800 rounded-2xl p-4 text-center mb-6">
         <div class="flex justify-center gap-3">
@@ -381,12 +374,17 @@
   </nav>
 
   <!-- ========================================================================= -->
-  <!-- JavaScript (Supabase Real Database Integration) -->
+  <!-- JavaScript -->
   <!-- ========================================================================= -->
   <script>
     const supabaseUrl = 'https://tumtlkfcwetvhoemknre.supabase.co'; 
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1bXRsa2Zjd2V0dmhvZW1rbnJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyMzIzMzYsImV4cCI6MjEwMTgwODMzNn0.HtFnKH__LvJdFTwmeecgq_jYIqQY6PXFvWM6eNtt5RQ';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // حماية الكود من الانهيار في حالة حجب المكتبة
+    let supabase = null;
+    if (typeof window.supabase !== 'undefined') {
+      supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    }
 
     const SUPER_ADMIN_EMAIL = "zechal510010@gmail.com";
     
@@ -428,6 +426,13 @@
     }
 
     async function loadDataFromSupabase() {
+      if (!supabase) {
+        alert("تنبيه: مزود الإنترنت يحجب الوصول لقاعدة البيانات. قد لا يعمل الموقع بشكل كامل.");
+        renderHome();
+        if(window.lucide) lucide.createIcons();
+        return;
+      }
+
       try {
         const { data: mediaData, error: mediaError } = await supabase.from('media').select('*').order('created_at', { ascending: false });
         if (mediaError) throw mediaError;
@@ -448,7 +453,6 @@
         }
       } catch (err) {
         console.error("Error loading data:", err);
-        alert("تنبيه: يوجد خطأ في الاتصال بقاعدة البيانات. (قد تكون الجداول فارغة أو غير صحيحة)");
       }
       
       renderHome();
@@ -476,6 +480,7 @@
 
     async function handleFormLogin(e) {
       e.preventDefault();
+      if(!supabase) return alert("لا يوجد اتصال بقاعدة البيانات!");
       const email = document.getElementById('loginEmail').value.trim().toLowerCase();
       const pass = document.getElementById('loginPass').value;
       if (!email || !pass) return showAuthMessage("يرجى تعبئة الحقول!");
@@ -522,6 +527,7 @@
     }
 
     async function uploadCustomAvatar() {
+      if(!supabase) return alert("لا يوجد اتصال بقاعدة البيانات!");
       const imageUrl = prompt("يرجى إدخال رابط مباشر للصورة (URL):");
       if (imageUrl && currentUser) {
         currentUser.avatar = imageUrl;
@@ -659,7 +665,7 @@
       currentChapter = currentItem.chapters.find(c => c.id === chId);
       if (!currentChapter) return;
 
-      if (currentUser) {
+      if (currentUser && supabase) {
         currentUser.read_count += 1;
         await supabase.from('readers').update({ read_count: currentUser.read_count }).eq('id', currentUser.id);
       }
@@ -684,6 +690,7 @@
     async function loadComments(listId, boxId) {
       const list = document.getElementById(listId);
       const box = document.getElementById(boxId);
+      if(!supabase) return;
       
       if (currentUser) {
         box.innerHTML = `
@@ -708,7 +715,7 @@
     async function submitComment(listId) {
       const input = document.getElementById('inputCommentText');
       const text = input.value.trim();
-      if (!text || !currentUser) return;
+      if (!text || !currentUser || !supabase) return;
       await supabase.from('comments').insert([{ chapter_id: currentChapter.id, username: currentUser.username, avatar: currentUser.avatar, comment_text: text }]);
       input.value = "";
       loadComments(listId, listId === 'novelCommentsList' ? 'novelCommentBoxArea' : 'commentBoxArea');
@@ -725,39 +732,46 @@
 
     async function handleAdminCreateManga(e) {
       e.preventDefault();
+      if(!supabase) return alert("لا يوجد اتصال بقاعدة البيانات!");
       const title = document.getElementById('admMangaTitle').value;
       const cover = document.getElementById('admMangaCover').value || "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600";
       const genres = document.getElementById('admMangaGenres').value;
       const desc = document.getElementById('admMangaDesc').value;
       await supabase.from('media').insert([{ type: 'manhwa', title, cover, genres, description: desc }]);
-      alert("تم الإضافة!"); document.getElementById('admMangaTitle').value=""; loadDataFromSupabase();
+      alert("تم الإضافة بنجاح!"); document.getElementById('admMangaTitle').value=""; loadDataFromSupabase();
     }
+    
     async function handleAdminUploadMangaChapter(e) {
       e.preventDefault();
+      if(!supabase) return alert("لا يوجد اتصال بقاعدة البيانات!");
       const mId = document.getElementById('admChMangaSelect').value;
       const num = document.getElementById('admChNum').value;
       const title = document.getElementById('admChTitle').value || `الفصل ${num}`;
       const urls = document.getElementById('admChUrls').value;
       await supabase.from('chapters').insert([{ media_id: mId, chapter_num: parseFloat(num), title, content: urls }]);
-      alert("تم نشر الفصل!"); document.getElementById('admChUrls').value=""; loadDataFromSupabase();
+      alert("تم نشر الفصل بنجاح!"); document.getElementById('admChUrls').value=""; loadDataFromSupabase();
     }
+    
     async function handleAdminCreateNovel(e) {
       e.preventDefault();
+      if(!supabase) return alert("لا يوجد اتصال بقاعدة البيانات!");
       const title = document.getElementById('admNewNovelTitle').value;
       const cover = document.getElementById('admNewNovelCover').value || "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600";
       const genres = document.getElementById('admNewNovelGenres').value;
       const desc = document.getElementById('admNewNovelDesc').value;
       await supabase.from('media').insert([{ type: 'novel', title, cover, genres, description: desc }]);
-      alert("تم الإضافة!"); document.getElementById('admNewNovelTitle').value=""; loadDataFromSupabase();
+      alert("تم الإضافة بنجاح!"); document.getElementById('admNewNovelTitle').value=""; loadDataFromSupabase();
     }
+    
     async function handleAdminUploadNovelChapter(e) {
       e.preventDefault();
+      if(!supabase) return alert("لا يوجد اتصال بقاعدة البيانات!");
       const mId = document.getElementById('admNovelSelect').value;
       const num = document.getElementById('admNovelChNum').value;
       const title = document.getElementById('admNovelChTitle').value;
       const text = document.getElementById('admNovelChContent').value;
       await supabase.from('chapters').insert([{ media_id: mId, chapter_num: parseFloat(num), title, content: text }]);
-      alert("تم نشر الفصل!"); document.getElementById('admNovelChContent').value=""; loadDataFromSupabase();
+      alert("تم نشر الفصل بنجاح!"); document.getElementById('admNovelChContent').value=""; loadDataFromSupabase();
     }
 
     function switchAdminTab(t) {
@@ -807,12 +821,10 @@
     function changeFontSize(delta) { novelFontSize = Math.max(12, Math.min(28, novelFontSize + delta)); document.getElementById('novelChapterBody').style.fontSize = `${novelFontSize}px`; }
     function toggleNovelTheme() { novelThemeIndex = (novelThemeIndex + 1) % novelThemes.length; document.getElementById('novelReaderContainer').className = `${novelThemes[novelThemeIndex]} max-w-3xl mx-auto p-5 sm:p-8 min-h-screen transition-colors duration-300`; }
 
-    // تشغيل كود جلب البيانات وإخفاء الشاشة
+    // تشغيل الكود وتخطي أي عطل
     loadDataFromSupabase().finally(() => {
       const loader = document.getElementById('loading-overlay');
-      if (loader) {
-        loader.style.display = 'none';
-      }
+      if (loader) loader.style.display = 'none';
     });
   </script>
 </body>
