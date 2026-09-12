@@ -3,264 +3,330 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>نظام الحماية الموحد</title>
+    <title>تحقق الأمان - Manga Crest</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --primary: #00e6ff;
-            --success: #00ff88;
-            --danger: #ff2a5f;
-            --bg-dark: #050508;
-            --card-bg: rgba(10, 12, 20, 0.85);
-            --text-main: #ffffff;
-            --text-muted: #8892b0;
+            --manga-primary: #9d4edd;
+            --manga-secondary: #ff007f;
+            --manga-accent: #00f5d4;
+            --bg-dark: #0b090a;
+            --card-bg: rgba(22, 26, 29, 0.85);
+            --danger: #ef233c;
+            --success: #2dc653;
         }
 
-        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
+            font-family: 'Cairo', sans-serif;
             background-color: var(--bg-dark);
-            background-image: 
-                radial-gradient(circle at 50% 0%, #111a2e 0%, var(--bg-dark) 80%),
-                linear-gradient(0deg, rgba(0, 230, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 230, 255, 0.03) 1px, transparent 1px);
-            background-size: 100% 100%, 20px 20px, 20px 20px;
-            color: var(--text-main);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            min-height: 100vh; margin: 0; overflow: hidden;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            /* خلفية بنمط نقطي (Halftone) لتعطي طابع المانجا/الكوميكس */
+            background-image: radial-gradient(rgba(157, 78, 221, 0.15) 2px, transparent 2px);
+            background-size: 30px 30px;
         }
 
-        .shield-container {
-            position: relative; width: 110px; height: 110px; margin: 0 auto 20px;
-            display: flex; align-items: center; justify-content: center; font-size: 55px;
-            border-radius: 50%; background: rgba(0, 230, 255, 0.05);
-            box-shadow: 0 0 30px rgba(0, 230, 255, 0.2); transition: all 0.5s ease;
+        /* تأثير إضاءة خلفية */
+        .glow-bg {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--manga-primary) 0%, transparent 70%);
+            opacity: 0.2;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            filter: blur(50px);
+            animation: pulseBg 4s infinite alternate;
         }
-
-        .radar-sweep {
-            position: absolute; width: 100%; height: 100%; border-radius: 50%;
-            border: 2px solid rgba(0, 230, 255, 0.2); border-top-color: var(--primary);
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         .container {
-            background: var(--card-bg); border: 1px solid rgba(0, 230, 255, 0.15);
-            border-radius: 24px; padding: 40px 25px; width: 90%; max-width: 380px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 230, 255, 0.05);
-            backdrop-filter: blur(15px); text-align: center;
-            transform: translateY(20px); opacity: 0;
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(157, 78, 221, 0.3);
+            border-radius: 24px;
+            padding: 40px 25px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(157, 78, 221, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
         }
 
-        @keyframes slideUp { to { transform: translateY(0); opacity: 1; } }
-
-        .title {
-            font-size: 1.5rem; font-weight: 900; color: var(--primary);
-            margin-bottom: 10px; text-shadow: 0 0 10px rgba(0, 230, 255, 0.3);
+        /* تأثير حدود المانجا */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(90deg, var(--manga-secondary), var(--manga-primary), var(--manga-accent));
         }
 
-        .subtitle { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 30px; }
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #fff, var(--manga-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .logo span { color: var(--manga-primary); -webkit-text-fill-color: var(--manga-primary); }
 
-        .steps-box {
-            background: rgba(0, 0, 0, 0.4); border-radius: 16px; padding: 20px;
-            text-align: right; border: 1px solid rgba(255, 255, 255, 0.05);
+        /* رادار الفحص */
+        .scanner-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 245, 212, 0.3);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .step {
-            display: flex; align-items: center; margin-bottom: 16px; font-size: 0.95rem;
-            color: var(--text-muted); font-weight: 700; opacity: 0.5; transition: all 0.4s ease;
-        }
-        .step:last-child { margin-bottom: 0; }
-        .step.active { opacity: 1; color: var(--text-main); }
-        .step.done { opacity: 1; color: var(--success); }
-        .step.error { opacity: 1; color: var(--danger); }
-
-        .step-icon {
-            width: 24px; height: 24px; display: inline-flex; align-items: center;
-            justify-content: center; margin-left: 12px; border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1); font-size: 0.7rem;
+        .scanner-radar {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: conic-gradient(from 0deg, transparent 70%, var(--manga-accent) 100%);
+            border-radius: 50%;
+            animation: scanRotate 2s linear infinite;
         }
 
-        .done .step-icon { background: rgba(0, 255, 136, 0.2); }
-        .error .step-icon { background: rgba(255, 42, 95, 0.2); }
-        .active .step-icon { animation: pulse 1.5s infinite; background: rgba(0, 230, 255, 0.2); }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 230, 255, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(0, 230, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 230, 255, 0); }
+        .scanner-icon {
+            font-size: 40px;
+            z-index: 2;
+            text-shadow: 0 0 10px var(--manga-accent);
         }
 
-        .status-message {
-            margin-top: 25px; padding: 15px; border-radius: 12px; font-weight: 700;
-            font-size: 1rem; display: none; animation: fadeIn 0.5s ease forwards;
+        .title-text { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; }
+        .sub-text { font-size: 0.9rem; color: #adb5bd; margin-bottom: 25px; line-height: 1.5; }
+
+        .hwid-box {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px dashed var(--manga-accent);
+            padding: 12px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 1rem;
+            color: var(--manga-accent);
+            letter-spacing: 1px;
+            word-break: break-all;
+            margin-bottom: 20px;
+            position: relative;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .btn-custom {
+            background: linear-gradient(45deg, var(--manga-primary), var(--manga-secondary));
+            color: #fff;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.1rem;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(157, 78, 221, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
 
-        /* Themes */
-        .theme-success .shield-container { box-shadow: 0 0 40px rgba(0, 255, 136, 0.3); background: rgba(0, 255, 136, 0.05); }
-        .theme-success .title { color: var(--success); text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
-        .theme-success .radar-sweep { display: none; }
-        .theme-success .status-message { display: block; background: rgba(0, 255, 136, 0.1); border: 1px solid var(--success); color: var(--success); }
+        .btn-custom:active { transform: scale(0.95); }
 
-        .theme-error .shield-container { box-shadow: 0 0 40px rgba(255, 42, 95, 0.3); background: rgba(255, 42, 95, 0.05); }
-        .theme-error .title { color: var(--danger); text-shadow: 0 0 10px rgba(255, 42, 95, 0.3); }
-        .theme-error .radar-sweep { display: none; }
-        .theme-error .status-message { display: block; background: rgba(255, 42, 95, 0.1); border: 1px solid var(--danger); color: var(--danger); }
+        /* حالات الشاشات (للتبديل بينها عبر الجافاسكربت) */
+        #screen-success, #screen-error { display: none; }
+
+        /* تصميم شاشة الخطأ */
+        .error-theme .container::before { background: var(--danger); }
+        .error-theme .scanner-container { border-color: rgba(239, 35, 60, 0.3); }
+        .error-theme .scanner-icon { text-shadow: 0 0 10px var(--danger); }
+        .error-theme .hwid-box { border-color: var(--danger); color: var(--danger); }
+
+        @keyframes scanRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulseBg { 0% { transform: translate(-50%, -50%) scale(1); } 100% { transform: translate(-50%, -50%) scale(1.2); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .animate-fade { animation: fadeIn 0.5s forwards; }
     </style>
 </head>
 <body>
 
+    <div class="glow-bg"></div>
+
     <div class="container" id="main-card">
-        <div class="shield-container" id="icon-box">
-            <div class="radar-sweep" id="radar"></div>
-            <span id="main-icon">🛡️</span>
-        </div>
-        
-        <div class="title" id="main-title">المصادقة الأمنية</div>
-        <div class="subtitle" id="main-subtitle">جاري فحص بيئة التشغيل، يرجى الانتظار...</div>
+        <div class="logo">Manga<span>Crest</span></div>
 
-        <div class="steps-box">
-            <div class="step active" id="step1"><span class="step-icon">⏳</span> تحليل بصمة الجهاز</div>
-            <div class="step" id="step2"><span class="step-icon">⏳</span> فحص تعدد الحسابات</div>
-            <div class="step" id="step3"><span class="step-icon">⏳</span> تأكيد الهوية الرقمية</div>
+        <!-- شاشة 1: الفحص -->
+        <div id="screen-loading" class="animate-fade">
+            <div class="scanner-container">
+                <div class="scanner-radar"></div>
+                <div class="scanner-icon">🛡️</div>
+            </div>
+            <div class="title-text">جاري فحص الجهاز...</div>
+            <div class="sub-text">نظام مكافحة تعدد الحسابات يعمل الآن، يرجى الانتظار للحظات.</div>
         </div>
 
-        <div class="status-message" id="final-message"></div>
+        <!-- شاشة 2: النجاح -->
+        <div id="screen-success" class="animate-fade">
+            <div class="scanner-container" style="border-color: var(--success)">
+                <div class="scanner-icon" style="text-shadow: 0 0 10px var(--success)">✅</div>
+            </div>
+            <div class="title-text" style="color: var(--success)">تم التحقق بنجاح!</div>
+            <div class="sub-text">هوية جهازك مطابقة وآمنة. يمكنك الآن متابعة القراءة.</div>
+            
+            <div class="hwid-box" id="hwid-display"></div>
+            
+            <!-- زر بديل داخل الويب يظهر كخيار سريع -->
+            <button class="btn-custom" onclick="submitToBot()">الدخول إلى البوت 🚀</button>
+        </div>
+
+        <!-- شاشة 3: الخطأ (تعدد الحسابات) -->
+        <div id="screen-error" class="animate-fade">
+            <div class="scanner-container" style="border-color: var(--danger)">
+                <div class="scanner-icon" style="text-shadow: 0 0 10px var(--danger)">⚠️</div>
+            </div>
+            <div class="title-text" style="color: var(--danger)">تم حظر الدخول!</div>
+            <div class="sub-text">تم اكتشاف محاولة دخول من حساب تليجرام آخر على نفس هذا الجهاز. <b>(يُمنع تعدد الحسابات)</b>.</div>
+            <div class="hwid-box" id="hwid-error" style="border-color: var(--danger); color: var(--danger)"></div>
+        </div>
     </div>
 
     <script>
+        // إعداد تليجرام
         const tg = window.Telegram.WebApp;
-        tg.expand();
         tg.ready();
+        tg.expand();
+        // إخفاء زر الرجوع لو كان ظاهراً
+        if(tg.BackButton) tg.BackButton.hide();
+        
+        let generatedFingerprint = "";
+        const BOT_USERNAME = "YOUR_BOT_USERNAME"; // ⚠️ ضع معرف بوتك هنا بدون @
 
-        // استخراج معرف البوت من الرابط (مهم جداً لنظام تعدد البوتات)
-        const urlParams = new URLSearchParams(window.location.search);
-        const botUsername = urlParams.get('bot'); 
-
-        // بصمة قوية للجهاز بناءً على كارت الشاشة ودقة الشاشة والمعالج (مخفية تماماً)
-        function generateHardwareID() {
+        // دالة إنشاء بصمة معقدة وقوية
+        function getAdvancedFingerprint() {
             let canvas = document.createElement('canvas');
             let gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            let webglRender = "unknown";
+            let renderer = "Unknown";
             if (gl) {
                 let debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                webglRender = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "unknown";
+                renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
             }
             
+            let nav = window.navigator;
+            let screen = window.screen;
+            
+            // تجميع بيانات دقيقة عن الجهاز
             let components = [
-                window.navigator.hardwareConcurrency || 'x',
-                window.navigator.deviceMemory || 'x',
-                window.screen.width + 'x' + window.screen.height,
-                window.screen.colorDepth,
+                nav.userAgent,
+                nav.hardwareConcurrency || 1,
+                nav.deviceMemory || 1,
+                nav.maxTouchPoints || 0,
+                screen.width + 'x' + screen.height,
+                screen.colorDepth,
                 new Date().getTimezoneOffset(),
-                webglRender
+                renderer,
+                nav.language
             ];
             
-            let str = components.join('|');
+            let str = components.join('||');
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
                 hash = ((hash << 5) - hash) + str.charCodeAt(i);
                 hash = hash & hash;
             }
-            return "HW-" + Math.abs(hash).toString(36).toUpperCase();
+            // توليد كود نظيف وقصير بصيغة MC-XXXX-XXXX
+            let hex = Math.abs(hash).toString(16).toUpperCase();
+            return `MC-${hex.substring(0,4)}-${hex.substring(4,8) || 'A1B2'}`;
         }
 
-        function updateStep(stepId, status, text, icon) {
-            const step = document.getElementById(stepId);
-            step.className = `step ${status}`;
-            step.innerHTML = `<span class="step-icon">${icon}</span> ${text}`;
+        // تبديل الشاشات
+        function switchScreen(screenId, isError = false) {
+            document.getElementById('screen-loading').style.display = 'none';
+            document.getElementById('screen-success').style.display = 'none';
+            document.getElementById('screen-error').style.display = 'none';
+            
+            document.getElementById(screenId).style.display = 'block';
+            
+            if(isError) {
+                document.body.classList.add('error-theme');
+            }
         }
 
-        function finishProcess(isSuccess, deviceId) {
-            const card = document.getElementById('main-card');
-            const finalMsg = document.getElementById('final-message');
-            document.getElementById('main-subtitle').style.display = 'none';
+        // محاكاة وقت التحميل للفحص (يضيف واقعية للتطبيق)
+        setTimeout(() => {
+            generatedFingerprint = getAdvancedFingerprint();
+            let currentUserId = tg.initDataUnsafe?.user?.id || "DevTest_" + Math.floor(Math.random()*1000);
+            
+            let savedData = localStorage.getItem("manga_crest_sec_v2");
+            let isMultiAccount = false;
 
-            // تجهيز الأمر الذي سيتم إرساله للبوت عبر الرابط (start)
-            let actionCommand = isSuccess ? `verify_${deviceId}` : `block_${deviceId}`;
-
-            if (isSuccess) {
-                card.classList.add('theme-success');
-                document.getElementById('main-icon').innerText = '✅';
-                document.getElementById('main-title').innerText = 'تم التوثيق بنجاح';
-                finalMsg.innerText = 'بصمة الجهاز سليمة ولا يوجد أي تعدد حسابات.';
-                if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                
-                tg.MainButton.setText("العودة للبوت للاستمرار");
-                tg.MainButton.color = "#00ff88";
-                tg.MainButton.textColor = "#050508";
-            } else {
-                card.classList.add('theme-error');
-                document.getElementById('main-icon').innerText = '🚫';
-                document.getElementById('main-title').innerText = 'تم حظر الوصول';
-                finalMsg.innerText = '⚠️ تم اكتشاف حساب آخر مسجل من هذا الجهاز! تمنع قوانين النظام استخدام الحسابات الوهمية.';
-                if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-                
-                tg.MainButton.setText("العودة للبوت (مرفوض)");
-                tg.MainButton.color = "#ff2a5f";
-                tg.MainButton.textColor = "#ffffff";
+            if (savedData) {
+                let parts = savedData.split(':');
+                let savedUserId = parts[1];
+                // إذا كان الجهاز مسجلاً بحساب آخر
+                if (savedUserId !== currentUserId.toString()) {
+                    isMultiAccount = true; 
+                }
             }
 
-            tg.MainButton.show();
-            
-            // عند الضغط على الزر، سيعود تلقائياً للبوت الذي جاء منه بناءً على الـ url
-            tg.MainButton.onClick(() => {
-                if (botUsername) {
-                    tg.openTelegramLink(`https://t.me/${botUsername}?start=${actionCommand}`);
-                } else {
-                    // بديل في حال لم تقم بوضع اسم البوت في الرابط
-                    tg.sendData(JSON.stringify({ status: isSuccess ? "ok" : "blocked", hwid: deviceId }));
-                }
-                setTimeout(() => tg.close(), 100);
-            });
-        }
-
-        function startSecurityScan() {
-            setTimeout(() => {
-                updateStep('step1', 'done', 'تم استخراج البصمة بنجاح', '✓');
-                updateStep('step2', 'active', 'جاري فحص قاعدة بيانات التعدد...', '⚙');
-            }, 800);
-
-            setTimeout(() => {
-                let generatedDeviceId = generateHardwareID();
-                let currentUserId = tg.initDataUnsafe?.user?.id?.toString() || "UnknownUser";
+            if (isMultiAccount) {
+                // حالة الخطأ
+                switchScreen('screen-error', true);
+                document.getElementById('hwid-error').innerText = "ID: " + generatedFingerprint;
+                if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+                tg.MainButton.hide();
+            } else {
+                // حالة النجاح
+                localStorage.setItem("manga_crest_sec_v2", generatedFingerprint + ":" + currentUserId);
                 
-                let savedData = localStorage.getItem("cyber_shield_fingerprint");
-                let isMultiAccount = false;
+                switchScreen('screen-success', false);
+                document.getElementById('hwid-display').innerText = generatedFingerprint;
+                if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 
-                if (savedData) {
-                    let parts = savedData.split('|');
-                    let savedUserId = parts[1];
+                // إعداد زر تليجرام الرئيسي (تحت الشاشة)
+                tg.MainButton.setText("تأكيد الدخول");
+                tg.MainButton.color = "#9d4edd";
+                tg.MainButton.textColor = "#ffffff";
+                tg.MainButton.show();
+                
+                tg.MainButton.onClick(() => {
+                    submitToBot();
+                });
+            }
+        }, 2500); // 2.5 ثانية مدة انيميشن الفحص الوهمي
 
-                    // التحقق: هل الحساب الحالي يختلف عن الحساب الذي سجل من هذا الجهاز مسبقاً؟
-                    if (savedUserId !== currentUserId && currentUserId !== "UnknownUser") {
-                        isMultiAccount = true;
-                    }
-                }
+        // دالة الإرسال للبوت
+        function submitToBot() {
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+            
+            // محاولة إرسال البيانات (تنجح فقط إذا فتح من كيبورد عادي)
+            try {
+                tg.sendData("VERIFY:" + generatedFingerprint);
+            } catch(e) {
+                console.log("sendData failed, using fallback.");
+            }
 
-                if (isMultiAccount) {
-                    updateStep('step2', 'error', 'تم رصد تعدد حسابات', '✗');
-                    updateStep('step3', 'error', 'تم إيقاف التوثيق', '✗');
-                    finishProcess(false, generatedDeviceId);
-                } else {
-                    // إذا كان الحساب جديداً ولم يتم كشف تعدد، نحفظ البصمة في الجهاز
-                    if (!savedData && currentUserId !== "UnknownUser") {
-                        localStorage.setItem("cyber_shield_fingerprint", generatedDeviceId + "|" + currentUserId);
-                    }
-                    
-                    updateStep('step2', 'done', 'الجهاز سليم تماماً', '✓');
-                    updateStep('step3', 'done', 'تم منح التصريح', '✓');
-                    finishProcess(true, generatedDeviceId);
-                }
-            }, 2200);
+            // الخطة البديلة المضمونة (رابط Deep link) تعمل دائماً وتغلق التطبيق
+            setTimeout(() => {
+                tg.openTelegramLink(`https://t.me/${BOT_USERNAME}?start=v_${generatedFingerprint}`);
+                tg.close();
+            }, 300);
         }
-
-        window.onload = startSecurityScan;
     </script>
 </body>
 </html>
