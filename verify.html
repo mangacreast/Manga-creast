@@ -1,63 +1,197 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberShield Matrix</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body { background-color: #050505; color: #00ffcc; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .cyber-loader { width: 60px; height: 60px; border: 3px solid transparent; border-top-color: #00ffcc; border-bottom-color: #00ffcc; border-radius: 50%; animation: spin 1.2s linear infinite; box-shadow: 0 0 15px #00ffcc; margin-bottom: 25px; }
-        @keyframes spin { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.1); } 100% { transform: rotate(360deg) scale(1); } }
-        .cyber-text { font-size: 1.1rem; text-align: center; text-shadow: 0 0 5px #00ffcc; margin-bottom: 10px; }
-        .dev-credit { position: fixed; bottom: 20px; font-size: 0.8rem; color: #555; }
-    </style>
-</head>
-<body>
-    <div class="cyber-loader"></div>
-    <div class="cyber-text" id="status">INITIALIZING SYSTEM SCAN...</div>
-    <div class="cyber-text" id="details" style="font-size: 0.9rem; color: #888;">Reading hardware signature</div>
-    <div class="dev-credit">Secured by @YourUsername</div>
+import asyncio
+import sqlite3
+import datetime
+from aiogram import Bot, Dispatcher, F, Router
+from aiogram.types import (Message, CallbackQuery, InlineKeyboardMarkup, 
+                           InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton,
+                           LabeledPrice, PreCheckoutQuery, ReplyKeyboardRemove)
+from aiogram.filters import CommandStart, Command
 
-    <script>
-        function getCanvasFingerprint() {
-            let canvas = document.createElement('canvas');
-            let ctx = canvas.getContext('2d');
-            ctx.fillStyle = "#069";
-            ctx.font = "18px Arial";
-            ctx.fillText("CyberMatrix", 2, 15);
-            let data = canvas.toDataURL();
-            let hash = 0;
-            for (let i = 0; i < data.length; i++) {
-                hash = ((hash << 5) - hash) + data.charCodeAt(i);
-                hash = hash & hash;
-            }
-            return Math.abs(hash).toString(16);
-        }
+# ================= الإعدادات الأساسية =================
+BOT_TOKEN = "ضع_توكن_البوت_هنا"
+ADMIN_ID = 123456789  # ضع آيدي حسابك هنا
 
-        let tg = window.Telegram.WebApp;
-        tg.expand();
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher()
+router = Router()
 
-        setTimeout(() => {
-            let deviceId = localStorage.getItem("cyber_hwid");
-            if (!deviceId) {
-                deviceId = "HW-" + getCanvasFingerprint() + "-" + Date.now().toString().slice(-6);
-                localStorage.setItem("cyber_hwid", deviceId);
-            }
+# ================= إعداد قاعدة البيانات =================
+conn = sqlite3.connect('cybershield.db')
+c = conn.cursor()
+c.execute('''CREATE TABLE IF NOT EXISTS users
+             (user_id INTEGER PRIMARY KEY, phone TEXT, points INTEGER, 
+              days_left INTEGER, last_gift TEXT, is_banned INTEGER)''')
+conn.commit()
 
-            document.getElementById("status").innerText = "ACCESS GRANTED ✅";
-            document.getElementById("details").innerText = "Encrypting payload...";
+# ================= واجهات الأزرار (كيبورد) =================
+def main_menu_kb():
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="💎 متجر النقاط (بالنجوم)", callback_data="shop")],
+        [InlineKeyboardButton(text="🛡 حسابي والحماية", callback_data="my_account"),
+         InlineKeyboardButton(text="🎁 الهدية الشهرية", callback_data="monthly_gift")],
+        [InlineKeyboardButton(text="📜 سياسة الاستخدام الصارمة", callback_data="tos")],
+        [InlineKeyboardButton(text="🔗 ربط بوت خارجي (توكن)", callback_data="link_bot")]
+    ])
 
-            let btnText = tg.initDataUnsafe?.start_param || document.referrer || "";
-            let action = document.body.innerText.includes("تأكيد البصمة") ? "link" : "verify";
+def shop_kb():
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="⭐️ 15 نجمة = 1 نقطة", callback_data="buy_15")],
+        [InlineKeyboardButton(text="⭐️ 50 نجمة = 5 نقاط", callback_data="buy_50")],
+        [InlineKeyboardButton(text="⭐️ 100 نجمة = 11 نقطة", callback_data="buy_100")],
+        [InlineKeyboardButton(text="⭐️ 500 نجمة = 60 نقطة", callback_data="buy_500")],
+        [InlineKeyboardButton(text="⭐️ 1000 نجمة = 150 نقطة", callback_data="buy_1000")],
+        [InlineKeyboardButton(text="🔙 عودة", callback_data="back_main")]
+    ])
+
+def admin_kb():
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="📊 إحصائيات النظام", callback_data="admin_stats")],
+        [InlineKeyboardButton(text="➕ إضافة نقاط", callback_data="add_points"),
+         InlineKeyboardButton(text="➖ خصم نقاط", callback_data="sub_points")],
+        [InlineKeyboardButton(text="📢 إذاعة رسالة", callback_data="admin_broadcast")],
+        [InlineKeyboardButton(text="➕ إضافة اشتراك إجباري", callback_data="add_sub"),
+         InlineKeyboardButton(text="➖ حذف اشتراك إجباري", callback_data="del_sub")]
+    ])
+
+# ================= دوال التحقق =================
+def get_user(user_id):
+    c.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
+    return c.fetchone()
+
+# ================= أوامر المستخدمين =================
+@router.message(CommandStart())
+async def start_cmd(message: Message):
+    user = get_user(message.from_user.id)
+    if not user:
+        # طلب رقم الهاتف لمنع تعدد الحسابات
+        kb = ReplyKeyboardMarkup(
+            keyboard=[[KeyboardButton(text="📱 توثيق الحساب (مشاركة رقم الهاتف)", request_contact=True)]],
+            resize_keyboard=True
+        )
+        await message.answer("<b>💠 مرحباً بك في نظام [CyberShield] الأمني 💠</b>\n\n"
+                             "⚠️ <i>لضمان عدم تعدد الحسابات، يرجى توثيق حسابك بمشاركة جهة الاتصال الخاصة بك.</i>", 
+                             parse_mode="HTML", reply_markup=kb)
+    else:
+        if user[5] == 1:
+            await message.answer("🚫 <b>حسابك محظور لانتهاك السياسات.</b>", parse_mode="HTML")
+            return
+        await message.answer("<b>💠 مرحباً بك في واجهة التحكم الرئيسية 💠</b>\n"
+                             "اختر من القائمة أدناه للتحكم بحسابك:",
+                             reply_markup=main_menu_kb(), parse_mode="HTML")
+
+@router.message(F.contact)
+async def contact_handler(message: Message):
+    if message.contact.user_id != message.from_user.id:
+        await message.answer("❌ يرجى مشاركة جهة اتصالك أنت، وليس جهة اتصال أخرى.")
+        return
+    
+    phone = message.contact.phone_number
+    
+    # فحص إذا كان الرقم مسجل مسبقاً بحساب آخر
+    c.execute("SELECT * FROM users WHERE phone=?", (phone,))
+    if c.fetchone():
+        await message.answer("🚨 <b>تحذير أمني:</b> هذا الرقم مسجل بحساب آخر بالفعل. يمنع استخدام نفس الرقم لحسابات متعددة!", parse_mode="HTML")
+        return
+
+    # تسجيل المستخدم الجديد
+    c.execute("INSERT INTO users (user_id, phone, points, days_left, last_gift, is_banned) VALUES (?, ?, 0, 0, 'none', 0)", 
+              (message.from_user.id, phone))
+    conn.commit()
+    
+    await message.answer("✅ <b>تم توثيق الحساب بنجاح!</b>", parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
+    await message.answer("<b>💠 القائمة الرئيسية 💠</b>", reply_markup=main_menu_kb(), parse_mode="HTML")
+
+# ================= تفاعلات الأزرار =================
+@router.callback_query()
+async def callbacks(call: CallbackQuery):
+    user = get_user(call.from_user.id)
+    if not user: return
+    
+    data = call.data
+    
+    if data == "back_main":
+        await call.message.edit_text("<b>💠 القائمة الرئيسية 💠</b>", reply_markup=main_menu_kb(), parse_mode="HTML")
+
+    elif data == "my_account":
+        text = (f"<b>🛡 هويتك الرقمية:</b> <code>{call.from_user.id}</code>\n"
+                f"<b>💠 النقاط المتاحة:</b> {user[2]}\n"
+                f"<b>⏳ أيام التفعيل المتبقية:</b> {user[3]} يوم")
+        await call.message.edit_text(text, reply_markup=main_menu_kb(), parse_mode="HTML")
+
+    elif data == "tos":
+        tos_text = ("<b>📜 سياسة الاستخدام الصارمة 📜</b>\n\n"
+                    "1️⃣ يمنع منعاً باتاً استخدام برامج التلاعب أو تعدد الحسابات.\n"
+                    "2️⃣ أي محاولة للتسجيل برقم هاتف وهمي أو مسجل مسبقاً ستؤدي للحظر.\n"
+                    "3️⃣ يحق للإدارة تصفير نقاط أي حساب يثبت تورطه بأنشطة مشبوهة.")
+        await call.message.edit_text(tos_text, reply_markup=main_menu_kb(), parse_mode="HTML")
+
+    elif data == "monthly_gift":
+        current_month = datetime.datetime.now().strftime("%Y-%m")
+        if user[4] == current_month:
+            await call.answer("❌ لقد حصلت على هديتك لهذا الشهر!", show_alert=True)
+        else:
+            c.execute("UPDATE users SET points = points + 1, last_gift = ? WHERE user_id = ?", (current_month, call.from_user.id))
+            conn.commit()
+            await call.answer("✅ تم إضافة 1 نقطة لهديتك الشهرية!", show_alert=True)
+            await call.message.edit_text("<b>💠 القائمة الرئيسية 💠</b>", reply_markup=main_menu_kb(), parse_mode="HTML")
             
-            // في حالة كان الزر يحتوي كلمة تأكيد، نعتبرها محاولة ربط
-            if(window.location.search.includes("link")) action = "link";
+    elif data == "link_bot":
+        # توليد توكن وهمي للربط
+        link_token = f"BOT-TOKEN-{call.from_user.id}-{datetime.datetime.now().strftime('%H%M%S')}"
+        await call.message.edit_text(f"🔗 <b>تم إنشاء توكن الربط الخاص بك:</b>\n\n<code>{link_token}</code>\n\n"
+                             "<i>استخدم هذا التوكن في البوت الخارجي للربط.</i>", 
+                             parse_mode="HTML", reply_markup=main_menu_kb())
 
-            let payload = JSON.stringify({ device_id: deviceId, action: tg.MainButton.text ? "link" : "verify" });
-            
-            setTimeout(() => { tg.sendData(payload); }, 800);
-        }, 2000);
-    </script>
-</body>
-</html>
+    elif data == "shop":
+        await call.message.edit_text("<b>💎 متجر النقاط (بالنجوم) 💎</b>", reply_markup=shop_kb(), parse_mode="HTML")
+
+    elif data.startswith("buy_"):
+        amount = int(data.split("_")[1])
+        prices = {15: 1, 50: 5, 100: 11, 500: 60, 1000: 150}
+        points = prices[amount]
+        prices_stars = [LabeledPrice(label=f"شراء {points} نقطة", amount=amount)]
+        
+        await bot.send_invoice(
+            call.from_user.id, 
+            title="شحن نقاط النظام",
+            description=f"احصل على {points} نقطة.",
+            payload=f"add_{points}", 
+            provider_token="", 
+            currency="XTR", 
+            prices=prices_stars
+        )
+        await call.answer()
+
+# ================= إتمام الدفع بالنجوم =================
+@router.pre_checkout_query()
+async def process_pre_checkout(pre_checkout_query: PreCheckoutQuery):
+    await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
+
+@router.message(F.successful_payment)
+async def process_payment(message: Message):
+    points_to_add = int(message.successful_payment.invoice_payload.split("_")[1])
+    c.execute("UPDATE users SET points = points + ? WHERE user_id = ?", (points_to_add, message.from_user.id))
+    conn.commit()
+    await message.answer(f"✅ <b>تم الشحن بنجاح!</b> أضيف {points_to_add} نقطة إلى رصيدك.", parse_mode="HTML")
+
+# ================= لوحة الإدارة =================
+@router.message(Command("admin"))
+async def admin_cmd(message: Message):
+    if message.from_user.id != ADMIN_ID: return
+    await message.answer("<b>👨🏻‍💻 لوحة تحكم الإدارة</b>", reply_markup=admin_kb(), parse_mode="HTML")
+
+@router.callback_query(lambda c: c.from_user.id == ADMIN_ID)
+async def admin_callbacks(call: CallbackQuery):
+    if call.data == "admin_stats":
+        c.execute("SELECT COUNT(*) FROM users")
+        count = c.fetchone()[0]
+        await call.answer(f"👥 عدد المستخدمين المسجلين برقم هاتف: {count}", show_alert=True)
+    else:
+         await call.answer("تحتاج إلى إعداد FSM لهذه الميزة.", show_alert=True)
+
+async def main():
+    dp.include_router(router)
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
