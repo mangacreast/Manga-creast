@@ -17,10 +17,7 @@
             --text-muted: #8892b0;
         }
 
-        * {
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
+        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; }
 
         body {
             background-color: var(--bg-dark);
@@ -30,122 +27,61 @@
                 linear-gradient(90deg, rgba(0, 230, 255, 0.03) 1px, transparent 1px);
             background-size: 100% 100%, 20px 20px, 20px 20px;
             color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; margin: 0; overflow: hidden;
         }
 
         .shield-container {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-            border-radius: 50%;
-            background: rgba(0, 230, 255, 0.05);
-            box-shadow: 0 0 30px rgba(0, 230, 255, 0.2);
-            transition: all 0.5s ease;
+            position: relative; width: 110px; height: 110px; margin: 0 auto 20px;
+            display: flex; align-items: center; justify-content: center; font-size: 55px;
+            border-radius: 50%; background: rgba(0, 230, 255, 0.05);
+            box-shadow: 0 0 30px rgba(0, 230, 255, 0.2); transition: all 0.5s ease;
         }
 
         .radar-sweep {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 2px solid rgba(0, 230, 255, 0.3);
-            border-top-color: var(--primary);
-            animation: spin 1.5s linear infinite;
+            position: absolute; width: 100%; height: 100%; border-radius: 50%;
+            border: 2px solid rgba(0, 230, 255, 0.2); border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
         }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         .container {
-            background: var(--card-bg);
-            border: 1px solid rgba(0, 230, 255, 0.15);
-            border-radius: 24px;
-            padding: 40px 25px;
-            width: 90%;
-            max-width: 380px;
+            background: var(--card-bg); border: 1px solid rgba(0, 230, 255, 0.15);
+            border-radius: 24px; padding: 40px 25px; width: 90%; max-width: 380px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 230, 255, 0.05);
-            backdrop-filter: blur(15px);
-            text-align: center;
-            transform: translateY(20px);
-            opacity: 0;
+            backdrop-filter: blur(15px); text-align: center;
+            transform: translateY(20px); opacity: 0;
             animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        @keyframes slideUp { 
-            to { transform: translateY(0); opacity: 1; } 
-        }
+        @keyframes slideUp { to { transform: translateY(0); opacity: 1; } }
 
         .title {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--primary);
-            margin-bottom: 10px;
-            letter-spacing: 0.5px;
-            text-shadow: 0 0 10px rgba(0, 230, 255, 0.3);
+            font-size: 1.5rem; font-weight: 900; color: var(--primary);
+            margin-bottom: 10px; text-shadow: 0 0 10px rgba(0, 230, 255, 0.3);
         }
 
-        .subtitle {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 30px;
-        }
+        .subtitle { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 30px; }
 
         .steps-box {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: right;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.4); border-radius: 16px; padding: 20px;
+            text-align: right; border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .step {
-            display: flex;
-            align-items: center;
-            margin-bottom: 16px;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            font-weight: 700;
-            opacity: 0.5;
-            transition: all 0.4s ease;
+            display: flex; align-items: center; margin-bottom: 16px; font-size: 0.95rem;
+            color: var(--text-muted); font-weight: 700; opacity: 0.5; transition: all 0.4s ease;
         }
-
         .step:last-child { margin-bottom: 0; }
-        
-        .step.active {
-            opacity: 1;
-            color: var(--text-main);
-        }
-
-        .step.done {
-            opacity: 1;
-            color: var(--success);
-        }
-
-        .step.error {
-            opacity: 1;
-            color: var(--danger);
-        }
+        .step.active { opacity: 1; color: var(--text-main); }
+        .step.done { opacity: 1; color: var(--success); }
+        .step.error { opacity: 1; color: var(--danger); }
 
         .step-icon {
-            width: 24px;
-            height: 24px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 12px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            font-size: 0.7rem;
+            width: 24px; height: 24px; display: inline-flex; align-items: center;
+            justify-content: center; margin-left: 12px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1); font-size: 0.7rem;
         }
 
         .done .step-icon { background: rgba(0, 255, 136, 0.2); }
@@ -159,37 +95,22 @@
         }
 
         .status-message {
-            margin-top: 25px;
-            padding: 15px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1rem;
-            display: none;
-            animation: fadeIn 0.5s ease forwards;
+            margin-top: 25px; padding: 15px; border-radius: 12px; font-weight: 700;
+            font-size: 1rem; display: none; animation: fadeIn 0.5s ease forwards;
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-        /* States Themes */
+        /* Themes */
         .theme-success .shield-container { box-shadow: 0 0 40px rgba(0, 255, 136, 0.3); background: rgba(0, 255, 136, 0.05); }
         .theme-success .title { color: var(--success); text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
         .theme-success .radar-sweep { display: none; }
-        .theme-success .status-message {
-            display: block;
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid var(--success);
-            color: var(--success);
-        }
+        .theme-success .status-message { display: block; background: rgba(0, 255, 136, 0.1); border: 1px solid var(--success); color: var(--success); }
 
         .theme-error .shield-container { box-shadow: 0 0 40px rgba(255, 42, 95, 0.3); background: rgba(255, 42, 95, 0.05); }
         .theme-error .title { color: var(--danger); text-shadow: 0 0 10px rgba(255, 42, 95, 0.3); }
         .theme-error .radar-sweep { display: none; }
-        .theme-error .status-message {
-            display: block;
-            background: rgba(255, 42, 95, 0.1);
-            border: 1px solid var(--danger);
-            color: var(--danger);
-        }
+        .theme-error .status-message { display: block; background: rgba(255, 42, 95, 0.1); border: 1px solid var(--danger); color: var(--danger); }
     </style>
 </head>
 <body>
@@ -201,12 +122,12 @@
         </div>
         
         <div class="title" id="main-title">المصادقة الأمنية</div>
-        <div class="subtitle" id="main-subtitle">يرجى الانتظار، جاري فحص بيئة التشغيل...</div>
+        <div class="subtitle" id="main-subtitle">جاري فحص بيئة التشغيل، يرجى الانتظار...</div>
 
         <div class="steps-box">
-            <div class="step active" id="step1"><span class="step-icon">⏳</span> تهيئة نظام الحماية</div>
+            <div class="step active" id="step1"><span class="step-icon">⏳</span> تحليل بصمة الجهاز</div>
             <div class="step" id="step2"><span class="step-icon">⏳</span> فحص تعدد الحسابات</div>
-            <div class="step" id="step3"><span class="step-icon">⏳</span> إصدار التصريح</div>
+            <div class="step" id="step3"><span class="step-icon">⏳</span> تأكيد الهوية الرقمية</div>
         </div>
 
         <div class="status-message" id="final-message"></div>
@@ -217,33 +138,36 @@
         tg.expand();
         tg.ready();
 
-        function getWebGLFingerprint() {
-            try {
-                let canvas = document.createElement('canvas');
-                let gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                let debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                return gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) + "~" + gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-            } catch (e) { return "WebGL-Not-Supported"; }
-        }
+        // استخراج معرف البوت من الرابط (مهم جداً لنظام تعدد البوتات)
+        const urlParams = new URLSearchParams(window.location.search);
+        const botUsername = urlParams.get('bot'); 
 
+        // بصمة قوية للجهاز بناءً على كارت الشاشة ودقة الشاشة والمعالج (مخفية تماماً)
         function generateHardwareID() {
-            let nav = window.navigator;
-            let screen = window.screen;
+            let canvas = document.createElement('canvas');
+            let gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            let webglRender = "unknown";
+            if (gl) {
+                let debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                webglRender = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "unknown";
+            }
+            
             let components = [
-                nav.hardwareConcurrency || 'unknown',
-                nav.deviceMemory || 'unknown',
-                nav.maxTouchPoints || 0,
-                screen.width + 'x' + screen.height,
+                window.navigator.hardwareConcurrency || 'x',
+                window.navigator.deviceMemory || 'x',
+                window.screen.width + 'x' + window.screen.height,
+                window.screen.colorDepth,
                 new Date().getTimezoneOffset(),
-                getWebGLFingerprint()
+                webglRender
             ];
-            let str = components.join('||');
+            
+            let str = components.join('|');
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
                 hash = ((hash << 5) - hash) + str.charCodeAt(i);
                 hash = hash & hash;
             }
-            return "SEC-" + Math.abs(hash).toString(36).toUpperCase();
+            return "HW-" + Math.abs(hash).toString(36).toUpperCase();
         }
 
         function updateStep(stepId, status, text, icon) {
@@ -252,96 +176,88 @@
             step.innerHTML = `<span class="step-icon">${icon}</span> ${text}`;
         }
 
-        function finishProcess(isSuccess, payloadData) {
+        function finishProcess(isSuccess, deviceId) {
             const card = document.getElementById('main-card');
             const finalMsg = document.getElementById('final-message');
-            
             document.getElementById('main-subtitle').style.display = 'none';
+
+            // تجهيز الأمر الذي سيتم إرساله للبوت عبر الرابط (start)
+            let actionCommand = isSuccess ? `verify_${deviceId}` : `block_${deviceId}`;
 
             if (isSuccess) {
                 card.classList.add('theme-success');
                 document.getElementById('main-icon').innerText = '✅';
                 document.getElementById('main-title').innerText = 'تم التوثيق بنجاح';
-                finalMsg.innerText = 'بصمة الجهاز سليمة. يمكنك العودة للبوت الآن.';
-                
+                finalMsg.innerText = 'بصمة الجهاز سليمة ولا يوجد أي تعدد حسابات.';
                 if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
                 
-                tg.MainButton.setText("العودة للبوت");
+                tg.MainButton.setText("العودة للبوت للاستمرار");
                 tg.MainButton.color = "#00ff88";
                 tg.MainButton.textColor = "#050508";
             } else {
                 card.classList.add('theme-error');
                 document.getElementById('main-icon').innerText = '🚫';
                 document.getElementById('main-title').innerText = 'تم حظر الوصول';
-                finalMsg.innerText = 'تم اكتشاف محاولة تسجيل بحسابات متعددة من نفس الجهاز.';
-                
+                finalMsg.innerText = '⚠️ تم اكتشاف حساب آخر مسجل من هذا الجهاز! تمنع قوانين النظام استخدام الحسابات الوهمية.';
                 if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
                 
-                tg.MainButton.setText("إغلاق");
+                tg.MainButton.setText("العودة للبوت (مرفوض)");
                 tg.MainButton.color = "#ff2a5f";
                 tg.MainButton.textColor = "#ffffff";
             }
 
             tg.MainButton.show();
+            
+            // عند الضغط على الزر، سيعود تلقائياً للبوت الذي جاء منه بناءً على الـ url
             tg.MainButton.onClick(() => {
-                tg.sendData(JSON.stringify(payloadData));
-                tg.close(); 
+                if (botUsername) {
+                    tg.openTelegramLink(`https://t.me/${botUsername}?start=${actionCommand}`);
+                } else {
+                    // بديل في حال لم تقم بوضع اسم البوت في الرابط
+                    tg.sendData(JSON.stringify({ status: isSuccess ? "ok" : "blocked", hwid: deviceId }));
+                }
+                setTimeout(() => tg.close(), 100);
             });
         }
 
         function startSecurityScan() {
-            // الخطوة الأولى
             setTimeout(() => {
-                updateStep('step1', 'done', 'تم قراءة بيانات النظام', '✓');
-                updateStep('step2', 'active', 'جاري فحص التعدد...', '⚙');
-            }, 1000);
+                updateStep('step1', 'done', 'تم استخراج البصمة بنجاح', '✓');
+                updateStep('step2', 'active', 'جاري فحص قاعدة بيانات التعدد...', '⚙');
+            }, 800);
 
-            // الخطوة الثانية والثالثة
             setTimeout(() => {
                 let generatedDeviceId = generateHardwareID();
-                let currentUserId = tg.initDataUnsafe?.user?.id?.toString() || "Unknown";
+                let currentUserId = tg.initDataUnsafe?.user?.id?.toString() || "UnknownUser";
                 
-                let savedData = localStorage.getItem("global_cyber_shield");
+                let savedData = localStorage.getItem("cyber_shield_fingerprint");
                 let isMultiAccount = false;
-                let isFirstTime = true;
 
                 if (savedData) {
-                    isFirstTime = false;
                     let parts = savedData.split('|');
                     let savedUserId = parts[1];
 
-                    // إذا اختلف الآي دي المحفوظ عن الحالي، يعني حساب جديد على نفس الجهاز
-                    if (savedUserId !== currentUserId && currentUserId !== "Unknown") {
+                    // التحقق: هل الحساب الحالي يختلف عن الحساب الذي سجل من هذا الجهاز مسبقاً؟
+                    if (savedUserId !== currentUserId && currentUserId !== "UnknownUser") {
                         isMultiAccount = true;
                     }
                 }
 
                 if (isMultiAccount) {
-                    // حالة الفشل (تعدد حسابات)
-                    updateStep('step2', 'error', 'تم اكتشاف تعدد حسابات', '✗');
-                    updateStep('step3', 'error', 'العملية مرفوضة', '✗');
-                    
-                    finishProcess(false, { 
-                        status: "failed", 
-                        reason: "multi_account",
-                        device_id: generatedDeviceId 
-                    });
+                    updateStep('step2', 'error', 'تم رصد تعدد حسابات', '✗');
+                    updateStep('step3', 'error', 'تم إيقاف التوثيق', '✗');
+                    finishProcess(false, generatedDeviceId);
                 } else {
-                    // حالة النجاح
-                    if (isFirstTime && currentUserId !== "Unknown") {
-                        localStorage.setItem("global_cyber_shield", generatedDeviceId + "|" + currentUserId);
+                    // إذا كان الحساب جديداً ولم يتم كشف تعدد، نحفظ البصمة في الجهاز
+                    if (!savedData && currentUserId !== "UnknownUser") {
+                        localStorage.setItem("cyber_shield_fingerprint", generatedDeviceId + "|" + currentUserId);
                     }
                     
-                    updateStep('step2', 'done', 'الجهاز سليم', '✓');
-                    updateStep('step3', 'done', 'تم إنشاء التصريح', '✓');
-                    
-                    finishProcess(true, { 
-                        status: "success", 
-                        is_new: isFirstTime,
-                        device_id: generatedDeviceId 
-                    });
+                    updateStep('step2', 'done', 'الجهاز سليم تماماً', '✓');
+                    updateStep('step3', 'done', 'تم منح التصريح', '✓');
+                    finishProcess(true, generatedDeviceId);
                 }
-            }, 2500);
+            }, 2200);
         }
 
         window.onload = startSecurityScan;
