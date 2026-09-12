@@ -202,7 +202,7 @@
         // دالة الزر البديل (في حال كان البوت يستخدم أزرار شفافة)
         // يجب استبدال YOUR_BOT_USERNAME بمعرف البوت الخاص بك بدون @
         function sendViaLink() {
-            let botUsername = "YOUR_BOT_USERNAME"; // ⚠️ ضع معرف البوت هنا
+            let botUsername = "blockspam_akbot"; // ⚠️ ضع معرف البوت هنا
             let payloadText = "verify_" + generatedDeviceId;
             tg.openTelegramLink("https://t.me/" + botUsername + "?start=" + payloadText);
             tg.close();
