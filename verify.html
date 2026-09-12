@@ -1,197 +1,255 @@
-import asyncio
-import sqlite3
-import datetime
-from aiogram import Bot, Dispatcher, F, Router
-from aiogram.types import (Message, CallbackQuery, InlineKeyboardMarkup, 
-                           InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton,
-                           LabeledPrice, PreCheckoutQuery, ReplyKeyboardRemove)
-from aiogram.filters import CommandStart, Command
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CyberShield Security</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary: #00ffcc;
+            --bg-color: #0a0a0f;
+            --card-bg: rgba(20, 20, 30, 0.7);
+        }
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, var(--bg-color) 70%);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            width: 85%;
+            max-width: 350px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 255, 204, 0.05);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        /* تأثير خط الفحص (Scanner) */
+        .scanner-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+            animation: scan 2s infinite ease-in-out;
+            display: block;
+        }
+        @keyframes scan {
+            0% { top: -10%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 110%; opacity: 0; }
+        }
+        .icon-container {
+            text-align: center;
+            font-size: 50px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+        }
+        .title {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+        .step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #aaa;
+            opacity: 0.4;
+            transition: all 0.3s;
+        }
+        .step.active {
+            opacity: 1;
+            color: #fff;
+        }
+        .step.done {
+            opacity: 1;
+            color: var(--primary);
+        }
+        .step i {
+            margin-left: 10px;
+            font-style: normal;
+            font-size: 1.2rem;
+        }
+        .hwid-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px dashed var(--primary);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-top: 20px;
+            display: none;
+            word-break: break-all;
+        }
+        .warning {
+            font-size: 0.8rem;
+            color: #ff4444;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
 
-# ================= الإعدادات الأساسية =================
-BOT_TOKEN = "ضع_توكن_البوت_هنا"
-ADMIN_ID = 123456789  # ضع آيدي حسابك هنا
+    <div class="container" id="main-card">
+        <div class="scanner-line" id="scanner"></div>
+        <div class="icon-container" id="main-icon">🛡️</div>
+        <div class="title">نظام الحماية المتقدم</div>
 
-bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher()
-router = Router()
+        <div class="step active" id="step1"><i>⏳</i> جاري قراءة بيانات النظام...</div>
+        <div class="step" id="step2"><i>⏳</i> فحص المعالج الرسومي (WebGL)...</div>
+        <div class="step" id="step3"><i>⏳</i> توليد البصمة الرقمية...</div>
 
-# ================= إعداد قاعدة البيانات =================
-conn = sqlite3.connect('cybershield.db')
-c = conn.cursor()
-c.execute('''CREATE TABLE IF NOT EXISTS users
-             (user_id INTEGER PRIMARY KEY, phone TEXT, points INTEGER, 
-              days_left INTEGER, last_gift TEXT, is_banned INTEGER)''')
-conn.commit()
+        <div class="hwid-box" id="hwid-display"></div>
+        <div class="warning" id="error-msg">يجب فتح هذا الرابط من داخل تليجرام فقط!</div>
+    </div>
 
-# ================= واجهات الأزرار (كيبورد) =================
-def main_menu_kb():
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="💎 متجر النقاط (بالنجوم)", callback_data="shop")],
-        [InlineKeyboardButton(text="🛡 حسابي والحماية", callback_data="my_account"),
-         InlineKeyboardButton(text="🎁 الهدية الشهرية", callback_data="monthly_gift")],
-        [InlineKeyboardButton(text="📜 سياسة الاستخدام الصارمة", callback_data="tos")],
-        [InlineKeyboardButton(text="🔗 ربط بوت خارجي (توكن)", callback_data="link_bot")]
-    ])
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
 
-def shop_kb():
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="⭐️ 15 نجمة = 1 نقطة", callback_data="buy_15")],
-        [InlineKeyboardButton(text="⭐️ 50 نجمة = 5 نقاط", callback_data="buy_50")],
-        [InlineKeyboardButton(text="⭐️ 100 نجمة = 11 نقطة", callback_data="buy_100")],
-        [InlineKeyboardButton(text="⭐️ 500 نجمة = 60 نقطة", callback_data="buy_500")],
-        [InlineKeyboardButton(text="⭐️ 1000 نجمة = 150 نقطة", callback_data="buy_1000")],
-        [InlineKeyboardButton(text="🔙 عودة", callback_data="back_main")]
-    ])
+        // 1. دالة استخراج بصمة كارت الشاشة (الأقوى على الإطلاق)
+        function getWebGLFingerprint() {
+            try {
+                let canvas = document.createElement('canvas');
+                let gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                let debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                let vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+                let renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                return vendor + "~" + renderer;
+            } catch (e) {
+                return "WebGL-Not-Supported";
+            }
+        }
 
-def admin_kb():
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="📊 إحصائيات النظام", callback_data="admin_stats")],
-        [InlineKeyboardButton(text="➕ إضافة نقاط", callback_data="add_points"),
-         InlineKeyboardButton(text="➖ خصم نقاط", callback_data="sub_points")],
-        [InlineKeyboardButton(text="📢 إذاعة رسالة", callback_data="admin_broadcast")],
-        [InlineKeyboardButton(text="➕ إضافة اشتراك إجباري", callback_data="add_sub"),
-         InlineKeyboardButton(text="➖ حذف اشتراك إجباري", callback_data="del_sub")]
-    ])
+        // 2. دالة البصمة الرسومية
+        function getCanvasFingerprint() {
+            let canvas = document.createElement('canvas');
+            let ctx = canvas.getContext('2d');
+            ctx.textBaseline = "top";
+            ctx.font = "14px 'Arial'";
+            ctx.fillStyle = "#f60";
+            ctx.fillRect(125,1,62,20);
+            ctx.fillStyle = "#069";
+            ctx.fillText("CyberShield_V2", 2, 15);
+            return canvas.toDataURL();
+        }
 
-# ================= دوال التحقق =================
-def get_user(user_id):
-    c.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
-    return c.fetchone()
-
-# ================= أوامر المستخدمين =================
-@router.message(CommandStart())
-async def start_cmd(message: Message):
-    user = get_user(message.from_user.id)
-    if not user:
-        # طلب رقم الهاتف لمنع تعدد الحسابات
-        kb = ReplyKeyboardMarkup(
-            keyboard=[[KeyboardButton(text="📱 توثيق الحساب (مشاركة رقم الهاتف)", request_contact=True)]],
-            resize_keyboard=True
-        )
-        await message.answer("<b>💠 مرحباً بك في نظام [CyberShield] الأمني 💠</b>\n\n"
-                             "⚠️ <i>لضمان عدم تعدد الحسابات، يرجى توثيق حسابك بمشاركة جهة الاتصال الخاصة بك.</i>", 
-                             parse_mode="HTML", reply_markup=kb)
-    else:
-        if user[5] == 1:
-            await message.answer("🚫 <b>حسابك محظور لانتهاك السياسات.</b>", parse_mode="HTML")
-            return
-        await message.answer("<b>💠 مرحباً بك في واجهة التحكم الرئيسية 💠</b>\n"
-                             "اختر من القائمة أدناه للتحكم بحسابك:",
-                             reply_markup=main_menu_kb(), parse_mode="HTML")
-
-@router.message(F.contact)
-async def contact_handler(message: Message):
-    if message.contact.user_id != message.from_user.id:
-        await message.answer("❌ يرجى مشاركة جهة اتصالك أنت، وليس جهة اتصال أخرى.")
-        return
-    
-    phone = message.contact.phone_number
-    
-    # فحص إذا كان الرقم مسجل مسبقاً بحساب آخر
-    c.execute("SELECT * FROM users WHERE phone=?", (phone,))
-    if c.fetchone():
-        await message.answer("🚨 <b>تحذير أمني:</b> هذا الرقم مسجل بحساب آخر بالفعل. يمنع استخدام نفس الرقم لحسابات متعددة!", parse_mode="HTML")
-        return
-
-    # تسجيل المستخدم الجديد
-    c.execute("INSERT INTO users (user_id, phone, points, days_left, last_gift, is_banned) VALUES (?, ?, 0, 0, 'none', 0)", 
-              (message.from_user.id, phone))
-    conn.commit()
-    
-    await message.answer("✅ <b>تم توثيق الحساب بنجاح!</b>", parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
-    await message.answer("<b>💠 القائمة الرئيسية 💠</b>", reply_markup=main_menu_kb(), parse_mode="HTML")
-
-# ================= تفاعلات الأزرار =================
-@router.callback_query()
-async def callbacks(call: CallbackQuery):
-    user = get_user(call.from_user.id)
-    if not user: return
-    
-    data = call.data
-    
-    if data == "back_main":
-        await call.message.edit_text("<b>💠 القائمة الرئيسية 💠</b>", reply_markup=main_menu_kb(), parse_mode="HTML")
-
-    elif data == "my_account":
-        text = (f"<b>🛡 هويتك الرقمية:</b> <code>{call.from_user.id}</code>\n"
-                f"<b>💠 النقاط المتاحة:</b> {user[2]}\n"
-                f"<b>⏳ أيام التفعيل المتبقية:</b> {user[3]} يوم")
-        await call.message.edit_text(text, reply_markup=main_menu_kb(), parse_mode="HTML")
-
-    elif data == "tos":
-        tos_text = ("<b>📜 سياسة الاستخدام الصارمة 📜</b>\n\n"
-                    "1️⃣ يمنع منعاً باتاً استخدام برامج التلاعب أو تعدد الحسابات.\n"
-                    "2️⃣ أي محاولة للتسجيل برقم هاتف وهمي أو مسجل مسبقاً ستؤدي للحظر.\n"
-                    "3️⃣ يحق للإدارة تصفير نقاط أي حساب يثبت تورطه بأنشطة مشبوهة.")
-        await call.message.edit_text(tos_text, reply_markup=main_menu_kb(), parse_mode="HTML")
-
-    elif data == "monthly_gift":
-        current_month = datetime.datetime.now().strftime("%Y-%m")
-        if user[4] == current_month:
-            await call.answer("❌ لقد حصلت على هديتك لهذا الشهر!", show_alert=True)
-        else:
-            c.execute("UPDATE users SET points = points + 1, last_gift = ? WHERE user_id = ?", (current_month, call.from_user.id))
-            conn.commit()
-            await call.answer("✅ تم إضافة 1 نقطة لهديتك الشهرية!", show_alert=True)
-            await call.message.edit_text("<b>💠 القائمة الرئيسية 💠</b>", reply_markup=main_menu_kb(), parse_mode="HTML")
+        // 3. الدالة الرئيسية لجمع البصمة
+        function generateHardwareID() {
+            let nav = window.navigator;
+            let screen = window.screen;
             
-    elif data == "link_bot":
-        # توليد توكن وهمي للربط
-        link_token = f"BOT-TOKEN-{call.from_user.id}-{datetime.datetime.now().strftime('%H%M%S')}"
-        await call.message.edit_text(f"🔗 <b>تم إنشاء توكن الربط الخاص بك:</b>\n\n<code>{link_token}</code>\n\n"
-                             "<i>استخدم هذا التوكن في البوت الخارجي للربط.</i>", 
-                             parse_mode="HTML", reply_markup=main_menu_kb())
+            let components = [
+                nav.userAgent,
+                nav.hardwareConcurrency || 'unknown', // عدد الأنوية
+                nav.deviceMemory || 'unknown',        // الرام
+                nav.maxTouchPoints || 0,              // نقاط اللمس (لمعرفة إن كان محاكي)
+                screen.width + 'x' + screen.height,   // أبعاد الشاشة
+                new Date().getTimezoneOffset(),       // المنطقة الزمنية
+                getWebGLFingerprint(),                // بصمة كارت الشاشة
+                getCanvasFingerprint()                // بصمة الكانفاس
+            ];
 
-    elif data == "shop":
-        await call.message.edit_text("<b>💎 متجر النقاط (بالنجوم) 💎</b>", reply_markup=shop_kb(), parse_mode="HTML")
+            let str = components.join('||');
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                let char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return "HW-" + Math.abs(hash).toString(36).toUpperCase();
+        }
 
-    elif data.startswith("buy_"):
-        amount = int(data.split("_")[1])
-        prices = {15: 1, 50: 5, 100: 11, 500: 60, 1000: 150}
-        points = prices[amount]
-        prices_stars = [LabeledPrice(label=f"شراء {points} نقطة", amount=amount)]
-        
-        await bot.send_invoice(
-            call.from_user.id, 
-            title="شحن نقاط النظام",
-            description=f"احصل على {points} نقطة.",
-            payload=f"add_{points}", 
-            provider_token="", 
-            currency="XTR", 
-            prices=prices_stars
-        )
-        await call.answer()
+        // 4. تسلسل ظهور واجهة المستخدم لتبدو وكأنها عملية فحص حقيقية
+        function startScan() {
+            // التأكد أن التطبيق مفتوح داخل تليجرام
+            if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+                document.getElementById('scanner').style.display = 'none';
+                document.getElementById('error-msg').style.display = 'block';
+                return;
+            }
 
-# ================= إتمام الدفع بالنجوم =================
-@router.pre_checkout_query()
-async def process_pre_checkout(pre_checkout_query: PreCheckoutQuery):
-    await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
+            setTimeout(() => {
+                document.getElementById('step1').classList.replace('active', 'done');
+                document.getElementById('step1').innerHTML = '<i>✅</i> تمت قراءة بيانات النظام';
+                document.getElementById('step2').classList.add('active');
+            }, 800);
 
-@router.message(F.successful_payment)
-async def process_payment(message: Message):
-    points_to_add = int(message.successful_payment.invoice_payload.split("_")[1])
-    c.execute("UPDATE users SET points = points + ? WHERE user_id = ?", (points_to_add, message.from_user.id))
-    conn.commit()
-    await message.answer(f"✅ <b>تم الشحن بنجاح!</b> أضيف {points_to_add} نقطة إلى رصيدك.", parse_mode="HTML")
+            setTimeout(() => {
+                document.getElementById('step2').classList.replace('active', 'done');
+                document.getElementById('step2').innerHTML = '<i>✅</i> تم فحص المعالج الرسومي';
+                document.getElementById('step3').classList.add('active');
+            }, 1800);
 
-# ================= لوحة الإدارة =================
-@router.message(Command("admin"))
-async def admin_cmd(message: Message):
-    if message.from_user.id != ADMIN_ID: return
-    await message.answer("<b>👨🏻‍💻 لوحة تحكم الإدارة</b>", reply_markup=admin_kb(), parse_mode="HTML")
+            setTimeout(() => {
+                let deviceId = generateHardwareID();
+                let isFirstTime = !localStorage.getItem("cyber_hwid_v2");
+                
+                if (isFirstTime) {
+                    localStorage.setItem("cyber_hwid_v2", deviceId);
+                }
 
-@router.callback_query(lambda c: c.from_user.id == ADMIN_ID)
-async def admin_callbacks(call: CallbackQuery):
-    if call.data == "admin_stats":
-        c.execute("SELECT COUNT(*) FROM users")
-        count = c.fetchone()[0]
-        await call.answer(f"👥 عدد المستخدمين المسجلين برقم هاتف: {count}", show_alert=True)
-    else:
-         await call.answer("تحتاج إلى إعداد FSM لهذه الميزة.", show_alert=True)
+                document.getElementById('step3').classList.replace('active', 'done');
+                document.getElementById('step3').innerHTML = '<i>✅</i> تم التوثيق بنجاح';
+                
+                document.getElementById('scanner').style.display = 'none';
+                document.getElementById('main-icon').innerText = '✅';
+                
+                let hwidBox = document.getElementById('hwid-display');
+                hwidBox.innerText = deviceId;
+                hwidBox.style.display = 'block';
 
-async def main():
-    dp.include_router(router)
-    await dp.start_polling(bot)
+                // تشغيل اهتزاز الهاتف عند النجاح
+                if(tg.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
 
-if __name__ == "__main__":
-    asyncio.run(main())
+                // تجهيز زر تليجرام للإرسال
+                let actionType = window.location.search.includes("link") ? "link" : "verify";
+                let payload = JSON.stringify({ 
+                    device_id: deviceId, 
+                    action: actionType,
+                    is_new: isFirstTime
+                });
+
+                tg.MainButton.setText("تأكيد وحفظ البصمة");
+                tg.MainButton.color = "#00ffcc";
+                tg.MainButton.textColor = "#0a0a0f";
+                tg.MainButton.show();
+                
+                tg.MainButton.onClick(() => {
+                    if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+                    tg.sendData(payload);
+                });
+
+            }, 2800);
+        }
+
+        // بدء الفحص عند تحميل الصفحة
+        window.onload = startScan;
+    </script>
+</body>
+</html>
