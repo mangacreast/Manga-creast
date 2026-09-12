@@ -6,108 +6,41 @@
     <title>CyberShield Security</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --primary: #00ffcc;
-            --bg-color: #0a0a0f;
-            --card-bg: rgba(20, 20, 30, 0.7);
-        }
+        :root { --primary: #00ffcc; --danger: #ff3366; --bg-color: #0a0a0f; --card-bg: rgba(20, 20, 30, 0.7); }
         body {
             background-color: var(--bg-color);
             background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, var(--bg-color) 70%);
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            color: #fff; font-family: 'Segoe UI', Tahoma, sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; overflow: hidden;
         }
         .container {
-            background: var(--card-bg);
-            border: 1px solid rgba(0, 255, 204, 0.2);
-            border-radius: 20px;
-            padding: 30px;
-            width: 85%;
-            max-width: 350px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 255, 204, 0.05);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
+            background: var(--card-bg); border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 20px; padding: 30px; width: 85%; max-width: 350px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px);
+            position: relative; overflow: hidden; text-align: center;
         }
-        /* تأثير خط الفحص (Scanner) */
         .scanner-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--primary);
-            box-shadow: 0 0 15px var(--primary);
-            animation: scan 2s infinite ease-in-out;
-            display: block;
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--primary); box-shadow: 0 0 15px var(--primary);
+            animation: scan 2s infinite ease-in-out; display: block;
         }
-        @keyframes scan {
-            0% { top: -10%; opacity: 0; }
-            50% { opacity: 1; }
-            100% { top: 110%; opacity: 0; }
-        }
-        .icon-container {
-            text-align: center;
-            font-size: 50px;
-            margin-bottom: 15px;
-            text-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
-        }
-        .title {
-            text-align: center;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 25px;
-            letter-spacing: 1px;
-        }
-        .step {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            color: #aaa;
-            opacity: 0.4;
-            transition: all 0.3s;
-        }
-        .step.active {
-            opacity: 1;
-            color: #fff;
-        }
-        .step.done {
-            opacity: 1;
-            color: var(--primary);
-        }
-        .step i {
-            margin-left: 10px;
-            font-style: normal;
-            font-size: 1.2rem;
-        }
+        @keyframes scan { 0% { top: -10%; opacity: 0; } 50% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
+        .icon-container { font-size: 50px; margin-bottom: 15px; text-shadow: 0 0 20px rgba(0, 255, 204, 0.5); }
+        .title { font-size: 1.3rem; font-weight: bold; color: var(--primary); margin-bottom: 25px; }
+        .step { display: flex; align-items: center; margin-bottom: 15px; font-size: 0.9rem; color: #aaa; opacity: 0.4; transition: all 0.3s; }
+        .step.active { opacity: 1; color: #fff; }
+        .step.done { opacity: 1; color: var(--primary); }
+        .step.error { opacity: 1; color: var(--danger); font-weight: bold; }
+        .step i { margin-left: 10px; font-style: normal; font-size: 1.2rem; }
         .hwid-box {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px dashed var(--primary);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            font-family: monospace;
-            font-size: 1.1rem;
-            color: var(--primary);
-            margin-top: 20px;
-            display: none;
-            word-break: break-all;
+            background: rgba(0, 0, 0, 0.5); border: 1px dashed var(--primary);
+            padding: 15px; border-radius: 10px; font-family: monospace; font-size: 1.1rem; color: var(--primary);
+            margin-top: 20px; display: none; word-break: break-all;
         }
-        .warning {
-            font-size: 0.8rem;
-            color: #ff4444;
-            text-align: center;
-            margin-top: 15px;
-            display: none;
+        .hwid-box.danger-box { border-color: var(--danger); color: var(--danger); }
+        .btn-fallback {
+            background: var(--primary); color: #000; border: none; padding: 12px 20px;
+            border-radius: 8px; font-weight: bold; margin-top: 20px; width: 100%; cursor: pointer; display: none;
         }
     </style>
 </head>
@@ -116,82 +49,55 @@
     <div class="container" id="main-card">
         <div class="scanner-line" id="scanner"></div>
         <div class="icon-container" id="main-icon">🛡️</div>
-        <div class="title">نظام الحماية المتقدم</div>
+        <div class="title" id="main-title">نظام الحماية المتقدم</div>
 
         <div class="step active" id="step1"><i>⏳</i> جاري قراءة بيانات النظام...</div>
-        <div class="step" id="step2"><i>⏳</i> فحص المعالج الرسومي (WebGL)...</div>
+        <div class="step" id="step2"><i>⏳</i> فحص محاولات التعدد...</div>
         <div class="step" id="step3"><i>⏳</i> توليد البصمة الرقمية...</div>
 
         <div class="hwid-box" id="hwid-display"></div>
-        <div class="warning" id="error-msg">يجب فتح هذا الرابط من داخل تليجرام فقط!</div>
+        
+        <!-- زر يظهر فقط في حال فشل زر تليجرام بسبب الزر الشفاف -->
+        <button class="btn-fallback" id="fallback-btn" onclick="sendViaLink()">العودة للبوت والتأكيد</button>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // 1. دالة استخراج بصمة كارت الشاشة (الأقوى على الإطلاق)
+        let generatedDeviceId = "";
+
+        // دالة استخراج بصمة كارت الشاشة
         function getWebGLFingerprint() {
             try {
                 let canvas = document.createElement('canvas');
                 let gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
                 let debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                let vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-                let renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-                return vendor + "~" + renderer;
-            } catch (e) {
-                return "WebGL-Not-Supported";
-            }
+                return gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) + "~" + gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+            } catch (e) { return "WebGL-Not-Supported"; }
         }
 
-        // 2. دالة البصمة الرسومية
-        function getCanvasFingerprint() {
-            let canvas = document.createElement('canvas');
-            let ctx = canvas.getContext('2d');
-            ctx.textBaseline = "top";
-            ctx.font = "14px 'Arial'";
-            ctx.fillStyle = "#f60";
-            ctx.fillRect(125,1,62,20);
-            ctx.fillStyle = "#069";
-            ctx.fillText("CyberShield_V2", 2, 15);
-            return canvas.toDataURL();
-        }
-
-        // 3. الدالة الرئيسية لجمع البصمة
         function generateHardwareID() {
             let nav = window.navigator;
             let screen = window.screen;
-            
             let components = [
-                nav.userAgent,
-                nav.hardwareConcurrency || 'unknown', // عدد الأنوية
-                nav.deviceMemory || 'unknown',        // الرام
-                nav.maxTouchPoints || 0,              // نقاط اللمس (لمعرفة إن كان محاكي)
-                screen.width + 'x' + screen.height,   // أبعاد الشاشة
-                new Date().getTimezoneOffset(),       // المنطقة الزمنية
-                getWebGLFingerprint(),                // بصمة كارت الشاشة
-                getCanvasFingerprint()                // بصمة الكانفاس
+                nav.hardwareConcurrency || 'unknown',
+                nav.deviceMemory || 'unknown',
+                nav.maxTouchPoints || 0,
+                screen.width + 'x' + screen.height,
+                new Date().getTimezoneOffset(),
+                getWebGLFingerprint()
             ];
-
             let str = components.join('||');
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
-                let char = str.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
                 hash = hash & hash;
             }
             return "HW-" + Math.abs(hash).toString(36).toUpperCase();
         }
 
-        // 4. تسلسل ظهور واجهة المستخدم لتبدو وكأنها عملية فحص حقيقية
         function startScan() {
-            // التأكد أن التطبيق مفتوح داخل تليجرام
-            if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) {
-                document.getElementById('scanner').style.display = 'none';
-                document.getElementById('error-msg').style.display = 'block';
-                return;
-            }
-
             setTimeout(() => {
                 document.getElementById('step1').classList.replace('active', 'done');
                 document.getElementById('step1').innerHTML = '<i>✅</i> تمت قراءة بيانات النظام';
@@ -199,56 +105,109 @@
             }, 800);
 
             setTimeout(() => {
-                document.getElementById('step2').classList.replace('active', 'done');
-                document.getElementById('step2').innerHTML = '<i>✅</i> تم فحص المعالج الرسومي';
-                document.getElementById('step3').classList.add('active');
-            }, 1800);
-
-            setTimeout(() => {
-                let deviceId = generateHardwareID();
-                let isFirstTime = !localStorage.getItem("cyber_hwid_v2");
+                // توليد البصمة الحالية
+                generatedDeviceId = generateHardwareID();
+                let currentUserId = tg.initDataUnsafe?.user?.id || "UnknownUser";
                 
+                // جلب البيانات المحفوظة سابقاً
+                let savedData = localStorage.getItem("cyber_security_data");
+                let isMultiAccount = false;
+                let isFirstTime = true;
+
+                if (savedData) {
+                    isFirstTime = false;
+                    let parts = savedData.split('|');
+                    let savedDeviceId = parts[0];
+                    let savedUserId = parts[1];
+
+                    // لو الأيدي المحفوظ لا يساوي أيدي الشخص الحالي (معناه فتح حسابين من نفس الجهاز)
+                    if (savedUserId !== currentUserId.toString()) {
+                        isMultiAccount = true;
+                    }
+                }
+
+                // --- حالة الرفض: محاولة فتح حساب ثاني ---
+                if (isMultiAccount) {
+                    document.getElementById('scanner').style.display = 'none';
+                    document.getElementById('main-icon').innerText = '🚫';
+                    document.getElementById('main-title').innerText = 'تم حظر العملية';
+                    document.getElementById('main-title').style.color = 'var(--danger)';
+                    
+                    document.getElementById('step2').classList.replace('active', 'error');
+                    document.getElementById('step2').innerHTML = '<i>❌</i> تم اكتشاف تعدد حسابات!';
+                    
+                    document.getElementById('step3').classList.add('error');
+                    document.getElementById('step3').innerHTML = '<i>❌</i> لا يمكنك تسجيل حساب جديد من هذا الجهاز.';
+                    
+                    let hwidBox = document.getElementById('hwid-display');
+                    hwidBox.innerText = "جهاز مقيد بسبب التعدد";
+                    hwidBox.className = "hwid-box danger-box";
+                    hwidBox.style.display = 'block';
+
+                    if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+                    return; // إيقاف التنفيذ وعدم إظهار زر الحفظ
+                }
+
+                // --- حالة القبول ---
+                // حفظ البيانات الجديدة
                 if (isFirstTime) {
-                    localStorage.setItem("cyber_hwid_v2", deviceId);
+                    localStorage.setItem("cyber_security_data", generatedDeviceId + "|" + currentUserId);
                 }
 
-                document.getElementById('step3').classList.replace('active', 'done');
-                document.getElementById('step3').innerHTML = '<i>✅</i> تم التوثيق بنجاح';
-                
-                document.getElementById('scanner').style.display = 'none';
-                document.getElementById('main-icon').innerText = '✅';
-                
-                let hwidBox = document.getElementById('hwid-display');
-                hwidBox.innerText = deviceId;
-                hwidBox.style.display = 'block';
+                document.getElementById('step2').classList.replace('active', 'done');
+                document.getElementById('step2').innerHTML = '<i>✅</i> الجهاز سليم (لا يوجد تعدد)';
+                document.getElementById('step3').classList.add('active');
 
-                // تشغيل اهتزاز الهاتف عند النجاح
-                if(tg.HapticFeedback) {
-                    tg.HapticFeedback.notificationOccurred('success');
-                }
+                setTimeout(() => {
+                    document.getElementById('step3').classList.replace('active', 'done');
+                    document.getElementById('step3').innerHTML = '<i>✅</i> تم التوثيق بنجاح';
+                    
+                    document.getElementById('scanner').style.display = 'none';
+                    document.getElementById('main-icon').innerText = '✅';
+                    
+                    let hwidBox = document.getElementById('hwid-display');
+                    hwidBox.innerText = generatedDeviceId;
+                    hwidBox.style.display = 'block';
 
-                // تجهيز زر تليجرام للإرسال
-                let actionType = window.location.search.includes("link") ? "link" : "verify";
-                let payload = JSON.stringify({ 
-                    device_id: deviceId, 
-                    action: actionType,
-                    is_new: isFirstTime
-                });
+                    if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 
-                tg.MainButton.setText("تأكيد وحفظ البصمة");
-                tg.MainButton.color = "#00ffcc";
-                tg.MainButton.textColor = "#0a0a0f";
-                tg.MainButton.show();
-                
-                tg.MainButton.onClick(() => {
-                    if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-                    tg.sendData(payload);
-                });
+                    // تجهيز زر تليجرام
+                    let payload = JSON.stringify({ 
+                        device_id: generatedDeviceId, 
+                        is_new: isFirstTime
+                    });
 
-            }, 2800);
+                    tg.MainButton.setText(isFirstTime ? "تأكيد وحفظ البصمة" : "تسجيل الدخول");
+                    tg.MainButton.color = "#00ffcc";
+                    tg.MainButton.textColor = "#0a0a0f";
+                    tg.MainButton.show();
+                    
+                    tg.MainButton.onClick(() => {
+                        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+                        tg.sendData(payload); // هذا يعمل مع أزرار الكيبورد السفلية فقط
+
+                        // إذا لم يتم الإغلاق خلال نصف ثانية (بسبب استخدام زر شفاف) نظهر الزر البديل
+                        setTimeout(() => {
+                            tg.MainButton.hide();
+                            document.getElementById('fallback-btn').style.display = 'block';
+                            document.getElementById('main-title').innerText = 'يرجى الضغط على الزر بالأسفل';
+                            document.getElementById('main-title').style.fontSize = '1rem';
+                        }, 500);
+                    });
+
+                }, 1000);
+            }, 1800);
         }
 
-        // بدء الفحص عند تحميل الصفحة
+        // دالة الزر البديل (في حال كان البوت يستخدم أزرار شفافة)
+        // يجب استبدال YOUR_BOT_USERNAME بمعرف البوت الخاص بك بدون @
+        function sendViaLink() {
+            let botUsername = "YOUR_BOT_USERNAME"; // ⚠️ ضع معرف البوت هنا
+            let payloadText = "verify_" + generatedDeviceId;
+            tg.openTelegramLink("https://t.me/" + botUsername + "?start=" + payloadText);
+            tg.close();
+        }
+
         window.onload = startScan;
     </script>
 </body>
