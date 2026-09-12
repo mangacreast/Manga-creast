@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield Matrix</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { background-color: #050505; color: #00ffcc; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .cyber-loader { width: 60px; height: 60px; border: 3px solid transparent; border-top-color: #00ffcc; border-bottom-color: #00ffcc; border-radius: 50%; animation: spin 1.2s linear infinite; box-shadow: 0 0 15px #00ffcc; margin-bottom: 25px; }
+        @keyframes spin { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.1); } 100% { transform: rotate(360deg) scale(1); } }
+        .cyber-text { font-size: 1.1rem; text-align: center; text-shadow: 0 0 5px #00ffcc; margin-bottom: 10px; }
+        .dev-credit { position: fixed; bottom: 20px; font-size: 0.8rem; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="cyber-loader"></div>
+    <div class="cyber-text" id="status">INITIALIZING SYSTEM SCAN...</div>
+    <div class="cyber-text" id="details" style="font-size: 0.9rem; color: #888;">Reading hardware signature</div>
+    <div class="dev-credit">Secured by @YourUsername</div>
+
+    <script>
+        function getCanvasFingerprint() {
+            let canvas = document.createElement('canvas');
+            let ctx = canvas.getContext('2d');
+            ctx.fillStyle = "#069";
+            ctx.font = "18px Arial";
+            ctx.fillText("CyberMatrix", 2, 15);
+            let data = canvas.toDataURL();
+            let hash = 0;
+            for (let i = 0; i < data.length; i++) {
+                hash = ((hash << 5) - hash) + data.charCodeAt(i);
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(16);
+        }
+
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        setTimeout(() => {
+            let deviceId = localStorage.getItem("cyber_hwid");
+            if (!deviceId) {
+                deviceId = "HW-" + getCanvasFingerprint() + "-" + Date.now().toString().slice(-6);
+                localStorage.setItem("cyber_hwid", deviceId);
+            }
+
+            document.getElementById("status").innerText = "ACCESS GRANTED ✅";
+            document.getElementById("details").innerText = "Encrypting payload...";
+
+            let btnText = tg.initDataUnsafe?.start_param || document.referrer || "";
+            let action = document.body.innerText.includes("تأكيد البصمة") ? "link" : "verify";
+            
+            // في حالة كان الزر يحتوي كلمة تأكيد، نعتبرها محاولة ربط
+            if(window.location.search.includes("link")) action = "link";
+
+            let payload = JSON.stringify({ device_id: deviceId, action: tg.MainButton.text ? "link" : "verify" });
+            
+            setTimeout(() => { tg.sendData(payload); }, 800);
+        }, 2000);
+    </script>
+</body>
+</html>
