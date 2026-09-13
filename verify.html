@@ -13,7 +13,7 @@
             --panel-bg: rgba(15, 23, 42, 0.85);
             --z-blue: #2563eb;
             --z-cyan: #00f0ff;
-            --z-red: #f43f5e;
+            --z-warn: #eab308; /* لون أصفر/برتقالي للتحذير */
             --z-green: #10b981;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -115,7 +115,6 @@
         .title { font-size: 1.3rem; font-weight: 900; margin-bottom: 10px; }
         .desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
 
-        /* شريط التحميل */
         .progress-container {
             width: 100%;
             height: 8px;
@@ -158,14 +157,6 @@
             overflow: hidden;
         }
 
-        .device-id::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
-            animation: shine 3s infinite;
-        }
-
         .action-btn {
             background: linear-gradient(135deg, var(--z-blue), var(--z-cyan));
             color: #fff;
@@ -183,16 +174,21 @@
 
         .action-btn:active { transform: scale(0.96); box-shadow: 0 5px 15px rgba(0, 240, 255, 0.15); }
 
-        .btn-danger { background: linear-gradient(135deg, #9f1239, #e11d48); box-shadow: 0 10px 25px rgba(225, 29, 72, 0.2); }
-        .error-theme .shield-card { border-color: rgba(244, 63, 94, 0.3); }
-        .error-theme .shield-card::before { background: linear-gradient(90deg, transparent, var(--z-red), #be123c, transparent); }
+        /* ستايل زر التحذير (التعدد) */
+        .btn-warning { 
+            background: linear-gradient(135deg, #d97706, #f59e0b); 
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.2); 
+        }
+        
+        .warning-theme .shield-card { border-color: rgba(245, 158, 11, 0.3); }
+        .warning-theme .shield-card::before { background: linear-gradient(90deg, transparent, var(--z-warn), #b45309, transparent); }
+        .warning-theme .device-id { color: var(--z-warn); border-color: rgba(245, 158, 11, 0.3); }
 
         .screen { display: none; opacity: 0; animation: fadeIn 0.4s forwards; }
         .screen.active { display: block; }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } from { opacity: 0; transform: translateY(15px); } }
-        @keyframes shine { 100% { left: 200%; } }
     </style>
 </head>
 <body>
@@ -215,7 +211,7 @@
                 <div class="status-icon" style="color: var(--z-cyan)">🛡️</div>
             </div>
             <div class="title">جارِ الفحص والتحليل...</div>
-            <div class="desc">نظام العزل يفحص البصمة لضمان عدم وجود تعدد حسابات على هذا البوت.</div>
+            <div class="desc">نظام العزل يفحص البصمة لضمان سلامة الإحالات والمكافآت.</div>
             
             <div class="progress-container">
                 <div class="progress-bar" id="scan-progress"></div>
@@ -227,18 +223,19 @@
         <div id="screen-success" class="screen">
             <div class="icon-container" style="border-color: rgba(16,185,129,0.3);"><div class="status-icon" style="color: var(--z-green)">✅</div></div>
             <div class="title" style="color: var(--z-green)">تم التحقق بنجاح</div>
-            <div class="desc">جهازك نظيف ومصرح له بالدخول. بياناتك معزولة ومحمية.</div>
+            <div class="desc">جهازك نظيف. سيتم احتساب الإحالة والمكافآت بشكل طبيعي.</div>
             <div class="device-id" id="hwid-display"></div>
-            <button class="action-btn" onclick="returnToBot('success')">العودة للبوت 🚀</button>
+            <button class="action-btn" onclick="returnToBot('success')">الدخول إلى البوت 🚀</button>
         </div>
 
-        <!-- 4. شاشة الحظر -->
-        <div id="screen-error" class="screen">
-            <div class="icon-container" style="border-color: rgba(244,63,94,0.3);"><div class="status-icon" style="color: var(--z-red)">🚫</div></div>
-            <div class="title" style="color: var(--z-red)">اكتشاف تعدد حسابات!</div>
-            <div class="desc">تم تسجيل دخول سابق من هذا الجهاز على <b>نفس البوت</b> بحساب تليجرام آخر.</div>
-            <div class="device-id" id="hwid-error" style="color: var(--z-red); border-color: rgba(244,63,94,0.2);"></div>
-            <button class="action-btn btn-danger" onclick="returnToBot('blocked')">العودة للبوت (محظور) ✖️</button>
+        <!-- 4. شاشة التعدد (تنبيه وليس حظر) -->
+        <div id="screen-warning" class="screen">
+            <div class="icon-container" style="border-color: rgba(245,158,11,0.3);"><div class="status-icon" style="color: var(--z-warn)">⚠️</div></div>
+            <div class="title" style="color: var(--z-warn)">تنبيه: تعدد حسابات</div>
+            <div class="desc">تم تسجيل دخول سابق من جهازك. <b>يمكنك استخدام البوت</b>، ولكن لن يتم احتساب مكافأة الإحالة لهذا الحساب.</div>
+            <div class="device-id" id="hwid-warning"></div>
+            <!-- زر الدخول متاح دائماً -->
+            <button class="action-btn btn-warning" onclick="returnToBot('blocked')">متابعة إلى البوت 🚀</button>
         </div>
     </div>
 
@@ -248,7 +245,6 @@
         tg.expand();
         if(tg.BackButton) tg.BackButton.hide();
         
-        // استخراج وعرض اسم البوت لضمان العزل المرئي للمستخدم
         const urlParams = new URLSearchParams(window.location.search);
         let BOT_USERNAME = urlParams.get('bot');
         if(BOT_USERNAME) {
@@ -274,20 +270,18 @@
             return `ZEC-${hex.substring(0,4)}-${hex.substring(4,8) || 'X99X'}`;
         }
 
-        function switchScreen(screenId, isError = false) {
+        function switchScreen(screenId, isWarning = false) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
-            if(isError) document.body.classList.add('error-theme');
+            if(isWarning) document.body.classList.add('warning-theme');
         }
 
         if (!BOT_USERNAME) {
             switchScreen('screen-missing');
             document.getElementById('target-bot').style.display = 'none';
         } else {
-            // مفتاح التخزين هنا يضمن عزل كل بوت عن الآخر بشكل قاطع
             const STORAGE_KEY = "zechal_bot_" + BOT_USERNAME;
             
-            // تشغيل الأنيميشن الخاص بشريط التحميل
             let progress = 0;
             let progressInterval = setInterval(() => {
                 progress += 2;
@@ -309,12 +303,14 @@
                 }
 
                 if (isMultiAccount) {
-                    switchScreen('screen-error', true);
-                    document.getElementById('hwid-error').innerText = generatedFingerprint;
-                    if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+                    // إظهار شاشة التنبيه اللطيفة بدلاً من الحظر
+                    switchScreen('screen-warning', true);
+                    document.getElementById('hwid-warning').innerText = generatedFingerprint;
                     
-                    tg.MainButton.setText("العودة للبوت (محظور)");
-                    tg.MainButton.color = "#e11d48";
+                    if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('warning');
+                    
+                    tg.MainButton.setText("متابعة إلى البوت");
+                    tg.MainButton.color = "#f59e0b"; // لون أصفر/برتقالي
                     tg.MainButton.textColor = "#ffffff";
                     tg.MainButton.show();
                     tg.MainButton.onClick(() => returnToBot('blocked'));
@@ -323,20 +319,22 @@
                     localStorage.setItem(STORAGE_KEY, generatedFingerprint + ":" + currentUserId);
                     switchScreen('screen-success', false);
                     document.getElementById('hwid-display').innerText = generatedFingerprint;
+                    
                     if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 
-                    tg.MainButton.setText("العودة للبوت");
+                    tg.MainButton.setText("الدخول إلى البوت");
                     tg.MainButton.color = "#00f0ff";
                     tg.MainButton.textColor = "#000000";
                     tg.MainButton.show();
                     tg.MainButton.onClick(() => returnToBot('success'));
                 }
-            }, 2600); // وقت الانتظار متناسق مع شريط التحميل
+            }, 2600);
         }
 
         function returnToBot(status) {
             if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
             
+            // تحديد الرسالة التي سيستلمها البوت
             let payload = status === 'success' ? `verify_${generatedFingerprint}` : `blocked_${generatedFingerprint}`;
             try { tg.sendData(payload); } catch(e) {}
 
