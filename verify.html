@@ -3,188 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZECHAL Shield - تحقق الأمان</title>
+    <title>ZECHAL Shield | نظام الحماية</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --zechal-primary: #007bff; /* أزرق احترافي */
-            --zechal-secondary: #0056b3;
-            --zechal-accent: #00e5ff; /* سيان تقني */
-            --bg-dark: #0a0e17;
-            --card-bg: rgba(16, 22, 34, 0.9);
-            --danger: #ff3366;
-            --success: #00cc66;
+            --bg-base: #030712;
+            --panel-bg: rgba(17, 24, 39, 0.75);
+            --z-blue: #3b82f6;
+            --z-cyan: #06b6d4;
+            --z-red: #ef4444;
+            --z-green: #10b981;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-dark);
-            color: #fff;
+            background-color: var(--bg-base);
+            color: var(--text-main);
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             overflow: hidden;
-            background-image: linear-gradient(rgba(0, 229, 255, 0.05) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(0, 229, 255, 0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
+            /* خلفية شبكية سايبربانك */
+            background-image: 
+                linear-gradient(rgba(6, 182, 212, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
         }
 
-        .glow-bg {
+        /* إضاءة خلفية متحركة */
+        .ambient-glow {
             position: absolute;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, var(--zechal-primary) 0%, transparent 70%);
-            opacity: 0.15;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--z-blue) 0%, transparent 60%);
+            opacity: 0.1;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             z-index: -1;
-            filter: blur(50px);
-            animation: pulseBg 4s infinite alternate;
+            filter: blur(60px);
+            animation: pulseGlow 5s ease-in-out infinite alternate;
         }
 
-        .container {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 229, 255, 0.2);
-            border-radius: 16px;
+        .shield-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(6, 182, 212, 0.15);
+            border-radius: 20px;
             padding: 40px 25px;
             width: 90%;
             max-width: 380px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(0, 123, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
             position: relative;
-            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .container::before {
+        /* خط علوي مضيء */
+        .shield-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 4px;
-            background: linear-gradient(90deg, var(--zechal-secondary), var(--zechal-accent));
+            top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--z-cyan), var(--z-blue), transparent);
         }
 
-        .logo {
-            font-size: 26px;
+        .brand-logo {
+            font-size: 28px;
             font-weight: 900;
             margin-bottom: 30px;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            background: linear-gradient(to right, #fff, var(--z-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .logo span { color: var(--zechal-accent); }
 
-        .scanner-container {
+        /* انيميشن الفحص الجديد (درع) */
+        .icon-container {
             position: relative;
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 30px;
-            border-radius: 50%;
-            border: 2px solid rgba(0, 229, 255, 0.3);
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 25px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
 
-        .scanner-radar {
+        .scanning-ring {
             position: absolute;
             width: 100%;
             height: 100%;
-            background: conic-gradient(from 0deg, transparent 70%, var(--zechal-accent) 100%);
             border-radius: 50%;
-            animation: scanRotate 1.5s linear infinite;
+            border: 2px solid transparent;
+            border-top-color: var(--z-cyan);
+            border-bottom-color: var(--z-blue);
+            animation: spin 1.5s linear infinite;
         }
 
-        .scanner-icon { font-size: 35px; z-index: 2; }
+        .status-icon { font-size: 40px; text-shadow: 0 0 15px currentColor; }
 
-        .title-text { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
-        .sub-text { font-size: 0.9rem; color: #a0aec0; margin-bottom: 25px; line-height: 1.5; }
+        .title { font-size: 1.4rem; font-weight: 900; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .desc { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6; }
 
-        .hwid-box {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 10px;
-            border-radius: 8px;
-            font-family: monospace;
+        .device-id {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed rgba(255,255,255,0.15);
+            padding: 12px;
+            border-radius: 10px;
+            font-family: 'Courier New', Courier, monospace;
             font-size: 0.95rem;
-            color: var(--zechal-accent);
-            margin-bottom: 20px;
+            letter-spacing: 1.5px;
+            color: var(--z-cyan);
+            margin-bottom: 25px;
+            font-weight: bold;
         }
 
-        .btn-custom {
-            background: linear-gradient(90deg, var(--zechal-primary), var(--zechal-secondary));
+        .action-btn {
+            background: linear-gradient(135deg, var(--z-blue), var(--z-cyan));
             color: #fff;
             border: none;
-            padding: 14px;
-            border-radius: 10px;
-            font-weight: 700;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 900;
             font-family: 'Cairo', sans-serif;
-            font-size: 1rem;
+            font-size: 1.05rem;
             width: 100%;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
-            transition: transform 0.2s;
+            box-shadow: 0 8px 20px rgba(6, 182, 212, 0.25);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .btn-custom:active { transform: scale(0.96); }
+        .action-btn:active { transform: translateY(2px); box-shadow: 0 4px 10px rgba(6, 182, 212, 0.2); }
 
-        #screen-success, #screen-error, #screen-missing-bot { display: none; }
+        /* ستايل زر واسم الخطأ */
+        .btn-danger { background: linear-gradient(135deg, #be123c, #e11d48); box-shadow: 0 8px 20px rgba(225, 29, 72, 0.25); }
+        .btn-danger:active { box-shadow: 0 4px 10px rgba(225, 29, 72, 0.2); }
+        .error-theme .shield-card { border-color: rgba(239, 68, 68, 0.3); }
+        .error-theme .shield-card::before { background: linear-gradient(90deg, transparent, var(--z-red), #9f1239, transparent); }
 
-        .error-theme .container::before { background: var(--danger); }
-        .error-theme .scanner-container { border-color: rgba(255, 51, 102, 0.3); }
+        /* الشاشات */
+        .screen { display: none; opacity: 0; animation: fadeIn 0.4s forwards; }
+        .screen.active { display: block; }
 
-        @keyframes scanRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulseBg { 0% { transform: translate(-50%, -50%) scale(1); } 100% { transform: translate(-50%, -50%) scale(1.1); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulseGlow { 100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.15; } }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } from { opacity: 0; transform: translateY(10px); } }
     </style>
 </head>
 <body>
 
-    <div class="glow-bg"></div>
+    <div class="ambient-glow" id="ambient"></div>
 
-    <div class="container" id="main-card">
-        <div class="logo">ZECHAL <span>SHIELD</span></div>
+    <div class="shield-card" id="main-card">
+        <div class="brand-logo">ZECHAL SHIELD</div>
 
-        <!-- شاشة الخطأ لو الرابط ناقص -->
-        <div id="screen-missing-bot">
-            <div class="scanner-container" style="border-color: #ffcc00">
-                <div class="scanner-icon">⚠️</div>
-            </div>
-            <div class="title-text" style="color: #ffcc00">طلب غير صالح</div>
-            <div class="sub-text">لم يتم التعرف على المتجر. يرجى الدخول من خلال رابط البوت الصحيح.</div>
+        <!-- 1. شاشة الرابط غير الصالح -->
+        <div id="screen-missing" class="screen">
+            <div class="icon-container"><div class="status-icon" style="color: #eab308">⚠️</div></div>
+            <div class="title" style="color: #eab308">طلب غير صالح</div>
+            <div class="desc">لم يتم التعرف على المتجر. يرجى الدخول من خلال زر البوت المخصص لك.</div>
         </div>
 
-        <!-- شاشة الفحص -->
-        <div id="screen-loading">
-            <div class="scanner-container">
-                <div class="scanner-radar"></div>
-                <div class="scanner-icon">🔒</div>
+        <!-- 2. شاشة الفحص -->
+        <div id="screen-loading" class="screen active">
+            <div class="icon-container">
+                <div class="scanning-ring"></div>
+                <div class="status-icon" style="color: var(--z-cyan)">🛡️</div>
             </div>
-            <div class="title-text">جاري فحص الجهاز...</div>
-            <div class="sub-text">نظام مكافحة تعدد الحسابات للمتجر يعمل الآن.</div>
+            <div class="title">جارِ فحص الهوية...</div>
+            <div class="desc">نظام ZECHAL يقوم بمطابقة بيانات جهازك لمنع التلاعب وتعدد الحسابات.</div>
         </div>
 
-        <!-- شاشة النجاح -->
-        <div id="screen-success">
-            <div class="scanner-container" style="border-color: var(--success)">
-                <div class="scanner-icon">✅</div>
+        <!-- 3. شاشة النجاح -->
+        <div id="screen-success" class="screen">
+            <div class="icon-container" style="box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.2); border-color: rgba(16,185,129,0.3);">
+                <div class="status-icon" style="color: var(--z-green)">✅</div>
             </div>
-            <div class="title-text" style="color: var(--success)">تم التحقق بنجاح</div>
-            <div class="sub-text">جهازك آمن. يمكنك الآن العودة للمتجر.</div>
-            <div class="hwid-box" id="hwid-display"></div>
-            <button class="btn-custom" onclick="submitToBot()">العودة إلى المتجر 🛒</button>
+            <div class="title" style="color: var(--z-green)">تم التحقق بنجاح</div>
+            <div class="desc">هوية جهازك مطابقة وآمنة. سيتم احتساب نشاطك في المتجر بشكل طبيعي.</div>
+            <div class="device-id" id="hwid-display"></div>
+            <button class="action-btn" onclick="returnToBot('success')">
+                العودة للمتجر <span>🚀</span>
+            </button>
         </div>
 
-        <!-- شاشة الحظر -->
-        <div id="screen-error">
-            <div class="scanner-container" style="border-color: var(--danger)">
-                <div class="scanner-icon">🚫</div>
+        <!-- 4. شاشة الحظر (تعدد الحسابات) -->
+        <div id="screen-error" class="screen">
+            <div class="icon-container" style="box-shadow: inset 0 0 20px rgba(239, 68, 68, 0.2); border-color: rgba(239,68,68,0.3);">
+                <div class="status-icon" style="color: var(--z-red)">🚫</div>
             </div>
-            <div class="title-text" style="color: var(--danger)">تم حظر الدخول</div>
-            <div class="sub-text">عذراً، تم اكتشاف محاولة دخول من حساب تليجرام آخر على هذا الجهاز (تعدد حسابات).</div>
-            <div class="hwid-box" id="hwid-error" style="color: var(--danger)"></div>
+            <div class="title" style="color: var(--z-red)">اكتشاف تعدد حسابات!</div>
+            <div class="desc">تم تسجيل دخول سابق من هذا الجهاز بحساب تليجرام آخر. <b>لن يتم احتساب الإحالة أو الهدية.</b></div>
+            <div class="device-id" id="hwid-error" style="color: var(--z-red); border-color: rgba(239,68,68,0.3);"></div>
+            <!-- زر الرجوع موجود حتى في حالة الخطأ -->
+            <button class="action-btn btn-danger" onclick="returnToBot('blocked')">
+                العودة للمتجر (محظور) <span>✖️</span>
+            </button>
         </div>
     </div>
 
@@ -192,12 +220,10 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
+        if(tg.BackButton) tg.BackButton.hide();
         
-        // 1. استخراج يوزر البوت من الرابط
         const urlParams = new URLSearchParams(window.location.search);
         let BOT_USERNAME = urlParams.get('bot');
-        
-        // تنظيف اليوزر في حال تم إرساله بـ @ 
         if(BOT_USERNAME) BOT_USERNAME = BOT_USERNAME.replace('@', '').trim();
 
         let generatedFingerprint = "";
@@ -210,36 +236,34 @@
             let screen = window.screen;
             
             let components = [nav.userAgent, nav.hardwareConcurrency, screen.width + 'x' + screen.height, renderer];
-            let hash = 0;
             let str = components.join('|');
+            let hash = 0;
             for (let i = 0; i < str.length; i++) {
                 hash = ((hash << 5) - hash) + str.charCodeAt(i);
                 hash = hash & hash;
             }
             let hex = Math.abs(hash).toString(16).toUpperCase();
-            return `ZEC-${hex.substring(0,4)}-${hex.substring(4,8) || '0000'}`;
+            return `ZEC-${hex.substring(0,4)}-${hex.substring(4,8) || 'X99X'}`;
         }
 
         function switchScreen(screenId, isError = false) {
-            document.getElementById('screen-loading').style.display = 'none';
-            document.getElementById('screen-success').style.display = 'none';
-            document.getElementById('screen-error').style.display = 'none';
-            document.getElementById('screen-missing-bot').style.display = 'none';
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
             
-            document.getElementById(screenId).style.display = 'block';
-            if(isError) document.body.classList.add('error-theme');
+            if(isError) {
+                document.body.classList.add('error-theme');
+                document.getElementById('ambient').style.background = 'radial-gradient(circle, var(--z-red) 0%, transparent 60%)';
+            }
         }
 
-        // 2. فحص هل الرابط يحتوي على يوزر البوت أم لا
         if (!BOT_USERNAME) {
-            switchScreen('screen-missing-bot');
+            switchScreen('screen-missing');
         } else {
-            // مفتاح التخزين مخصص لكل بوت لوحده
-            const STORAGE_KEY = "zechal_sec_" + BOT_USERNAME;
+            const STORAGE_KEY = "z_shield_" + BOT_USERNAME;
 
             setTimeout(() => {
                 generatedFingerprint = getAdvancedFingerprint();
-                let currentUserId = tg.initDataUnsafe?.user?.id || "Dev_" + Math.floor(Math.random()*1000);
+                let currentUserId = tg.initDataUnsafe?.user?.id || "DevTest_" + Math.floor(Math.random()*1000);
                 
                 let savedData = localStorage.getItem(STORAGE_KEY);
                 let isMultiAccount = false;
@@ -253,31 +277,48 @@
                     switchScreen('screen-error', true);
                     document.getElementById('hwid-error').innerText = "ID: " + generatedFingerprint;
                     if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-                    tg.MainButton.hide();
+                    
+                    // نظهر زر تليجرام الرئيسي بستايل الخطأ
+                    tg.MainButton.setText("العودة (تم حظر الإحالة)");
+                    tg.MainButton.color = "#e11d48";
+                    tg.MainButton.textColor = "#ffffff";
+                    tg.MainButton.show();
+                    tg.MainButton.onClick(() => returnToBot('blocked'));
+
                 } else {
                     localStorage.setItem(STORAGE_KEY, generatedFingerprint + ":" + currentUserId);
                     switchScreen('screen-success', false);
                     document.getElementById('hwid-display').innerText = generatedFingerprint;
                     if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 
-                    tg.MainButton.setText("العودة إلى المتجر");
-                    tg.MainButton.color = "#007bff";
+                    // نظهر زر تليجرام الرئيسي بستايل النجاح
+                    tg.MainButton.setText("العودة للمتجر");
+                    tg.MainButton.color = "#06b6d4";
                     tg.MainButton.textColor = "#ffffff";
                     tg.MainButton.show();
-                    
-                    tg.MainButton.onClick(() => submitToBot());
+                    tg.MainButton.onClick(() => returnToBot('success'));
                 }
-            }, 2000);
+            }, 2500);
         }
 
-        // 3. التحويل الصحيح للبوت الديناميكي
-        function submitToBot() {
+        // دالة العودة الديناميكية التي تفرق بين السليم والمحظور
+        function returnToBot(status) {
             if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-            try { tg.sendData("VERIFY:" + generatedFingerprint); } catch(e) {}
+            
+            // تحديد الـ Payload المرسل للبوت بناءً على الحالة
+            let payload = "";
+            if (status === 'success') {
+                payload = `verify_${generatedFingerprint}`; // البوت يحسب له الإحالة
+            } else {
+                payload = `blocked_${generatedFingerprint}`; // البوت يرفض الإحالة
+            }
 
+            // محاولة إرسال البيانات كـ WebApp Data
+            try { tg.sendData(status.toUpperCase() + ":" + generatedFingerprint); } catch(e) {}
+
+            // التوجيه الأكيد عبر الرابط العميق (Deep Link)
             setTimeout(() => {
-                // هيرجع لليوزر اللي مسحوب من الرابط
-                tg.openTelegramLink(`https://t.me/${BOT_USERNAME}?start=verify_${generatedFingerprint}`);
+                tg.openTelegramLink(`https://t.me/${BOT_USERNAME}?start=${payload}`);
                 tg.close();
             }, 300);
         }
