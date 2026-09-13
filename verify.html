@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ZECHAL Shield | نظام الحماية المتقدم</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-base: #020617;
+            --panel-bg: rgba(15, 23, 42, 0.85);
+            --z-blue: #2563eb;
+            --z-cyan: #00f0ff;
+            --z-red: #f43f5e;
+            --z-green: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(37, 99, 235, 0.08), transparent 25%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 25px 25px, 25px 25px;
+        }
+
+        .shield-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 24px;
+            padding: 35px 25px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6), inset 0 0 20px rgba(0, 240, 255, 0.05);
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .shield-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, transparent, var(--z-cyan), var(--z-blue), transparent);
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+        }
+
+        .brand-logo {
+            font-size: 26px;
+            font-weight: 900;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #fff, var(--z-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bot-badge {
+            display: inline-block;
+            background: rgba(37, 99, 235, 0.15);
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            color: var(--z-cyan);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .icon-container {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        .scanning-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--z-cyan);
+            border-right-color: rgba(0, 240, 255, 0.3);
+            animation: spin 1s linear infinite;
+        }
+
+        .status-icon { font-size: 35px; text-shadow: 0 0 20px currentColor; }
+
+        .title { font-size: 1.3rem; font-weight: 900; margin-bottom: 10px; }
+        .desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+
+        /* شريط التحميل */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--z-blue), var(--z-cyan));
+            border-radius: 10px;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 10px var(--z-cyan);
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+            color: var(--z-cyan);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+
+        .device-id {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px dashed rgba(255,255,255,0.2);
+            padding: 12px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            color: var(--z-cyan);
+            margin-bottom: 25px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .device-id::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--z-blue), var(--z-cyan));
+            color: #fff;
+            border: none;
+            padding: 15px;
+            border-radius: 14px;
+            font-weight: 900;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.05rem;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 240, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:active { transform: scale(0.96); box-shadow: 0 5px 15px rgba(0, 240, 255, 0.15); }
+
+        .btn-danger { background: linear-gradient(135deg, #9f1239, #e11d48); box-shadow: 0 10px 25px rgba(225, 29, 72, 0.2); }
+        .error-theme .shield-card { border-color: rgba(244, 63, 94, 0.3); }
+        .error-theme .shield-card::before { background: linear-gradient(90deg, transparent, var(--z-red), #be123c, transparent); }
+
+        .screen { display: none; opacity: 0; animation: fadeIn 0.4s forwards; }
+        .screen.active { display: block; }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } from { opacity: 0; transform: translateY(15px); } }
+        @keyframes shine { 100% { left: 200%; } }
+    </style>
+</head>
+<body>
+
+    <div class="shield-card" id="main-card">
+        <div class="brand-logo">ZECHAL SHIELD</div>
+        <div class="bot-badge" id="target-bot">البوت المستهدف: غير معروف</div>
+
+        <!-- 1. شاشة الرابط غير الصالح -->
+        <div id="screen-missing" class="screen">
+            <div class="icon-container" style="border-color: rgba(234, 179, 8, 0.3)"><div class="status-icon" style="color: #eab308">⚠️</div></div>
+            <div class="title" style="color: #eab308">بيانات غير مكتملة</div>
+            <div class="desc">لم يتم التعرف على البوت المستهدف. يرجى الدخول من خلال الرابط الرسمي الخاص بالبوت.</div>
+        </div>
+
+        <!-- 2. شاشة الفحص -->
+        <div id="screen-loading" class="screen active">
+            <div class="icon-container">
+                <div class="scanning-ring"></div>
+                <div class="status-icon" style="color: var(--z-cyan)">🛡️</div>
+            </div>
+            <div class="title">جارِ الفحص والتحليل...</div>
+            <div class="desc">نظام العزل يفحص البصمة لضمان عدم وجود تعدد حسابات على هذا البوت.</div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="scan-progress"></div>
+            </div>
+            <div class="progress-text" id="scan-percent">0%</div>
+        </div>
+
+        <!-- 3. شاشة النجاح -->
+        <div id="screen-success" class="screen">
+            <div class="icon-container" style="border-color: rgba(16,185,129,0.3);"><div class="status-icon" style="color: var(--z-green)">✅</div></div>
+            <div class="title" style="color: var(--z-green)">تم التحقق بنجاح</div>
+            <div class="desc">جهازك نظيف ومصرح له بالدخول. بياناتك معزولة ومحمية.</div>
+            <div class="device-id" id="hwid-display"></div>
+            <button class="action-btn" onclick="returnToBot('success')">العودة للبوت 🚀</button>
+        </div>
+
+        <!-- 4. شاشة الحظر -->
+        <div id="screen-error" class="screen">
+            <div class="icon-container" style="border-color: rgba(244,63,94,0.3);"><div class="status-icon" style="color: var(--z-red)">🚫</div></div>
+            <div class="title" style="color: var(--z-red)">اكتشاف تعدد حسابات!</div>
+            <div class="desc">تم تسجيل دخول سابق من هذا الجهاز على <b>نفس البوت</b> بحساب تليجرام آخر.</div>
+            <div class="device-id" id="hwid-error" style="color: var(--z-red); border-color: rgba(244,63,94,0.2);"></div>
+            <button class="action-btn btn-danger" onclick="returnToBot('blocked')">العودة للبوت (محظور) ✖️</button>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+        if(tg.BackButton) tg.BackButton.hide();
+        
+        // استخراج وعرض اسم البوت لضمان العزل المرئي للمستخدم
+        const urlParams = new URLSearchParams(window.location.search);
+        let BOT_USERNAME = urlParams.get('bot');
+        if(BOT_USERNAME) {
+            BOT_USERNAME = BOT_USERNAME.replace('@', '').trim();
+            document.getElementById('target-bot').innerText = `البوت المستهدف: @${BOT_USERNAME}`;
+        }
+
+        let generatedFingerprint = "";
+
+        function getAdvancedFingerprint() {
+            let canvas = document.createElement('canvas');
+            let gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            let renderer = gl ? gl.getParameter(gl.getExtension('WEBGL_debug_renderer_info').UNMASKED_RENDERER_WEBGL) : "Unknown";
+            let nav = window.navigator;
+            let components = [nav.userAgent, nav.hardwareConcurrency, window.screen.width + 'x' + window.screen.height, renderer];
+            let str = components.join('|');
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash = hash & hash;
+            }
+            let hex = Math.abs(hash).toString(16).toUpperCase();
+            return `ZEC-${hex.substring(0,4)}-${hex.substring(4,8) || 'X99X'}`;
+        }
+
+        function switchScreen(screenId, isError = false) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            if(isError) document.body.classList.add('error-theme');
+        }
+
+        if (!BOT_USERNAME) {
+            switchScreen('screen-missing');
+            document.getElementById('target-bot').style.display = 'none';
+        } else {
+            // مفتاح التخزين هنا يضمن عزل كل بوت عن الآخر بشكل قاطع
+            const STORAGE_KEY = "zechal_bot_" + BOT_USERNAME;
+            
+            // تشغيل الأنيميشن الخاص بشريط التحميل
+            let progress = 0;
+            let progressInterval = setInterval(() => {
+                progress += 2;
+                document.getElementById('scan-progress').style.width = progress + '%';
+                document.getElementById('scan-percent').innerText = progress + '%';
+                if(progress >= 100) clearInterval(progressInterval);
+            }, 50);
+
+            setTimeout(() => {
+                generatedFingerprint = getAdvancedFingerprint();
+                let currentUserId = tg.initDataUnsafe?.user?.id || "Dev_" + Math.floor(Math.random()*1000);
+                
+                let savedData = localStorage.getItem(STORAGE_KEY);
+                let isMultiAccount = false;
+
+                if (savedData) {
+                    let parts = savedData.split(':');
+                    if (parts[1] !== currentUserId.toString()) isMultiAccount = true;
+                }
+
+                if (isMultiAccount) {
+                    switchScreen('screen-error', true);
+                    document.getElementById('hwid-error').innerText = generatedFingerprint;
+                    if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+                    
+                    tg.MainButton.setText("العودة للبوت (محظور)");
+                    tg.MainButton.color = "#e11d48";
+                    tg.MainButton.textColor = "#ffffff";
+                    tg.MainButton.show();
+                    tg.MainButton.onClick(() => returnToBot('blocked'));
+
+                } else {
+                    localStorage.setItem(STORAGE_KEY, generatedFingerprint + ":" + currentUserId);
+                    switchScreen('screen-success', false);
+                    document.getElementById('hwid-display').innerText = generatedFingerprint;
+                    if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+
+                    tg.MainButton.setText("العودة للبوت");
+                    tg.MainButton.color = "#00f0ff";
+                    tg.MainButton.textColor = "#000000";
+                    tg.MainButton.show();
+                    tg.MainButton.onClick(() => returnToBot('success'));
+                }
+            }, 2600); // وقت الانتظار متناسق مع شريط التحميل
+        }
+
+        function returnToBot(status) {
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+            
+            let payload = status === 'success' ? `verify_${generatedFingerprint}` : `blocked_${generatedFingerprint}`;
+            try { tg.sendData(payload); } catch(e) {}
+
+            setTimeout(() => {
+                tg.openTelegramLink(`https://t.me/${BOT_USERNAME}?start=${payload}`);
+                tg.close();
+            }, 300);
+        }
+    </script>
+</body>
+</html>
