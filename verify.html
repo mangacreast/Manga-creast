@@ -232,10 +232,10 @@
         <div id="screen-warning" class="screen">
             <div class="icon-container" style="border-color: rgba(245,158,11,0.3);"><div class="status-icon" style="color: var(--z-warn)">⚠️</div></div>
             <div class="title" style="color: var(--z-warn)">تنبيه: تعدد حسابات</div>
-            <div class="desc">تم تسجيل دخول سابق من جهازك. <b>يمكنك استخدام البوت</b>، ولكن لن يتم احتساب مكافأة الإحالة لهذا الحساب.</div>
+            <div class="desc">تم اكتشاف تسجيل دخول سابق من جهازك.<br><br><b>(يمكنك استخدام البوت بحريه لكن لن يتم احتساب الاحاله اذا انضممت عن طريق رابط صديقك)</b></div>
             <div class="device-id" id="hwid-warning"></div>
             <!-- زر الدخول متاح دائماً -->
-            <button class="action-btn btn-warning" onclick="returnToBot('blocked')">متابعة إلى البوت 🚀</button>
+            <button class="action-btn btn-warning" onclick="returnToBot('dup')">متابعة إلى البوت 🚀</button>
         </div>
     </div>
 
@@ -252,6 +252,8 @@
             document.getElementById('target-bot').innerText = `البوت المستهدف: @${BOT_USERNAME}`;
         }
 
+        // توحيد مفتاح التخزين ليعمل كنظام حماية متكامل لجميع البوتات المرتبطة
+        const STORAGE_KEY = "zechal_shield_global_identity";
         let generatedFingerprint = "";
 
         function getAdvancedFingerprint() {
@@ -280,8 +282,6 @@
             switchScreen('screen-missing');
             document.getElementById('target-bot').style.display = 'none';
         } else {
-            const STORAGE_KEY = "zechal_bot_" + BOT_USERNAME;
-            
             let progress = 0;
             let progressInterval = setInterval(() => {
                 progress += 2;
@@ -313,7 +313,7 @@
                     tg.MainButton.color = "#f59e0b"; // لون أصفر/برتقالي
                     tg.MainButton.textColor = "#ffffff";
                     tg.MainButton.show();
-                    tg.MainButton.onClick(() => returnToBot('blocked'));
+                    tg.MainButton.onClick(() => returnToBot('dup'));
 
                 } else {
                     localStorage.setItem(STORAGE_KEY, generatedFingerprint + ":" + currentUserId);
@@ -335,7 +335,7 @@
             if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
             
             // تحديد الرسالة التي سيستلمها البوت
-            let payload = status === 'success' ? `verify_${generatedFingerprint}` : `blocked_${generatedFingerprint}`;
+            let payload = status === 'success' ? `verify_${generatedFingerprint}` : `dup_${generatedFingerprint}`;
             try { tg.sendData(payload); } catch(e) {}
 
             setTimeout(() => {
@@ -345,4 +345,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
